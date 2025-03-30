@@ -66,4 +66,11 @@ struct Comparator<T, std::enable_if_t<is_smart_pointer_v<T>>> {
   }
 };
 
+template <typename T, typename = void>
+struct Lesser {
+  bool operator()(const T &a, const T &b) const noexcept {
+    return std::less<T>(a, b);
+  }
+};
+
 }  // namespace jaclks
