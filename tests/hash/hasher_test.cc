@@ -1,22 +1,11 @@
 #include "hash/hasher.h"
 
-#include <cstdio>
+#include <gtest/gtest.h>
 
 namespace jaclks {
 
-int test_hasher() {
-
-printf("Hash value is : %zu\n", Hasher<int>{}(100));
-
-{
-    auto data = new int(1);
-
-    printf("Hash value is : %zu\n", Hasher<int*>{}(data));
-
-    delete data;
-}
-
-return 0;
+TEST(HasherTest, Integer) {
+  ASSERT_EQ(100UL, Hasher<int>{}(100));
 }
 
 }
