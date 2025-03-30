@@ -12,7 +12,6 @@ GTEST_INSTALL_DIR := $(INSTALL_ROOT_DIR)/googletest
 GTEST_DIR := $(THIS_DIR)/thirdparty/googletest
 
 gtest:
-	@rm -rfv $(GTEST_BUILD_DIR)
 	@mkdir -p $(GTEST_BUILD_DIR)
 	@cd $(GTEST_BUILD_DIR) && \
 	  cmake ../googletest -DCMAKE_INSTALL_PREFIX=$(GTEST_INSTALL_DIR) \
@@ -24,6 +23,7 @@ gtest:
 
 clean_gtest:
 	@rm -rf $(GTEST_INSTALL_DIR)
+	@rm -rfv $(GTEST_BUILD_DIR)
 
 rebuild_gtest:	clean_gtest gtest
 	@echo "Rebuild googletest done"

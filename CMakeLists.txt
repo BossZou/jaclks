@@ -11,6 +11,26 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set(CMAKE_CXX_EXTENSIONS OFF)
 
+find_package(Git REQUIRED)
+
+# 初始化并更新子模块
+execute_process(
+        COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        RESULT_VARIABLE GIT_SUBMOD_RESULT
+)
+
+if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+    message(FATAL_ERROR "Failed to initialize git submodules: ${GIT_SUBMOD_RESULT}")
+endif()
+
+# Third party configurations
+add_custom_target(build_thirdparty
+        COMMAND ${CMAKE_MAKE_PROGRAM} gtest -f ${CMAKE_CURRENT_SOURCE_DIR}/Makefile
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Running make with custom Makefile"
+)
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/dist/third-party/googletest/include)
 
