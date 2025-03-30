@@ -11,3 +11,6 @@ target_link_libraries(tests PRIVATE
 )
 
 add_dependencies(tests build_thirdparty)
+
+# Registers googletests
+add_test(NAME google_tests COMMAND tests)
