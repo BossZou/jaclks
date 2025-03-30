@@ -1,10 +1,6 @@
-
-namespace jaclks {
-    extern int test_hasher();
-}
+#include <gtest/gtest.h>
 
 int main(int argc, char** argv) {
-    jaclks::test_hasher();
-
-    return 0;
+  ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();;
 }
