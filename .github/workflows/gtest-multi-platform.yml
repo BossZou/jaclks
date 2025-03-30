@@ -10,7 +10,7 @@ on:
   workflow_run:  # 监听 cpplint 工作流的完成
     workflows: ["CppLint Check"]
     types: [completed]
-    branches: [ "main" ]  # 可选：限定分支
+    # branches: [ "main" ]  # 可选：限定分支
 
 jobs:
   build:
