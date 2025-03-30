@@ -7,9 +7,15 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+#  workflow_run:  # 监听 cpplint 工作流的完成
+#    workflows: ["CppLint Check"]
+#    types: [completed]
+    # branches: [ "main" ]  # 可选：限定分支
 
 jobs:
   build:
+    # 仅当 cpplint 工作流成功时才运行
+    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ${{ matrix.os }}
 
     strategy:

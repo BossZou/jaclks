@@ -1,0 +1,16 @@
+name: CppLint Check
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  cpplint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          pip install cpplint
+          cpplint --recursive src/ include/
