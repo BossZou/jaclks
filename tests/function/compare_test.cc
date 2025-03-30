@@ -78,4 +78,10 @@ TEST(Compare, SmartPointerComparator) {
   }
 }
 
+TEST(Compare, IntegerLesser) {
+  ASSERT_EQ(false, Lesser<int>{}(100, 100));
+  ASSERT_EQ(true, Lesser<int>{}(100, 200));
+  ASSERT_EQ(false, Lesser<int>{}(100, -10000));
+}
+
 }
