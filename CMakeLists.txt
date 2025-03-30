@@ -36,5 +36,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/dist/third-party/googletest/incl
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/dist/third-party/googletest/lib)
 
+enable_testing()
+
 add_subdirectory(src)
 add_subdirectory(tests)

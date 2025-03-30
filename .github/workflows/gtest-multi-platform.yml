@@ -1,6 +1,6 @@
 # This starter workflow is for a CMake project running on multiple platforms. There is a different starter workflow if you just want a single platform.
 # See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
-name: CMake on multiple platforms
+name: Google tests on multiple platforms
 
 on:
   push:
@@ -23,26 +23,27 @@ jobs:
       #
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        os: [ubuntu-latest] # , windows-latest]
+        os: [ubuntu-22.04, ubuntu-24.04, ubuntu-22.04-arm, ubuntu-24.04-arm] # , windows-latest]
         build_type: [Release]
         c_compiler: [gcc] # [gcc, clang, cl]
-        include:
-#          - os: windows-latest
-#            c_compiler: cl
-#            cpp_compiler: cl
-          - os: ubuntu-latest
-            c_compiler: gcc
-            cpp_compiler: g++
+        cpp_compiler: [g++]
+#        include:
+##          - os: windows-latest
+##            c_compiler: cl
+##            cpp_compiler: cl
+#          - os: ubuntu-latest
+#            c_compiler: gcc
+#            cpp_compiler: g++
 #          - os: ubuntu-latest
 #            c_compiler: clang
 #            cpp_compiler: clang++
-        exclude:
-          - os: windows-latest
-            c_compiler: gcc
-          - os: windows-latest
-            c_compiler: clang
-          - os: ubuntu-latest
-            c_compiler: cl
+#        exclude:
+#          - os: windows-latest
+#            c_compiler: gcc
+#          - os: windows-latest
+#            c_compiler: clang
+#          - os: ubuntu-latest
+#            c_compiler: cl
 
     steps:
       - uses: actions/checkout@v4
@@ -72,4 +73,4 @@ jobs:
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
         # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: ctest --build-config ${{ matrix.build_type }}
+        run: ctest --verbose --output-on-failure --build-config ${{ matrix.build_type }}
