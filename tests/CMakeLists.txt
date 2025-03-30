@@ -9,3 +9,5 @@ target_link_libraries(tests PRIVATE
         gtest
         gtest_main
 )
+
+add_dependencies(tests build_thirdparty)
