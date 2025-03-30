@@ -35,3 +35,8 @@
 ## Clion
 .idea/
 cmake-build-*/
+
+# Build output files
+build/
+dist/
+thirdparty/*-build/
