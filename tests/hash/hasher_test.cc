@@ -41,4 +41,4 @@ TEST(HasherTest, SmartPointer) {
   }
 }
 
-}
+}  // namespace jaclks

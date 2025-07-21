@@ -50,9 +50,10 @@ TEST(Compare, PointerComparator) {
   auto x = std::make_unique<int>(100);
   auto y = std::make_unique<int>(200);
 
-  ASSERT_EQ(0, Comparator<int*>{}(x.get(), x.get()));
-  ASSERT_EQ(-1, Comparator<int*>{}(x.get(), y.get()));
-  ASSERT_EQ(1, Comparator<int*>{}(x.get(), std::make_unique<int>(-10000).get()));
+  ASSERT_EQ(0, Comparator<int *>{}(x.get(), x.get()));
+  ASSERT_EQ(-1, Comparator<int *>{}(x.get(), y.get()));
+  ASSERT_EQ(1,
+            Comparator<int *>{}(x.get(), std::make_unique<int>(-10000).get()));
 }
 
 TEST(Compare, SmartPointerComparator) {
@@ -78,4 +79,4 @@ TEST(Compare, SmartPointerComparator) {
   }
 }
 
-}
+}  // namespace jaclks

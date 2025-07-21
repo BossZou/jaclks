@@ -30,5 +30,5 @@ rebuild_gtest:	clean_gtest gtest
 
 format:
 	@echo "Formatting source files with clang-format..."
-	find src/ include/ tests -name '*.cc' -o -name '*.h' -print0 | xargs -0 clang-format -verbose -style=file -i
+	find src/ include/ tests -name '*.cc' -o -name '*.h' | xargs clang-format -verbose -style=file -i
 	@echo "Formatting source files with clang-format done."
