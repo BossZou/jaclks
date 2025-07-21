@@ -53,7 +53,7 @@ template <typename T>
 struct Comparator<T, std::enable_if_t<is_smart_pointer_v<T>>> {
   using Type = std::decay_t<typename T::element_type>;
 
-  std::size_t operator()(const T &a, const T &b) const noexcept {
+  int operator()(const T &a, const T &b) const noexcept {
     if (a.get() == b.get()) {
       return 0;
     }

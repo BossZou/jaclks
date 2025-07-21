@@ -11,6 +11,8 @@ void *thread_call(void *arg) {
 
     delete runner;
   }
+
+  return nullptr;
 }
 
 }  // namespace

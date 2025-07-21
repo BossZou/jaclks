@@ -19,4 +19,4 @@ target_link_libraries(jaclks_gtest PRIVATE
 add_dependencies(jaclks_gtest build_thirdparty)
 
 # Registers googletests
-add_test(NAME jaclks_gtest COMMAND tests)
+add_test(NAME google_tests COMMAND jaclks_gtest)
