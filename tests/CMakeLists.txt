@@ -1,5 +1,5 @@
-aux_source_directory(./function TEST_SRC_FILES)
-aux_source_directory(./hash TEST_SRC_FILES)
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/function TEST_SRC_FILES)
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/hash TEST_SRC_FILES)
 
 add_executable(tests main.cc
         ${TEST_SRC_FILES}
