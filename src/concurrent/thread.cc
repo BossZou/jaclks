@@ -3,6 +3,7 @@
 namespace jaclks {
 
 namespace {
+
 void *thread_call(void *arg) {
   if (arg != nullptr) {
     auto runner = reinterpret_cast<Thread::Runner *>(arg);
@@ -11,6 +12,7 @@ void *thread_call(void *arg) {
     delete runner;
   }
 }
+
 }  // namespace
 
 Thread::~Thread() {
