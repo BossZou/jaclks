@@ -24,13 +24,12 @@ class Thread {
 
     explicit RunnerImpl(Callable &&f, Args &&... args)
         : call_(std::forward<Callable>(f)),
-          tuple_(std::forward<Args>(args)...) {
-    }
+          tuple_(std::forward<Args>(args)...) {}
 
     ~RunnerImpl() override = default;
 
     void Run() override {
-      constexpr auto kArgSize = std::tuple_size<std::decay_t<Tuple>>::value;
+      constexpr auto kArgSize = std::tuple_size_v<std::decay_t<Tuple>>;
       call_impl(std::forward<Callable>(call_),
                 std::forward<Tuple>(tuple_),
                 std::make_index_sequence<kArgSize>{});
@@ -53,12 +52,22 @@ class Thread {
       : tid_(),
         runner_(
             new RunnerImpl<Callable, Args...>{std::forward<Callable>(f),
-                                              std::forward<Args>(args)...}) {
-  }
+                                              std::forward<Args>(args)...}) {}
 
   ~Thread();
 
   int Start();
+
+  /**
+   * Cancels this thread immediately or at the next possibility,
+   * and join wait for termination of the thread.
+   *
+   * @return status code
+   *    - 0 for success
+   * @note The method must only be invoked while process is dying,
+   * cause the thread resource may be not deconstructed.
+   */
+  int Cancel();
 
   int Join();
 
