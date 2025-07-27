@@ -1,22 +1,26 @@
 # This starter workflow is for a CMake project running on multiple platforms. There is a different starter workflow if you just want a single platform.
 # See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
-name: Google tests on multiple platforms
+name: ACI Check
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-#  workflow_run:  # 监听 cpplint 工作流的完成
-#    workflows: ["CppLint Check"]
-#    types: [completed]
-    # branches: [ "main" ]  # 可选：限定分支
 
 jobs:
+  cpplint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cpp Lint Check
+        run: |
+          pip install cpplint
+          cpplint --recursive src/ include/
+
   build:
-    # 仅当 cpplint 工作流成功时才运行
-    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ${{ matrix.os }}
+    needs: cpplint # 仅当 cpplint 工作流成功时才运行
 
     strategy:
       # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
@@ -29,27 +33,27 @@ jobs:
       #
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, ubuntu-22.04-arm, ubuntu-24.04-arm] # , windows-latest]
-        build_type: [Release]
-        c_compiler: [gcc] # [gcc, clang, cl]
-        cpp_compiler: [g++]
-#        include:
-##          - os: windows-latest
-##            c_compiler: cl
-##            cpp_compiler: cl
-#          - os: ubuntu-latest
-#            c_compiler: gcc
-#            cpp_compiler: g++
-#          - os: ubuntu-latest
-#            c_compiler: clang
-#            cpp_compiler: clang++
-#        exclude:
-#          - os: windows-latest
-#            c_compiler: gcc
-#          - os: windows-latest
-#            c_compiler: clang
-#          - os: ubuntu-latest
-#            c_compiler: cl
+        os: [ ubuntu-22.04, ubuntu-24.04, ubuntu-22.04-arm, ubuntu-24.04-arm ] # , windows-latest]
+        build_type: [ Release ]
+        c_compiler: [ gcc ] # [gcc, clang, cl]
+        cpp_compiler: [ g++ ]
+    #        include:
+    ##          - os: windows-latest
+    ##            c_compiler: cl
+    ##            cpp_compiler: cl
+    #          - os: ubuntu-latest
+    #            c_compiler: gcc
+    #            cpp_compiler: g++
+    #          - os: ubuntu-latest
+    #            c_compiler: clang
+    #            cpp_compiler: clang++
+    #        exclude:
+    #          - os: windows-latest
+    #            c_compiler: gcc
+    #          - os: windows-latest
+    #            c_compiler: clang
+    #          - os: ubuntu-latest
+    #            c_compiler: cl
 
     steps:
       - uses: actions/checkout@v4
