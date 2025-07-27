@@ -151,3 +151,5 @@ jobs:
         with:
           files: ${{ steps.strings.outputs.build-output-dir }}/cover.info
           token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          verbose: true
