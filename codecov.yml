@@ -1,0 +1,9 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 80%  # 要求整体覆盖率 >=80%
+        threshold: 1%  # 允许比目标低 1%（79% 会失败）
+    patch:
+      default:
+        target: 70%  # PR 修改的代码覆盖率要求
