@@ -128,13 +128,13 @@ jobs:
         run: |
           cd ${{ steps.strings.outputs.build-output-dir }}
           lcov --rc geninfo_unexecuted_blocks=1 --rc branch_coverage=1 --ignore-errors mismatch -c -d ./ -o cover.info
-          lcov --remove coverage.info '/usr/*' '*/tests/*' '*/third_party/*' -o filtered.info
+          lcov --remove cover.info '/usr/*' '*/tests/*' '*/third_party/*' -o coverage.info
 
       # Optional: upload coverage report to codecov.io
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          files: ${{ steps.strings.outputs.build-output-dir }}/cover.info,${{ steps.strings.outputs.build-output-dir }}/filtered.info
+          files: ${{ steps.strings.outputs.build-output-dir }}/coverage.info
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
           verbose: true
