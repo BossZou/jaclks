@@ -127,7 +127,11 @@ jobs:
         shell: bash
         run: |
           cd ${{ steps.strings.outputs.build-output-dir }}
-          lcov --capture --directory . --output-file coverage.info --exclude '/usr/*' '*/tests/*' '*/thirdparty/*' --ignore-errors unused
+          lcov --capture --directory . --output-file coverage.info \
+            --exclude '/usr/*' \
+            --exclude '*/tests/*' \
+            --exclude '*/thirdparty/*' \
+            --ignore-errors unused
 
       # Optional: upload coverage report to codecov.io
       - name: Upload coverage to Codecov
