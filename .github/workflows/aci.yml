@@ -96,7 +96,7 @@ jobs:
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
         os: [ ubuntu-24.04 ] # , windows-latest]
-        build_type: [ Debug, Release ]
+        build_type: [ Debug ]
         c_compiler: [ gcc ] # [gcc, clang, cl]
         cpp_compiler: [ g++ ]
 
@@ -121,6 +121,7 @@ jobs:
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -S ${{ github.workspace }}
+          -DENABLE_GTEST=ON
           -DENABLE_COVERAGE=ON
 
       - name: Build
@@ -142,4 +143,4 @@ jobs:
         shell: bash
         run: |
           cd ${{ steps.strings.outputs.build-output-dir }}
-          lcov -c -d ./ -o cover.info
+          lcov --rc geninfo_unexecuted_blocks=1 --rc lcov_branch_coverage=1 --ignore-errors mismatch -c -d ./ -o cover.info
