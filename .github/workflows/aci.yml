@@ -150,3 +150,4 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           files: ${{ steps.strings.outputs.build-output-dir }}/cover.info
+          token: ${{ secrets.CODECOV_TOKEN }}
