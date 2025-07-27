@@ -7,13 +7,22 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 # set(CMAKE_C_EXTENSIONS OFF)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set(CMAKE_CXX_EXTENSIONS OFF)
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -pthread -fPIC")
+
+option(ENABLE_GTEST "Enable build googletest executable" ON)
+option(ENABLE_COVERAGE "Enable build project with coverage options" OFF)
+
+if(ENABLE_GTEST)
+    if(ENABLE_COVERAGE)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+    endif()
+endif()
 
 find_package(Git REQUIRED)
 
@@ -43,4 +52,7 @@ link_directories(${CMAKE_CURRENT_SOURCE_DIR}/dist/third-party/googletest/lib)
 enable_testing()
 
 add_subdirectory(src)
-add_subdirectory(tests)
+if(ENABLE_GTEST)
+    add_subdirectory(tests)
+endif()
+
