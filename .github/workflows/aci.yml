@@ -127,8 +127,7 @@ jobs:
         shell: bash
         run: |
           cd ${{ steps.strings.outputs.build-output-dir }}
-          lcov --rc geninfo_unexecuted_blocks=1 --rc branch_coverage=1 --ignore-errors mismatch -c -d ./ -o cover.info
-          lcov --ignore-errors unused --remove cover.info '/usr/*' '*/tests/*' '*/thirdparty/*' -o coverage.info
+          lcov --capture --directory . --output-file coverage.info --exclude '/usr/*' '*/tests/*' '*/thirdparty/*' --ignore-errors unused
 
       # Optional: upload coverage report to codecov.io
       - name: Upload coverage to Codecov

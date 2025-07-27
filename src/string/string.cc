@@ -5,8 +5,7 @@
 
 namespace jaclks {
 
-String::String() : cap_(0), own_(true), len_(0), buf_(local_buf_) {
-}
+String::String() : cap_(0), own_(true), len_(0), buf_(local_buf_) {}
 
 String::String(const char *str, bool ref) : String() {
   auto len = strlen(str);
