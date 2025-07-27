@@ -144,3 +144,9 @@ jobs:
         run: |
           cd ${{ steps.strings.outputs.build-output-dir }}
           lcov --rc geninfo_unexecuted_blocks=1 --rc lcov_branch_coverage=1 --ignore-errors mismatch -c -d ./ -o cover.info
+
+      # Optional: upload coverage report to codecov.io
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ${{ steps.strings.outputs.build-output-dir }}/cover.info
