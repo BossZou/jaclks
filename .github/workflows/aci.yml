@@ -118,26 +118,22 @@ jobs:
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
         run: ctest --verbose --output-on-failure --build-config Debug
 
-      - name: Install LCov
+      - name: Install GCovr
         shell: bash
         run: |
-          sudo apt-get --assume-yes install lcov > /dev/null
+          sudo apt-get --assume-yes install gcovr
 
       - name: LCov Collection
         shell: bash
         run: |
-          cd ${{ steps.strings.outputs.build-output-dir }}
-          lcov --capture --directory . --output-file coverage.info \
-            --exclude '/usr/*' \
-            --exclude '*/tests/*' \
-            --exclude '*/thirdparty/*' \
-            --ignore-errors unused
+          gcovr -r ${{ github.workspace }} --xml -o ${{ github.workspace }}/coverage.xml \
+            -e '/usr/.*' -e '.*/tests/.*' -e '.*/thirdparty/.*'
 
       # Optional: upload coverage report to codecov.io
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          files: ${{ steps.strings.outputs.build-output-dir }}/coverage.info
+          files: ${{ github.workspace }}/coverage.xml
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
           verbose: true
