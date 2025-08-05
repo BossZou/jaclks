@@ -12,7 +12,7 @@ class String {
 
   ~String();
 
-  bool StartWith(const String &sub, std::size_t offset = 0) const;
+  bool StartsWith(const String &sub, std::size_t offset = 0) const;
 
   std::size_t Length() const;
 

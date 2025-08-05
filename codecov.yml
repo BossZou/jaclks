@@ -8,4 +8,4 @@ coverage:
         threshold: 1%  # 允许比目标低 1%（79% 会失败）
     patch:
       default:
-        target: 70%  # PR 修改的代码覆盖率要求
+        target: 80%  # PR 修改的代码覆盖率要求

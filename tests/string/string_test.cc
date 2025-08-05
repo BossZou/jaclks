@@ -41,4 +41,50 @@ TEST(String, RefCharStr) {
             reinterpret_cast<std::size_t>(cstr));
 }
 
+TEST(String, StartWith) {
+  {
+    String str{"1234", true};
+    ASSERT_TRUE(str.StartsWith(String{"123", true}));
+  }
+  {
+    String str{"1234", true};
+    ASSERT_FALSE(str.StartsWith(String{"234", true}));
+  }
+  {
+    String str{"1234", true};
+    ASSERT_TRUE(str.StartsWith(String{"1234", true}));
+  }
+  {
+    String str{"1234", true};
+    ASSERT_FALSE(str.StartsWith(String{"12345", true}));
+  }
+  {
+    String str{"1234", true};
+    ASSERT_TRUE(str.StartsWith(String{"", true}));
+  }
+}
+
+TEST(String, StartWithOffset) {
+  {
+    String str{"1234", true};
+    ASSERT_TRUE(str.StartsWith(String{"123", true}, 0));
+  }
+  {
+    String str{"1234", true};
+    ASSERT_TRUE(str.StartsWith(String{"234", true}, 1));
+  }
+  {
+    String str{"1234", true};
+    ASSERT_TRUE(str.StartsWith(String{"4", true}, 3));
+  }
+  {
+    String str{"1234", true};
+    ASSERT_TRUE(str.StartsWith(String{"", true}, 4));
+  }
+  {
+    String str{"1234", true};
+    ASSERT_FALSE(str.StartsWith(String{"", true}, 5));
+  }
+}
+
 }  // namespace jaclks

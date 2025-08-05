@@ -25,9 +25,9 @@ String::~String() {
   }
 }
 
-bool String::StartWith(const String &sub, std::size_t offset) const {
+bool String::StartsWith(const String &sub, std::size_t offset) const {
   if (sub.len_ + offset <= len_) {
-    return memcmp(buf_ + offset, sub.buf_, len_ - offset) == 0;
+    return memcmp(buf_ + offset, sub.buf_, sub.len_) == 0;
   }
 
   return false;
