@@ -12,6 +12,10 @@ class String {
 
   ~String();
 
+  bool StartsWith(const String &sub, std::size_t offset = 0) const;
+
+  bool EndsWith(const String &suffix) const;
+
   std::size_t Length() const;
 
   std::size_t Capacity() const;
