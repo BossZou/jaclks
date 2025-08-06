@@ -11,23 +11,23 @@ This section describes how to add `jaclks` as a dependency to your C++ project.
 
 ## Supported Platforms
 
-| Operating System               | Architectures |
-|--------------------------------|---------------|
-| Linux - Debian, Ubuntu, CentOS | x86, x64      |
-| Windows 10+                    | x86, x64      |
-| MacOS                          | x64, ARM64    |
-| Linux - Others                 | x86, x64      |
-| Linux                          | ARM64         |
-| iOS                            | Not supported |
-| Android                        | Not supported |
-| AIX                            | Not supported |
-| Asylo                          | Not supported |
-| FreeBSD                        | Not supported |
-| Fuchsia                        | Not supported |
-| NaCL                           | Not supported |
-| NetBSD                         | Not supported |
-| OpenBSD                        | Not supported |
-| Solaris                        | Not supported |
+| Operating System     | Architectures | OS Version   |
+|----------------------|---------------|--------------|
+| Linux - Ubuntu       | x64, ARM64    | 22.04, 24.04 |
+| Windows 10+          | Not supported |
+| MacOS                | Not supported |
+| Linux - Others       | Not supported |
+| Linux                | Not supported |
+| iOS                  | Not supported |
+| Android              | Not supported |
+| AIX                  | Not supported |
+| Asylo                | Not supported |
+| FreeBSD              | Not supported |
+| Fuchsia              | Not supported |
+| NaCL                 | Not supported |
+| NetBSD               | Not supported |
+| OpenBSD              | Not supported |
+| Solaris              | Not supported |
 
 ## Build from source
 
