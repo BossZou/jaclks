@@ -33,6 +33,13 @@ bool String::StartsWith(const String &sub, std::size_t offset) const {
   return false;
 }
 
+bool String::EndsWith(const String &suffix) const {
+  if (suffix.len_ <= len_) {
+    return StartsWith(suffix, len_ - suffix.len_);
+  }
+  return false;
+}
+
 std::size_t String::Length() const {
   return len_;
 }
