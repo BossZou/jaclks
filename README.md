@@ -3,6 +3,7 @@ jaclks - java-based C++ lib kits
 
 `jaclks` is a modern, open source, java-based C++ library. `jaclks` supports classes with java-codestyle APIs.
 
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![codecov](https://codecov.io/gh/BossZou/jaclks/graph/badge.svg?token=SGY77PRJI1)](https://codecov.io/gh/BossZou/jaclks)
 
 # To start using jaclks
