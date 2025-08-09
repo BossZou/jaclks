@@ -69,7 +69,14 @@ int Thread::Cancel() {
 }
 
 int Thread::Join() {
-  return pthread_join(tid_, nullptr);
+  // TODO(BossZou): Here if runner_ is not null mean thread not start.
+  // Try use
+  if (runner_) {
+    delete runner_;
+    return 0;
+  } else {
+    return pthread_join(tid_, nullptr);
+  }
 }
 
 }  // namespace jaclks
