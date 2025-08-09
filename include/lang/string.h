@@ -89,8 +89,6 @@ class String {
 
   bool is_local_data() const;
 
-  char *head();
-
   union {
     char local_buf_[kLocalCapacity];
     InternalInfo info_;

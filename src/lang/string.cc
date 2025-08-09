@@ -188,8 +188,4 @@ bool String::is_local_data() const {
   return buf_ptr >= local_ptr && buf_ptr < local_ptr + kLocalCapacity;
 }
 
-char *String::head() {
-  return is_local_data() ? local_buf_ : info_.head;
-}
-
 }  // namespace jaclks
