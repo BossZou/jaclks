@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "lang/character.h"
+
 namespace jaclks {
 
 String::String() : cap_(0), own_(true), len_(0), buf_(local_buf_) {}
@@ -38,6 +40,25 @@ bool String::EndsWith(const String &suffix) const {
     return StartsWith(suffix, len_ - suffix.len_);
   }
   return false;
+}
+
+void String::Strip() {
+  // TODO(BossZou): Optimize to reduce data copy by move header ptr
+  // FIXME(BossZou): Use Character
+}
+
+void String::StripTrailing() {
+  std::size_t space_len = 0UL;
+
+  for (auto i = static_cast<ssize_t>(len_ - 1); i >= 0; --i) {
+    if (!Character::IsWhitespace(buf_[i])) {
+      break;
+    }
+    buf_[i] = '\0';
+    ++space_len;
+  }
+
+  len_ -= space_len;
 }
 
 std::size_t String::Length() const {

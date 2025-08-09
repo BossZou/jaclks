@@ -16,6 +16,10 @@ class String {
 
   bool EndsWith(const String &suffix) const;
 
+  void Strip();
+
+  void StripTrailing();
+
   std::size_t Length() const;
 
   std::size_t Capacity() const;
