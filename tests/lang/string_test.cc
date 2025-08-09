@@ -129,6 +129,19 @@ TEST_P(StringTest, StaticStripTrailing) {
     auto strip_str = String::StripTrailing(str);
     ASSERT_EQ(strip_str, (String{"0123456789 \t\raaa", GetParam()}));
   }
+  {  // Case all char are white space
+    auto cstr = "\t\r\n\f\v";
+    String str{cstr, GetParam()};
+
+    auto strip_str = String::StripTrailing(str);
+    ASSERT_EQ(strip_str, (String{"", GetParam()}));
+  }
+  {
+    String str{"", GetParam()};
+
+    auto strip_str = String::StripTrailing(str);
+    ASSERT_EQ(strip_str, (String{"", GetParam()}));
+  }
 }
 
 TEST_P(StringTest, StripTrailing) {
@@ -146,15 +159,38 @@ TEST_P(StringTest, StripTrailing) {
     str.StripTrailing();
     ASSERT_EQ(str, (String{"0123456789 \t\raaa", GetParam()}));
   }
+  {  // Case all char are white space
+    auto cstr = "\t\r\n\f\v";
+    String str{cstr, GetParam()};
+
+    str.StripTrailing();
+    ASSERT_EQ(str, (String{"", GetParam()}));
+  }
+  {
+    String str{"", GetParam()};
+
+    str.StripTrailing();
+    ASSERT_EQ(str, (String{"", GetParam()}));
+  }
 }
 
 TEST_P(StringTest, Reset) {
-  auto cstr = "123456789098765432101234567890987654321";
-  String str{cstr, GetParam()};
+  {
+    auto cstr = "123456789098765432101234567890987654321";
+    String str{cstr, GetParam()};
 
-  str.Reset();
-  ASSERT_EQ(str.Length(), 0UL);
-  ASSERT_EQ(str.Capacity(), 16UL);
+    str.Reset();
+    ASSERT_EQ(str.Length(), 0UL);
+    ASSERT_EQ(str.Capacity(), 16UL);
+  }
+  {
+    auto cstr = "1234567890";
+    String str{cstr, GetParam()};
+
+    str.Reset();
+    ASSERT_EQ(str.Length(), 0UL);
+    ASSERT_EQ(str.Capacity(), 16UL);
+  }
 }
 
 }  // namespace jaclks
