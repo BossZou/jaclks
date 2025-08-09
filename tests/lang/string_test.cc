@@ -160,8 +160,17 @@ TEST_P(StringTest, StaticStrip) {
     String str{cstr, GetParam()};
 
     auto strip_str = String::Strip(str);
-    ASSERT_EQ(strip_str, (String{"aaa0123456789", GetParam()}));
+    ASSERT_EQ(strip_str,
+              (String{"012345678909876543210123456789", GetParam()}));
     ASSERT_EQ(str.Length() - 6, strip_str.Length());
+  }
+  {  // Case all char are white space
+    auto cstr = "\t\ra\n\f\v";
+    String str{cstr, GetParam()};
+
+    auto strip_str = String::Strip(str);
+    ASSERT_EQ(strip_str, (String{"a", GetParam()}));
+    ASSERT_EQ(1UL, strip_str.Length());
   }
   {  // Case all char are white space
     auto cstr = "\t\r\n\f\v";
@@ -232,8 +241,16 @@ TEST_P(StringTest, Strip) {
 
     auto len = str.Length();
     str.Strip();
-    ASSERT_EQ(str, (String{"aaa0123456789", GetParam()}));
+    ASSERT_EQ(str, (String{"012345678909876543210123456789", GetParam()}));
     ASSERT_EQ(len - 6, str.Length());
+  }
+  {
+    auto cstr = "\t\ra\n\f\v";
+    String str{cstr, GetParam()};
+
+    str.Strip();
+    ASSERT_EQ(str, (String{"a", GetParam()}));
+    ASSERT_EQ(1UL, str.Length());
   }
   {  // Case all char are white space
     auto cstr = "\t\r\n\f\v";
@@ -274,7 +291,8 @@ TEST_P(StringTest, StaticStripLeading) {
     String str{cstr, GetParam()};
 
     auto strip_str = String::StripLeading(str);
-    ASSERT_EQ(strip_str, (String{"aaa0123456789", GetParam()}));
+    ASSERT_EQ(strip_str,
+              (String{"012345678909876543210123456789\n\f\v", GetParam()}));
     ASSERT_EQ(str.Length() - 3, strip_str.Length());
   }
   {
@@ -327,7 +345,8 @@ TEST_P(StringTest, StripLeading) {
 
     auto len = str.Length();
     str.StripLeading();
-    ASSERT_EQ(str, (String{"aaa0123456789", GetParam()}));
+    ASSERT_EQ(str,
+              (String{"012345678909876543210123456789\n\f\v", GetParam()}));
     ASSERT_EQ(len - 3, str.Length());
   }
   {
@@ -377,8 +396,9 @@ TEST_P(StringTest, StaticStripTrailing) {
     String str{cstr, GetParam()};
 
     auto strip_str = String::StripTrailing(str);
-    ASSERT_EQ(strip_str, (String{"aaa0123456789", GetParam()}));
-    ASSERT_EQ(str.Length() - 6, strip_str.Length());
+    ASSERT_EQ(strip_str,
+              (String{" \t\r012345678909876543210123456789", GetParam()}));
+    ASSERT_EQ(str.Length() - 3, strip_str.Length());
   }
   {
     auto cstr = "a\t\r\n\f\v";
@@ -430,8 +450,8 @@ TEST_P(StringTest, StripTrailing) {
 
     auto len = str.Length();
     str.StripTrailing();
-    ASSERT_EQ(str, (String{"aaa0123456789", GetParam()}));
-    ASSERT_EQ(len - 6, str.Length());
+    ASSERT_EQ(str, (String{" \t\r012345678909876543210123456789", GetParam()}));
+    ASSERT_EQ(len - 3, str.Length());
   }
   {
     auto cstr = "a\t\r\n\f\v";
