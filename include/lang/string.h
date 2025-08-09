@@ -6,9 +6,13 @@ namespace jaclks {
 
 class String {
  public:
+  static String StripTrailing(const String &str);
+
   String();
 
   explicit String(const char *str, bool ref = false);
+
+  explicit String(const char *str, std::size_t len);
 
   ~String();
 
@@ -18,6 +22,9 @@ class String {
 
   void Strip();
 
+  /**
+   * Removes all trailing white space.
+   */
   void StripTrailing();
 
   std::size_t Length() const;
@@ -25,6 +32,13 @@ class String {
   std::size_t Capacity() const;
 
   const char *CStr() const;
+
+  void Reset();
+
+  bool IsRef() const;
+
+  // FIXME
+  bool operator==(const String &other) const;
 
  private:
   static constexpr auto kLocalCapacity = 16UL;

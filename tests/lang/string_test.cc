@@ -4,98 +4,124 @@
 
 namespace jaclks {
 
-TEST(StringTest, EmptyString) {
+namespace {
+
+class StringTest : public ::testing::TestWithParam<bool> {
+ protected:
+  // Sets up the test fixture.
+  void SetUp() override {}
+
+  // Tears down the test fixture.
+  void TearDown() override {}
+};
+
+INSTANTIATE_TEST_SUITE_P(Reference, StringTest, ::testing::Values(false, true));
+
+}  // namespace
+
+TEST_P(StringTest, EmptyString) {
   String str{};
 
   ASSERT_EQ(str.Capacity(), 16UL);
   ASSERT_EQ(str.Length(), 0UL);
 }
 
-TEST(StringTest, FromCharStr) {
+TEST_P(StringTest, FromCharStr) {
   auto cstr = "1234567890";
-  String str{cstr};
+  String str{cstr, GetParam()};
 
-  ASSERT_EQ(str.Capacity(), 16UL);
   ASSERT_EQ(str.Length(), strlen(cstr));
-  ASSERT_NE(reinterpret_cast<std::size_t>(str.CStr()),
-            reinterpret_cast<std::size_t>(cstr));
+  if (str.IsRef()) {
+    ASSERT_EQ(str.Capacity(), 11UL);
+    ASSERT_EQ(reinterpret_cast<std::size_t>(str.CStr()),
+              reinterpret_cast<std::size_t>(cstr));
+  } else {
+    ASSERT_EQ(str.Capacity(), 16UL);
+    ASSERT_NE(reinterpret_cast<std::size_t>(str.CStr()),
+              reinterpret_cast<std::size_t>(cstr));
+  }
 }
 
-TEST(StringTest, FromLongCharStr) {
+TEST_P(StringTest, FromLongCharStr) {
   auto cstr = "123456789098765432101234567890987654321";
-  String str{cstr};
+  String str{cstr, GetParam()};
 
   ASSERT_EQ(str.Capacity(), strlen(cstr) + 1);
   ASSERT_EQ(str.Length(), strlen(cstr));
-  ASSERT_NE(reinterpret_cast<std::size_t>(str.CStr()),
-            reinterpret_cast<std::size_t>(cstr));
-}
-
-TEST(StringTest, RefCharStr) {
-  auto cstr = "1234567890";
-  String str{cstr, true};
-
-  ASSERT_EQ(str.Capacity(), strlen(cstr) + 1);
-  ASSERT_EQ(str.Length(), strlen(cstr));
-  ASSERT_EQ(reinterpret_cast<std::size_t>(str.CStr()),
-            reinterpret_cast<std::size_t>(cstr));
-}
-
-TEST(StringTest, StartsWith) {
-  {
-    String str{"1234", true};
-    ASSERT_TRUE(str.StartsWith(String{"123", true}));
-  }
-  {
-    String str{"1234", true};
-    ASSERT_FALSE(str.StartsWith(String{"234", true}));
-  }
-  {
-    String str{"1234", true};
-    ASSERT_TRUE(str.StartsWith(String{"1234", true}));
-  }
-  {
-    String str{"1234", true};
-    ASSERT_FALSE(str.StartsWith(String{"12345", true}));
-  }
-  {
-    String str{"1234", true};
-    ASSERT_TRUE(str.StartsWith(String{"", true}));
+  if (str.IsRef()) {
+    ASSERT_EQ(reinterpret_cast<std::size_t>(str.CStr()),
+              reinterpret_cast<std::size_t>(cstr));
+  } else {
+    ASSERT_NE(reinterpret_cast<std::size_t>(str.CStr()),
+              reinterpret_cast<std::size_t>(cstr));
   }
 }
 
-TEST(StringTest, StartsWithOffset) {
+TEST_P(StringTest, StartsWith) {
   {
-    String str{"1234", true};
-    ASSERT_TRUE(str.StartsWith(String{"123", true}, 0));
+    String str{"1234", GetParam()};
+    ASSERT_TRUE(str.StartsWith(String{"123", GetParam()}));
   }
   {
-    String str{"1234", true};
-    ASSERT_TRUE(str.StartsWith(String{"234", true}, 1));
+    String str{"1234", GetParam()};
+    ASSERT_FALSE(str.StartsWith(String{"234", GetParam()}));
   }
   {
-    String str{"1234", true};
-    ASSERT_TRUE(str.StartsWith(String{"4", true}, 3));
+    String str{"1234", GetParam()};
+    ASSERT_TRUE(str.StartsWith(String{"1234", GetParam()}));
   }
   {
-    String str{"1234", true};
-    ASSERT_TRUE(str.StartsWith(String{"", true}, 4));
+    String str{"1234", GetParam()};
+    ASSERT_FALSE(str.StartsWith(String{"12345", GetParam()}));
   }
   {
-    String str{"1234", true};
-    ASSERT_FALSE(str.StartsWith(String{"", true}, 5));
+    String str{"1234", GetParam()};
+    ASSERT_TRUE(str.StartsWith(String{"", GetParam()}));
   }
 }
 
-TEST(StringTest, EndsWith) {
+TEST_P(StringTest, StartsWithOffset) {
+  {
+    String str{"1234", GetParam()};
+    ASSERT_TRUE(str.StartsWith(String{"123", GetParam()}, 0));
+  }
+  {
+    String str{"1234", GetParam()};
+    ASSERT_TRUE(str.StartsWith(String{"234", GetParam()}, 1));
+  }
+  {
+    String str{"1234", GetParam()};
+    ASSERT_TRUE(str.StartsWith(String{"4", GetParam()}, 3));
+  }
+  {
+    String str{"1234", GetParam()};
+    ASSERT_TRUE(str.StartsWith(String{"", GetParam()}, 4));
+  }
+  {
+    String str{"1234", GetParam()};
+    ASSERT_FALSE(str.StartsWith(String{"", GetParam()}, 5));
+  }
+}
+
+TEST_P(StringTest, EndsWith) {
   auto cstr = "123456789098765432101234567890987654321";
-  String str{cstr};
+  String str{cstr, GetParam()};
 
-  ASSERT_TRUE(str.EndsWith(String{"54321", true}));
-  ASSERT_FALSE(str.EndsWith(String{"554321", true}));
+  ASSERT_TRUE(str.EndsWith(String{"54321", GetParam()}));
+  ASSERT_FALSE(str.EndsWith(String{"554321", GetParam()}));
   ASSERT_TRUE(str.EndsWith({}));
-  ASSERT_TRUE(str.EndsWith(String{cstr, true}));
-  ASSERT_FALSE((String{"12345678909", true}).EndsWith(str));
+  ASSERT_TRUE(str.EndsWith(String{cstr, GetParam()}));
+  ASSERT_FALSE((String{"12345678909", GetParam()}).EndsWith(str));
+}
+
+TEST_P(StringTest, StaticStripTrailing) {}
+
+TEST_P(StringTest, StripTrailing) {
+  auto cstr = "0123456789 \t\r\n\f\v";
+  String str{cstr, GetParam()};
+
+  str.StripTrailing();
+  ASSERT_EQ(str, (String{"0123456789", GetParam()}));
 }
 
 }  // namespace jaclks

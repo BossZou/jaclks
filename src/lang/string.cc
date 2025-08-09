@@ -2,10 +2,24 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <new>
 
 #include "lang/character.h"
 
 namespace jaclks {
+
+String String::StripTrailing(const String &str) {
+  auto len = str.Length();
+
+  for (auto i = static_cast<ssize_t>(len - 1); i >= 0; --i) {
+    if (!Character::IsWhitespace(str.buf_[i])) {
+      break;
+    }
+    --len;
+  }
+
+  return String{str.buf_, len};
+}
 
 String::String() : cap_(0), own_(true), len_(0), buf_(local_buf_) {}
 
@@ -19,6 +33,10 @@ String::String(const char *str, bool ref) : String() {
   } else {
     construct(str, len);
   }
+}
+
+String::String(const char *str, std::size_t len) : String() {
+  construct(str, len);
 }
 
 String::~String() {
@@ -54,11 +72,21 @@ void String::StripTrailing() {
     if (!Character::IsWhitespace(buf_[i])) {
       break;
     }
-    buf_[i] = '\0';
     ++space_len;
   }
 
-  len_ -= space_len;
+  // FIXME(guanfeng): Tell if is ref mode.
+  if (own_) {
+    len_ -= space_len;
+    buf_[len_] = '\0';
+  } else {
+    auto len = len_;
+    auto buf = buf_;
+
+    this->~String();
+
+    new (this) String(static_cast<const char *>(buf), len - space_len);
+  }
 }
 
 std::size_t String::Length() const {
@@ -71,6 +99,25 @@ std::size_t String::Capacity() const {
 
 const char *String::CStr() const {
   return buf_;
+}
+
+void String::Reset() {
+  if (!is_local_data() && own_) {
+    free(buf_);
+  }
+
+  buf_ = nullptr;
+  len_ = 0UL;
+  cap_ = 0UL;
+  own_ = false;
+}
+
+bool String::IsRef() const {
+  return !own_;
+}
+
+bool String::operator==(const String &other) const {
+  return std::strncmp(buf_, other.buf_, Length()) == 0;
 }
 
 void String::construct(const char *str, std::size_t len) {
