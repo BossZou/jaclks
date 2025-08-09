@@ -1,5 +1,6 @@
 #include "lang/string.h"
 
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #include <new>
@@ -7,6 +8,43 @@
 #include "lang/character.h"
 
 namespace jaclks {
+
+String String::Strip(const String &str) {
+  auto buf = str.buf_;
+  auto len = str.len_;
+
+  for (auto i = 0UL, tlen = len; i < tlen; ++i) {
+    if (!Character::IsWhitespace(str.buf_[i])) {
+      break;
+    }
+    ++buf;
+    --len;
+  }
+
+  for (auto i = static_cast<ssize_t>(len - 1); i >= 0; --i) {
+    if (!Character::IsWhitespace(buf[i])) {
+      break;
+    }
+    --len;
+  }
+
+  return String{buf, len};
+}
+
+String String::StripLeading(const String &str) {
+  auto buf = str.buf_;
+  auto len = str.len_;
+
+  for (auto i = 0UL, tlen = len; i < tlen; ++i) {
+    if (!Character::IsWhitespace(str.buf_[i])) {
+      break;
+    }
+    ++buf;
+    --len;
+  }
+
+  return String{buf, len};
+}
 
 String String::StripTrailing(const String &str) {
   auto len = str.Length();
@@ -21,14 +59,14 @@ String String::StripTrailing(const String &str) {
   return String{str.buf_, len};
 }
 
-String::String() : cap_(0), own_(true), len_(0), buf_(local_buf_) {}
+String::String() : info_(), own_(true), len_(0), buf_(local_buf_) {}
 
 String::String(const char *str, bool ref) : String() {
   auto len = strlen(str);
   if (ref) {
     own_ = false;
     len_ = len;
-    cap_ = len + 1;
+    info_.cap = len + 1;
     buf_ = const_cast<char *>(str);
   } else {
     construct(str, len);
@@ -41,7 +79,7 @@ String::String(const char *str, std::size_t len) : String() {
 
 String::~String() {
   if (!is_local_data() && own_) {
-    free(buf_);
+    free(info_.head);
   }
 }
 
@@ -61,8 +99,15 @@ bool String::EndsWith(const String &suffix) const {
 }
 
 void String::Strip() {
-  // TODO(BossZou): Optimize to reduce data copy by move header ptr
-  // FIXME(BossZou): Use Character
+  StripLeading();
+  StripTrailing();
+}
+
+void String::StripLeading() {
+  while (Character::IsWhitespace(*buf_)) {
+    ++buf_;
+    --len_;
+  }
 }
 
 void String::StripTrailing() {
@@ -75,7 +120,6 @@ void String::StripTrailing() {
     ++space_len;
   }
 
-  // FIXME(guanfeng): Tell if is ref mode.
   if (own_) {
     len_ -= space_len;
     buf_[len_] = '\0';
@@ -94,7 +138,7 @@ std::size_t String::Length() const {
 }
 
 std::size_t String::Capacity() const {
-  return is_local_data() ? kLocalCapacity : cap_;
+  return is_local_data() ? kLocalCapacity : info_.cap;
 }
 
 const char *String::CStr() const {
@@ -106,10 +150,10 @@ void String::Reset() {
     free(buf_);
   }
 
-  buf_ = nullptr;
   len_ = 0UL;
-  cap_ = kLocalCapacity;
   own_ = false;
+  buf_ = local_buf_;
+  buf_[0] = '\0';
 }
 
 bool String::IsRef() const {
@@ -121,24 +165,31 @@ bool String::operator==(const String &other) const {
 }
 
 void String::construct(const char *str, std::size_t len) {
+  own_ = true;
+  len_ = len;
+
   if (len < kLocalCapacity) {
     memcpy(local_buf_, str, len);
     local_buf_[len] = '\0';
-    own_ = true;
-    len_ = len;
     buf_ = local_buf_;
   } else {
     buf_ = static_cast<char *>(malloc(len + 1));
     memcpy(buf_, str, len);
     buf_[len] = '\0';
-    own_ = true;
-    len_ = len;
-    cap_ = len + 1;
+    info_.cap = len + 1;
+    info_.head = buf_;
   }
 }
 
 bool String::is_local_data() const {
-  return buf_ == local_buf_;
+  auto buf_ptr = reinterpret_cast<uintptr_t>(buf_);
+  auto local_ptr = reinterpret_cast<uintptr_t>(local_buf_);
+
+  return buf_ptr >= local_ptr && buf_ptr < local_ptr + kLocalCapacity;
+}
+
+char *String::head() {
+  return is_local_data() ? local_buf_ : info_.head;
 }
 
 }  // namespace jaclks
