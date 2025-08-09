@@ -108,7 +108,7 @@ void String::Reset() {
 
   buf_ = nullptr;
   len_ = 0UL;
-  cap_ = 0UL;
+  cap_ = kLocalCapacity;
   own_ = false;
 }
 
