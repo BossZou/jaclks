@@ -1,0 +1,14 @@
+name: Manual Debug
+
+on:
+  workflow_dispatch:  # 启用手动触发, see https://github.com/marketplace/actions/debugging-with-tmate
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Debug Session
+        uses: mxschmitt/action-tmate@v3
