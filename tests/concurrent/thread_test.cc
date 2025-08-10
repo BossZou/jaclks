@@ -8,12 +8,13 @@
 
 #include <gtest/gtest.h>
 
+#include <cerrno>
 #include <memory>
 #include <mutex>
 
 namespace jaclks {
 
-TEST(Thread, Normal) {
+TEST(ThreadTest, Normal) {
   auto func = [](int *a) { *a += 1; };
 
   int val = 10;
@@ -25,7 +26,7 @@ TEST(Thread, Normal) {
   ASSERT_EQ(val, 11);
 }
 
-TEST(Thread, NoParam) {
+TEST(ThreadTest, NoParam) {
   auto int_a = 10;
   auto func = [&int_a]() { ++int_a; };
 
@@ -37,7 +38,7 @@ TEST(Thread, NoParam) {
   ASSERT_EQ(int_a, 11);
 }
 
-TEST(Thread, UinqPtrArg) {
+TEST(ThreadTest, UniqPtrArg) {
   auto func = [](std::unique_ptr<int> a_p, int *r) {
     *a_p += 1;
     *r = *a_p;
@@ -53,19 +54,59 @@ TEST(Thread, UinqPtrArg) {
   ASSERT_EQ(res, 11);
 }
 
-TEST(Thread, Cancel) {
-  bool called = false;
+TEST(ThreadTest, ThrowRuntimeError) {
+  auto func = [](int *a) {
+    if (nullptr == a) {
+      throw std::runtime_error("null pointer");
+    }
+    *a += 1;
+  };
 
-  auto func = [](bool *is_called) {
+  auto t = Thread{func, nullptr};
+
+  ASSERT_EQ(t.Start(), 0);
+  ASSERT_EQ(t.Join(), 0);
+}
+
+TEST(ThreadTest, ThrowStdException) {
+  auto func = [](int *a) {
+    if (nullptr == a) {
+      throw std::logic_error("null pointer");
+    }
+    *a += 1;
+  };
+
+  auto t = Thread{func, nullptr};
+
+  ASSERT_EQ(t.Start(), 0);
+  ASSERT_EQ(t.Join(), 0);
+}
+
+TEST(ThreadTest, Cancel) {
+  struct CancelArg {
+    explicit CancelArg(bool *_stat) : stat(_stat) {}
+
+    ~CancelArg() {
+      *stat = true;
+    }
+
+    bool *stat;
+  };
+
+  bool called = false;
+  bool exited = false;
+
+  auto func = [](bool *is_called, std::unique_ptr<CancelArg> arg) {
+    (void)(arg.get());
 #if defined(_WIN32)
     Sleep(3000);
- #else
+#else
     sleep(3);
 #endif
     *is_called = true;
   };
 
-  auto t = Thread{func, &called};
+  auto t = Thread{func, &called, std::make_unique<CancelArg>(&exited)};
 
   ASSERT_EQ(t.Start(), 0);
 #if defined(_WIN32)
@@ -76,6 +117,16 @@ TEST(Thread, Cancel) {
   ASSERT_EQ(t.Cancel(), 0);
 
   ASSERT_FALSE(called);
+  ASSERT_TRUE(exited);
+}
+
+TEST(ThreadTest, CancelBeforeStart) {
+  auto func = [](int *a) { *a += 1; };
+
+  int val = 10;
+  auto t = Thread{func, &val};
+
+  ASSERT_EQ(ESRCH, t.Cancel());
 }
 
 }  // namespace jaclks
