@@ -129,4 +129,37 @@ TEST(ThreadTest, CancelBeforeStart) {
   ASSERT_EQ(ESRCH, t.Cancel());
 }
 
+TEST(ThreadTest, MoveConstruct) {
+  auto func = [](int *a) {
+    sleep(3);
+    *a += 1;
+  };
+
+  int val = 10;
+  auto t = Thread{func, &val};
+  t.Start();
+
+  auto other = std::move(t);
+  ASSERT_EQ(0, other.Join());
+  ASSERT_EQ(11, val);
+}
+
+TEST(ThreadTest, MoveAssignment) {
+  auto func = [](int *a) {
+    sleep(3);
+    *a += 1;
+  };
+
+  int val = 10;
+  auto t = Thread{func, &val};
+  t.Start();
+
+  auto other = Thread{func, &val};
+  t = std::move(other);
+  t.Start();
+
+  ASSERT_EQ(0, t.Join());
+  ASSERT_EQ(12, val);
+}
+
 }  // namespace jaclks

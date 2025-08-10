@@ -75,11 +75,17 @@ void *thread_call(void *arg) {
 
 }  // namespace
 
-Thread::Thread(Thread &&other) noexcept {}
+Thread::Thread(Thread &&other) noexcept
+    : state_(other.state_), tid_(other.tid_), runner_(other.runner_) {
+  other.state_ = State::kDone;
+  other.tid_.id_ = 0;
+  other.runner_ = nullptr;
+}
 
 Thread &Thread::operator=(Thread &&other) noexcept {
   if (this != &other) {
-
+    this->~Thread();
+    new (this) Thread(std::move(other));
   }
   return *this;
 }
@@ -106,7 +112,10 @@ int Thread::Start() {
   auto ret = pthread_create(
       reinterpret_cast<pthread_t *>(&tid_.id_), nullptr, thread_call, runner_);
   if (0 != ret) {
+    state_ = State::kFailed;
     delete runner_;
+  } else {
+    state_ = State::kRunning;
   }
 
   runner_ = nullptr;
@@ -115,40 +124,50 @@ int Thread::Start() {
 }
 
 int Thread::Cancel() {
+  if (state_ != State::kRunning) {
+    return ESRCH;
+  }
 #if defined(_WIN32)
   auto handle = static_cast<HANDLE>(tid_.handle_);
   if (TerminateThread(handle, 0)) {
     CloseHandle(handle);
+    state_ = State::kCanceled;
     return 0;
   } else {
+    state_ = State::kFailed;
     return errno;
   }
 #else
   auto ptid = static_cast<pthread_t>(tid_.id_);
   if (auto cancel_ret = pthread_cancel(ptid); cancel_ret != 0) {
+    state_ = State::kFailed;
     return cancel_ret;
   } else {
-    return pthread_join(ptid, nullptr);
+    auto ret = pthread_join(ptid, nullptr);
+    state_ = State::kCanceled;
+    return ret;
   }
 #endif
 }
 
-int Thread::Join() {
-  // TODO(BossZou): Here if runner_ is not null mean thread not start.
-  // Try use
-  if (runner_) {
-    delete runner_;
-    return 0;
-  } else {
+int Thread::Join() noexcept {
+  if (state_ == State::kRunning) {
 #if defined(_WIN32)
+    int ret = 0;
     auto handle = static_cast<HANDLE>(tid_.handle_);
     WaitForSingleObject(handle, INFINITE);
-    return 0;
 #else
     auto ptid = static_cast<pthread_t>(tid_.id_);
-    return pthread_join(ptid, nullptr);
+    auto ret = pthread_join(ptid, nullptr);
 #endif
+    state_ = State::kDone;
+    return ret;
   }
+  if (runner_) {
+    delete runner_;
+    runner_ = nullptr;
+  }
+  return 0;
 }
 
 }  // namespace jaclks

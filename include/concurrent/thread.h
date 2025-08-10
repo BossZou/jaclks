@@ -9,6 +9,14 @@ namespace jaclks {
 
 class Thread {
  public:
+  enum class State {
+    kInit = 0,
+    kRunning,
+    kFailed,
+    kCanceled,
+    kDone,
+  };
+
   class Id final {
    public:
     explicit Id(std::int64_t id = 0) : id_(id) {}
@@ -61,15 +69,20 @@ class Thread {
 
   template <typename Callable, typename... Args>
   explicit Thread(Callable &&f, Args &&... args)
-      : tid_(),
+      : state_(State::kInit),
+        tid_(),
         runner_(
             new RunnerImpl<Callable, Args...>{std::forward<Callable>(f),
                                               std::forward<Args>(args)...}) {}
 
+  Thread(Thread &) = delete;
   Thread(const Thread &) = delete;
+
+  Thread(const Thread &&) = delete;
 
   Thread(Thread &&other) noexcept;
 
+  Thread &operator=(Thread &) = delete;
   Thread &operator=(const Thread &) = delete;
 
   Thread &operator=(Thread &&other) noexcept;
@@ -89,9 +102,10 @@ class Thread {
    */
   int Cancel();
 
-  int Join();
+  int Join() noexcept;
 
  private:
+  volatile State state_;
   Id tid_;
   Runner *runner_;
 };
