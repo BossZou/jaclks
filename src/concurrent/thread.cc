@@ -13,6 +13,7 @@ extern "C" {
 }
 #endif
 
+#include <cerrno>
 #include <cstdio>
 #include <memory>
 #include <utility>
