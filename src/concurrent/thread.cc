@@ -75,6 +75,15 @@ void *thread_call(void *arg) {
 
 }  // namespace
 
+Thread::Thread(Thread &&other) noexcept {}
+
+Thread &Thread::operator=(Thread &&other) noexcept {
+  if (this != &other) {
+
+  }
+  return *this;
+}
+
 Thread::~Thread() {
   Join();
 }

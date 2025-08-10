@@ -66,6 +66,14 @@ class Thread {
             new RunnerImpl<Callable, Args...>{std::forward<Callable>(f),
                                               std::forward<Args>(args)...}) {}
 
+  Thread(const Thread &) = delete;
+
+  Thread(Thread &&other) noexcept;
+
+  Thread &operator=(const Thread &) = delete;
+
+  Thread &operator=(Thread &&other) noexcept;
+
   ~Thread();
 
   int Start();
