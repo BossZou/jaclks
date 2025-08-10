@@ -9,6 +9,20 @@
 
 namespace jaclks {
 
+String String::Trim(const String &str) {
+  auto buf = str.buf_;
+  auto len = str.len_;
+  std::size_t st = 0;
+
+  while ((st < len) && ((buf[st] & 0xff) <= ' ')) {
+    st++;
+  }
+  while ((st < len) && ((buf[len - 1] & 0xff) <= ' ')) {
+    len--;
+  }
+  return ((st > 0) || (len < str.len_)) ? String{buf + st, len - st} : String{};
+}
+
 String String::Strip(const String &str) {
   auto buf = str.buf_;
   auto len = str.len_;
@@ -96,6 +110,10 @@ bool String::EndsWith(const String &suffix) const {
     return StartsWith(suffix, len_ - suffix.len_);
   }
   return false;
+}
+
+void String::Trim() {
+  // FIXME(John Doe): Implement it. Consider difference from Strip().
 }
 
 void String::Strip() {

@@ -6,6 +6,8 @@ namespace jaclks {
 
 class String {
  public:
+  static String Trim(const String &str);
+
   /**
    * Returns a string whose value is this string, with all leading
    * and trailing {@link Character#isWhitespace(int) white space}
@@ -49,6 +51,8 @@ class String {
   bool StartsWith(const String &sub, std::size_t offset = 0) const;
 
   bool EndsWith(const String &suffix) const;
+
+  void Trim();
 
   void Strip();
 

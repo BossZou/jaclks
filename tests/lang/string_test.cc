@@ -114,6 +114,39 @@ TEST_P(StringTest, EndsWith) {
   ASSERT_FALSE((String{"12345678909", GetParam()}).EndsWith(str));
 }
 
+TEST_P(StringTest, StaticTrim) {
+  {
+    char bytes[]{'\0', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '\0'};
+    for (char c = 0; c < ' '; ++c) {
+      bytes[0] = c;
+      String str{bytes, sizeof(bytes) - 1};
+
+      auto trim_str = String::Trim(str);
+      ASSERT_EQ(sizeof(bytes) - 2, trim_str.Length());
+      ASSERT_EQ((String{"0123456789", true}), trim_str);
+    }
+  }
+  {
+    char bytes[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '\0', '\0'};
+    for (char c = 0; c < ' '; ++c) {
+      bytes[sizeof(bytes) - 2] = c;
+      String str{bytes, sizeof(bytes) - 1};
+
+      auto trim_str = String::Trim(str);
+      ASSERT_EQ(sizeof(bytes) - 2, trim_str.Length());
+      ASSERT_EQ((String{"0123456789", true}), trim_str);
+    }
+  }
+  {
+    auto cstr = " \t\r\n\f\v0123456789987654321 \v\f\r\n\t";
+    String str{cstr, GetParam()};
+
+    auto trim_str = String::Trim(str);
+    ASSERT_EQ(trim_str, (String{"0123456789987654321", GetParam()}));
+    ASSERT_EQ(str.Length() - 12, trim_str.Length());
+  }
+}
+
 TEST_P(StringTest, StaticStrip) {
   {
     auto cstr = " \t\r\n\f\v0123456789";
