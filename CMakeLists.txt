@@ -14,11 +14,20 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(ENABLE_GTEST "Enable build googletest executable" ON)
 option(ENABLE_COVERAGE "Enable build project with coverage options" OFF)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -pthread -fPIC")
+if(MSVC)
+    # MSVC 编译器选项
+    add_compile_options(/W4 /WX)  # /W4 警告级别，/WX 将警告视为错误
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+else()
+    # GCC/Clang 编译器选项
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Wall -pthread -fPIC")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -pthread -fPIC")
+endif()
 
-if(ENABLE_GTEST)
-    if(ENABLE_COVERAGE)
+if(ENABLE_GTEST AND ENABLE_COVERAGE)
+    if(MSVC)
+        message(WARNING "Code coverage is not properly supported with MSVC in this configuration")
+    else()
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -g -fprofile-arcs -ftest-coverage")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -fprofile-arcs -ftest-coverage")
         add_link_options(--coverage)
