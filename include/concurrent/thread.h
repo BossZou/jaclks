@@ -1,7 +1,5 @@
 #pragma once
 
-#include <pthread.h>
-
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -10,6 +8,19 @@ namespace jaclks {
 
 class Thread {
  public:
+  class Id final {
+   public:
+    explicit Id(long int id = 0) : id_(id) {}
+
+   private:
+    friend class Thread;
+
+    union {
+      long int id_;
+      void *handle_;
+    };
+  };
+
   class Runner {
    public:
     virtual ~Runner() = default;
@@ -72,7 +83,7 @@ class Thread {
   int Join();
 
  private:
-  pthread_t tid_;
+  Id tid_;
   Runner *runner_;
 };
 
