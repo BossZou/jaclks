@@ -10,13 +10,13 @@ class Thread {
  public:
   class Id final {
    public:
-    explicit Id(long int id = 0) : id_(id) {}
+    explicit Id(std::int64_t id = 0) : id_(id) {}
 
    private:
     friend class Thread;
 
     union {
-      long int id_;
+      std::int64_t id_;
       void *handle_;
     };
   };
