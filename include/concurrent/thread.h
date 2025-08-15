@@ -48,7 +48,7 @@ class Thread {
     }
 
    private:
-    template <size_t... I>
+    template <std::size_t... I>
     decltype(auto) call_impl(Callable &&f,
                              Tuple &&t,
                              std::index_sequence<I...>) {
