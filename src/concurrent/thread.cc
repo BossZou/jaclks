@@ -114,9 +114,11 @@ int Thread::Start() {
       (HANDLE)_beginthreadex(nullptr, 0, thread_call, runner_, 0, nullptr);
   if (hThread == nullptr) {
     ret = errno;
+    state_ = State::kFailed;
     delete runner_;
   } else {
     tid_.handle_ = hThread;
+    state_ = State::kRunning;
   }
 
   runner_ = nullptr;

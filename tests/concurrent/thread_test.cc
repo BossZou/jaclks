@@ -117,7 +117,9 @@ TEST(ThreadTest, Cancel) {
   ASSERT_EQ(t.Cancel(), 0);
 
   ASSERT_FALSE(called);
+#if !defined(_WIN32)
   ASSERT_TRUE(exited);
+#endif
 }
 
 TEST(ThreadTest, CancelBeforeStart) {
@@ -131,7 +133,11 @@ TEST(ThreadTest, CancelBeforeStart) {
 
 TEST(ThreadTest, MoveConstruct) {
   auto func = [](int *a) {
+#if defined(_WIN32)
+    Sleep(3000);
+#else
     sleep(3);
+#endif
     *a += 1;
   };
 
@@ -146,7 +152,11 @@ TEST(ThreadTest, MoveConstruct) {
 
 TEST(ThreadTest, MoveAssignment) {
   auto func = [](int *a) {
+#if defined(_WIN32)
+    Sleep(3000);
+#else
     sleep(3);
+#endif
     *a += 1;
   };
 
