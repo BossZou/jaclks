@@ -43,18 +43,23 @@ jobs:
           - os: ubuntu-22.04
             c_compiler: gcc
             cpp_compiler: g++
+            build_type: Release
           - os: ubuntu-24.04
             c_compiler: gcc
             cpp_compiler: g++
+            build_type: Release
           - os: ubuntu-22.04-arm
             c_compiler: gcc
             cpp_compiler: g++
+            build_type: Release
           - os: ubuntu-24.04-arm
             c_compiler: gcc
             cpp_compiler: g++
+            build_type: Release
           - os: windows-2025
             c_compiler: cl
             cpp_compiler: cl
+            build_type: Release
         exclude:
           - os: ubuntu-22.04
           - os: ubuntu-24.04
@@ -107,7 +112,7 @@ jobs:
         working-directory: ${{ steps.strings.outputs.gtest-build-output-dir }}
         # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: ctest --verbose --output-on-failure --build-config Debug
+        run: ctest --verbose --output-on-failure --build-config ${{ matrix.build_type }}
 
   codecov:
     runs-on: ubuntu-24.04
