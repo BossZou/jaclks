@@ -53,6 +53,7 @@ if(MSVC)
         COMMAND cmake -E make_directory ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/gtest-build
         COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/gtest-build &&
             cmake ../googletest
+            -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/dist/third-party/googletest
             -DBUILD_SHARED_LIBS=OFF
             -Dgtest_force_shared_crt=ON
