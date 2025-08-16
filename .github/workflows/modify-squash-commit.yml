@@ -1,0 +1,22 @@
+name: Modify Squash Commit Message
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  modify-commit:
+    if: github.event.pull_request.merged && github.event.pull_request.merge_method == 'squash'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          # Obtain source branch
+          SOURCE_BRANCH="${{ github.event.pull_request.head.ref }}"
+          # Obtain latest commit(newly merged commit)
+          git fetch
+          git checkout ${{ github.event.pull_request.base.ref }}
+          # Medify commit information
+          git commit --amend -m "Merge branch '$SOURCE_BRANCH' into ${{ github.event.pull_request.base.ref }}\n\n$(git log -1 --pretty=%B)"
+          # Push force
+          git push --force
