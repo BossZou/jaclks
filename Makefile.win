@@ -1,0 +1,52 @@
+# Windows 专用的 Makefile.win
+
+# 获取当前目录（Windows 版本）
+THIS_DIR := $(shell cd && cd)
+
+# 第三方库目录
+THIDR_DIR := $(THIS_DIR)\thirdparty
+
+# 安装目录设置
+INSTALL_ROOT_DIR := $(THIS_DIR)\dist\third-party
+
+# GTest 相关路径
+GTEST_BUILD_DIR := $(THIDR_DIR)\gtest-build
+GTEST_INSTALL_DIR := $(INSTALL_ROOT_DIR)\googletest
+GTEST_DIR := $(THIS_DIR)\thirdparty\googletest
+
+# 检测是否安装了 CMake
+CMAKE := $(shell where cmake 2>NUL)
+ifndef CMAKE
+$(error CMake 未找到，请先安装 CMake 并添加到 PATH)
+endif
+
+# 检测是否安装了合适的编译器
+ifeq ($(shell where cl 2>NUL),)
+    # 使用 MinGW
+    CXX := g++
+    BUILD_CMD := mingw32-make
+    GENERATOR := -G "MinGW Makefiles"
+else
+    # 使用 MSVC
+    CXX := cl
+    BUILD_CMD := cmake --build . --config Release
+    GENERATOR := -G "Visual Studio 17 2022" -A x64
+endif
+
+gtest:
+	@if not exist "$(GTEST_BUILD_DIR)" mkdir "$(GTEST_BUILD_DIR)"
+	@cd "$(GTEST_BUILD_DIR)" && \
+	cmake "$(GTEST_DIR)" $(GENERATOR) ^
+	  -DCMAKE_INSTALL_PREFIX="$(GTEST_INSTALL_DIR)" ^
+	  -DCMAKE_CXX_COMPILER="$(CXX)" ^
+	  -DBUILD_SHARED_LIBS=OFF ^
+	  -Dgtest_force_shared_crt=ON ^
+	  -DCMAKE_BUILD_TYPE=Release && \
+	$(BUILD_CMD) --target INSTALL
+
+clean_gtest:
+	@if exist "$(GTEST_INSTALL_DIR)" rmdir /s /q "$(GTEST_INSTALL_DIR)"
+	@if exist "$(GTEST_BUILD_DIR)" rmdir /s /q "$(GTEST_BUILD_DIR)"
+
+rebuild_gtest: clean_gtest gtest
+	@echo Rebuild googletest done

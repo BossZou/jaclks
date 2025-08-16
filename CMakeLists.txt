@@ -48,11 +48,19 @@ if(NOT GIT_SUBMOD_RESULT EQUAL "0")
 endif()
 
 # Third party configurations
+if(MSVC)
+add_custom_target(build_thirdparty
+        COMMAND ${CMAKE_MAKE_PROGRAM} gtest -f ${CMAKE_CURRENT_SOURCE_DIR}/Makefile.win
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Running make with custom Makefile"
+)
+else()
 add_custom_target(build_thirdparty
         COMMAND ${CMAKE_MAKE_PROGRAM} gtest -f ${CMAKE_CURRENT_SOURCE_DIR}/Makefile
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Running make with custom Makefile"
 )
+endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/dist/third-party/googletest/include)
@@ -65,4 +73,3 @@ add_subdirectory(src)
 if(ENABLE_GTEST)
     add_subdirectory(tests)
 endif()
-

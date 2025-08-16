@@ -62,7 +62,6 @@ int Thread::Start() {
 
   runner_ = nullptr;
   return ret;
-}
 #else
   auto ret = pthread_create(
       reinterpret_cast<pthread_t *>(&tid_.id_), nullptr, thread_call, runner_);
@@ -73,18 +72,17 @@ int Thread::Start() {
   runner_ = nullptr;
   return ret;
 #endif
-}  // namespace jaclks
+}
 
 int Thread::Cancel() {
 #if defined(_WIN32)
-  auto handle = static_cast<pthread_t>(tid_.handle_);
+  auto handle = static_cast<HANDLE>(tid_.handle_);
   if (TerminateThread(handle, 0)) {
     CloseHandle(handle);
     return 0;
   } else {
     return errno;
   }
-}
 #else
   auto ptid = static_cast<pthread_t>(tid_.id_);
   if (auto cancel_ret = pthread_cancel(ptid); cancel_ret != 0) {
@@ -97,7 +95,8 @@ int Thread::Cancel() {
 
 int Thread::Join() {
 #if defined(_WIN32)
-  WaitForSingleObject(hThread2, INFINITE);
+  auto handle = static_cast<HANDLE>(tid_.handle_);
+  WaitForSingleObject(handle, INFINITE);
   return 0;
 #else
   auto ptid = static_cast<pthread_t>(tid_.id_);
