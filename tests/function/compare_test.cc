@@ -21,7 +21,7 @@ TEST(Compare, IntegerComparator) {
 TEST(Compare, SizeTComparator) {
   ASSERT_EQ(0, Comparator<std::size_t>{}(100UL, 100UL));
   ASSERT_EQ(-1, Comparator<std::size_t>{}(100UL, 200UL));
-  ASSERT_EQ(-1, Comparator<std::size_t>{}(100UL, -10000UL));
+  ASSERT_EQ(-1, Comparator<std::size_t>{}(100UL, 10000UL));
   ASSERT_EQ(-1,
             Comparator<std::size_t>{}(std::numeric_limits<std::size_t>::min(),
                                       std::numeric_limits<std::size_t>::max()));

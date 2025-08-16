@@ -1,7 +1,6 @@
 #pragma once
 
-#include <pthread.h>
-
+#include <cstdint>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -10,6 +9,19 @@ namespace jaclks {
 
 class Thread {
  public:
+  class Id final {
+   public:
+    explicit Id(std::int64_t id = 0) : id_(id) {}
+
+   private:
+    friend class Thread;
+
+    union {
+      std::int64_t id_;
+      void *handle_;
+    };
+  };
+
   class Runner {
    public:
     virtual ~Runner() = default;
@@ -36,7 +48,7 @@ class Thread {
     }
 
    private:
-    template <size_t... I>
+    template <std::size_t... I>
     decltype(auto) call_impl(Callable &&f,
                              Tuple &&t,
                              std::index_sequence<I...>) {
@@ -72,7 +84,7 @@ class Thread {
   int Join();
 
  private:
-  pthread_t tid_;
+  Id tid_;
   Runner *runner_;
 };
 
