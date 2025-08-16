@@ -15,6 +15,7 @@ extern "C" {
 
 #include <cerrno>
 #include <cstdio>
+#include <cstring>
 #include <memory>
 #include <utility>
 
@@ -39,13 +40,23 @@ void *thread_call(void *arg) {
 #if defined(__linux__)
 #define THREAD_NAME_SIZE (16)
 #else
-#warning "Other platform which name size limit may confuse"
-#define THREAD_NAME_SIZE (64)
+#define THREAD_NAME_SIZE (256)
 #endif
     char tname[THREAD_NAME_SIZE];
-    auto tid = pthread_self();
+#if defined(_WIN32)
+    auto tid = GetCurrentThreadId();
+    PWSTR name = nullptr;
 
+    if (auto hr = GetThreadDescription(GetCurrentThread(), &name); SUCCEEDED(hr)) {
+      WideCharToMultiByte(CP_UTF8, 0, name, -1, tname, THREAD_NAME_SIZE, nullptr, nullptr);
+      LocalFree(name);
+    } else {
+      strncpy_s(tname, THREAD_NAME_SIZE, "unhnown", 7);
+    }
+#else
+    auto tid = pthread_self();
     pthread_getname_np(tid, tname, THREAD_NAME_SIZE);
+#endif
 
     auto runner = static_cast<Thread::Runner *>(arg);
     auto defer = std::unique_ptr<Thread::Runner>(runner);
