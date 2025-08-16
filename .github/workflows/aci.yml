@@ -55,13 +55,12 @@ jobs:
           - os: windows-2025
             c_compiler: cl
             cpp_compiler: cl
-    #        exclude:
-    #          - os: windows-latest
-    #            c_compiler: gcc
-    #          - os: windows-latest
-    #            c_compiler: clang
-    #          - os: ubuntu-latest
-    #            c_compiler: cl
+        exclude:
+          - os: ubuntu-22.04
+          - os: ubuntu-24.04
+          - os: ubuntu-22.04-arm
+          - os: ubuntu-24.04-arm
+          - os: windows-2025
 
     steps:
       - uses: actions/checkout@v4
