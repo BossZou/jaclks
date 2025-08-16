@@ -36,30 +36,30 @@ jobs:
       matrix:
         # The support os can see: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#choosing-github-hosted-runners
         os: [ ubuntu-22.04, ubuntu-24.04, ubuntu-22.04-arm, ubuntu-24.04-arm, windows-2025 ]
+        build_type: [ Release ]
         c_compiler: [ gcc, cl]
         cpp_compiler: [ g++, cl ]
-        build_type: [ Release ]
         include:
           - os: ubuntu-22.04
+            build_type: Release
             c_compiler: gcc
             cpp_compiler: g++
-            build_type: Release
           - os: ubuntu-24.04
+            build_type: Release
             c_compiler: gcc
             cpp_compiler: g++
-            build_type: Release
           - os: ubuntu-22.04-arm
+            build_type: Release
             c_compiler: gcc
             cpp_compiler: g++
-            build_type: Release
           - os: ubuntu-24.04-arm
+            build_type: Release
             c_compiler: gcc
             cpp_compiler: g++
-            build_type: Release
           - os: windows-2025
+            build_type: Release
             c_compiler: cl
             cpp_compiler: cl
-            build_type: Release
         exclude:
           - os: ubuntu-22.04
           - os: ubuntu-24.04
