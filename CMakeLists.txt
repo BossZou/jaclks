@@ -49,13 +49,20 @@ endif()
 
 # Third party configurations
 if(MSVC)
-add_custom_target(build_thirdparty
-        COMMAND ${CMAKE_MAKE_PROGRAM} gtest -f ${CMAKE_CURRENT_SOURCE_DIR}/Makefile.win
+    add_custom_target(build_thirdparty
+        COMMAND cmake -E make_directory ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/gtest-build
+        COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/gtest-build &&
+            cmake ../googletest
+            -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/dist/third-party/googletest
+            -DBUILD_SHARED_LIBS=OFF
+            -Dgtest_force_shared_crt=ON
+            -G "Ninja" &&
+            cmake --build . --target install
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMENT "Running make with custom Makefile"
-)
+        COMMENT "Building GTest with Ninja"
+    )
 else()
-add_custom_target(build_thirdparty
+    add_custom_target(build_thirdparty
         COMMAND ${CMAKE_MAKE_PROGRAM} gtest -f ${CMAKE_CURRENT_SOURCE_DIR}/Makefile
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Running make with custom Makefile"

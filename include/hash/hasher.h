@@ -20,7 +20,7 @@ struct Hasher<T *> {
     if (x == nullptr) {
       return 0;
     }
-    return std::hash<T>{}(*x);
+    return Hasher<T>{}(*x);
   }
 };
 
@@ -32,7 +32,7 @@ struct Hasher<T, std::enable_if_t<is_smart_pointer_v<T>>> {
     if (x == nullptr) {
       return 0;
     }
-    return std::hash<Type>{}(*x);
+    return Hasher<decltype(x.get())>{}(x.get());
   }
 };
 
