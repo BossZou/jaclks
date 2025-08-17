@@ -17,6 +17,6 @@ jobs:
           git fetch
           git checkout ${{ github.event.pull_request.base.ref }}
           # Medify commit information
-          git commit --amend -m "Merge branch '$SOURCE_BRANCH' into ${{ github.event.pull_request.base.ref }}\n\n$(git log -1 --pretty=%B)"
+          git commit --amend -m "\n\nMerge branch '$SOURCE_BRANCH' into ${{ github.event.pull_request.base.ref }}\n\n$(git log -1 --pretty=%B)"
           # Push force
           git push --force
