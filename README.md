@@ -14,23 +14,24 @@ This section describes how to add `jaclks` as a dependency to your C++ project.
 
 ## Supported Platforms
 
-| Operating System     | Architectures | OS Version   |
-|----------------------|---------------|--------------|
-| Linux - Ubuntu       | x64, ARM64    | 22.04, 24.04 |
-| Windows 10+          | Not supported |
-| MacOS                | Not supported |
-| Linux - Others       | Not supported |
-| Linux                | Not supported |
-| iOS                  | Not supported |
-| Android              | Not supported |
-| AIX                  | Not supported |
-| Asylo                | Not supported |
-| FreeBSD              | Not supported |
-| Fuchsia              | Not supported |
-| NaCL                 | Not supported |
-| NetBSD               | Not supported |
-| OpenBSD              | Not supported |
-| Solaris              | Not supported |
+| Operating System | Architectures | OS Version |
+|------------------|---------------|------------|
+| Ubuntu-22.04     | x64, ARM64    | &#10004;   |
+| Ubuntu-24.04     | x64, ARM64    | &#10004;   |
+| Windows 2025     | x64           | &#10004;   |
+| MacOS            | Not supported | &#10008;   |
+| Linux - Others   | Not supported | &#10008;   |
+| Linux            | Not supported | &#10008;   |
+| iOS              | Not supported | &#10008;   |
+| Android          | Not supported | &#10008;   |
+| AIX              | Not supported | &#10008;   |
+| Asylo            | Not supported | &#10008;   |
+| FreeBSD          | Not supported | &#10008;   |
+| Fuchsia          | Not supported | &#10008;   |
+| NaCL             | Not supported | &#10008;   |
+| NetBSD           | Not supported | &#10008;   |
+| OpenBSD          | Not supported | &#10008;   |
+| Solaris          | Not supported | &#10008;   |
 
 ## Build from source
 
