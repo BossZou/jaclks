@@ -28,11 +28,15 @@ if(ENABLE_GTEST AND ENABLE_COVERAGE)
     if(MSVC)
         message(WARNING "Code coverage is not properly supported with MSVC in this configuration")
     else()
+        message(STATUS "Compile code with coverage option")
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -g -fprofile-arcs -ftest-coverage")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -fprofile-arcs -ftest-coverage")
         add_link_options(--coverage)
     endif()
 endif()
+
+message(STATUS "CMAKE_C_FLAGS = ${CMAKE_C_FLAGS}")
+message(STATUS "CMAKE_CXX_FLAGS = ${CMAKE_CXX_FLAGS}")
 
 find_package(Git REQUIRED)
 

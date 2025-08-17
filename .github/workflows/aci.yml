@@ -160,7 +160,7 @@ jobs:
       - name: LCov Collection
         shell: bash
         run: |
-          gcovr -r ${{ github.workspace }} --xml -o ${{ github.workspace }}/coverage.xml \
+          gcovr -v -r ${{ github.workspace }} --xml -o ${{ github.workspace }}/coverage.xml \
             -e '/usr/.*' -e '.*/tests/.*' -e '.*/thirdparty/.*'
 
       # Optional: upload coverage report to codecov.io
