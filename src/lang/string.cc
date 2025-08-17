@@ -1,5 +1,10 @@
 #include "lang/string.h"
 
+ #ifdef _WIN32
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#endif
+
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -28,7 +33,7 @@ String String::Strip(const String &str) {
   auto buf = str.buf_;
   auto len = str.len_;
 
-  for (auto i = 0UL, tlen = len; i < tlen; ++i) {
+  for (std::size_t i = 0UL, tlen = len; i < tlen; ++i) {
     if (!Character::IsWhitespace(str.buf_[i])) {
       break;
     }
@@ -50,7 +55,7 @@ String String::StripLeading(const String &str) {
   auto buf = str.buf_;
   auto len = str.len_;
 
-  for (auto i = 0UL, tlen = len; i < tlen; ++i) {
+  for (std::size_t i = 0UL, tlen = len; i < tlen; ++i) {
     if (!Character::IsWhitespace(str.buf_[i])) {
       break;
     }
