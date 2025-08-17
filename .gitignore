@@ -35,6 +35,9 @@
 ## Clion
 .idea/
 cmake-build-*/
+## VS
+.vs/
+CMakeSettings.json
 
 # Build output files
 build/

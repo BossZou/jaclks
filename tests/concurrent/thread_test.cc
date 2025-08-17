@@ -1,5 +1,11 @@
 #include "concurrent/thread.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+
 #include <gtest/gtest.h>
 
 #include <memory>
@@ -51,14 +57,22 @@ TEST(Thread, Cancel) {
   bool called = false;
 
   auto func = [](bool *is_called) {
+#if defined(_WIN32)
+    Sleep(3000);
+ #else
     sleep(3);
+#endif
     *is_called = true;
   };
 
   auto t = Thread{func, &called};
 
   ASSERT_EQ(t.Start(), 0);
+#if defined(_WIN32)
+  Sleep(1000);
+#else
   sleep(1);
+#endif
   ASSERT_EQ(t.Cancel(), 0);
 
   ASSERT_FALSE(called);
