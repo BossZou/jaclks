@@ -91,10 +91,51 @@ String::String(const char *str, std::size_t len) : String() {
   construct(str, len);
 }
 
+String::String(const String &other) : String() {
+  if (!other.own_) {
+    own_ = other.own_;
+    len_ = other.len_;
+    info_.cap = other.info_.cap;
+    buf_ = other.buf_;
+  } else {
+    construct(other.buf_, other.len_);
+  }
+}
+
+String::String(String &&other) noexcept
+    : info_(), own_(other.own_), len_(other.len_), buf_(other.buf_) {
+  if (other.is_local_data()) {
+    std::memcpy(local_buf_, other.local_buf_, kLocalCapacity);
+    buf_ = local_buf_ + (other.buf_ - other.local_buf_);
+  }
+  other.own_ = false;
+  other.len_ = 0;
+  other.buf_ = nullptr;
+  other.info_ = {};
+}
+
 String::~String() {
   if (!is_local_data() && own_) {
     free(info_.head);
   }
+}
+
+String &String::operator=(const String &other) {
+  if (this != &other) {
+    this->~String();
+
+    // TODO(John Doe): Optimize here to reduce strlen() call.
+    new (this) String(other.buf_, !other.own_);
+  }
+  return *this;
+}
+
+String &String::operator=(String &&other) noexcept {
+  if (this != &other) {
+    this->~String();
+    new (this) String(std::move(other));
+  }
+  return *this;
 }
 
 bool String::StartsWith(const String &sub, std::size_t offset) const {

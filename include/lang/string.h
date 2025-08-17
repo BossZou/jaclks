@@ -46,7 +46,15 @@ class String {
 
   explicit String(const char *str, std::size_t len);
 
+  String(const String &other);
+
+  String(String &&other) noexcept;
+
   ~String();
+
+  String &operator=(const String &other);
+
+  String &operator=(String &&other) noexcept;
 
   bool StartsWith(const String &sub, std::size_t offset = 0) const;
 
