@@ -141,7 +141,7 @@ String &String::operator=(String &&other) noexcept {
 
 bool String::StartsWith(const String &sub, std::size_t offset) const {
   if (sub.len_ + offset <= len_) {
-    return memcmp(buf_ + offset, sub.buf_, sub.len_) == 0;
+    return std::memcmp(buf_ + offset, sub.buf_, sub.len_) == 0;
   }
 
   return false;
