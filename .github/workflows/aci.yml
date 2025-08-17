@@ -162,6 +162,7 @@ jobs:
         run: |
           gcovr -v -r ${{ github.workspace }} --xml -o ${{ github.workspace }}/coverage.xml \
             -e '/usr/.*' -e '.*/tests/.*' -e '.*/thirdparty/.*'
+          gcovr --xml ${{ github.workspace }}/coverage.xml --print-summary
 
       # Optional: upload coverage report to codecov.io
       - name: Upload coverage to Codecov
