@@ -57,6 +57,98 @@ TEST_P(StringTest, FromLongCharStr) {
   }
 }
 
+TEST_P(StringTest, CopyConstruct) {
+  String str{"\n 1234567890\t\r", GetParam()};
+
+  ASSERT_EQ(str, String{str});
+
+  str.Strip();
+  ASSERT_EQ(str, String{str});
+}
+
+TEST_P(StringTest, MoveConstruct) {
+  String str{"\n 1234567890\t\r", GetParam()};
+
+  {
+    auto move_str = str;
+    ASSERT_EQ(str, String{std::move(move_str)});
+  }
+  {
+    str.Strip();
+    auto move_str = str;
+    ASSERT_EQ(str, String{std::move(move_str)});
+  }
+}
+
+TEST_P(StringTest, CopyAssign) {
+  String str{"\n 1234567890\t\r", GetParam()};
+
+  {
+    String str2{"123", GetParam()};
+    ASSERT_EQ(3UL, str2.Length());
+
+    str2 = str;
+    ASSERT_EQ(str.Length(), str2.Length());
+    ASSERT_EQ(str, str2);
+  }
+  {
+    String str2{"0123456789012345678901234567890123456789", GetParam()};
+    ASSERT_EQ(40UL, str2.Length());
+
+    str2 = str;
+    ASSERT_EQ(str.Length(), str2.Length());
+    ASSERT_EQ(str, str2);
+  }
+
+  {
+    str.Strip();
+
+    String str2{"123", GetParam()};
+    ASSERT_EQ(3UL, str2.Length());
+
+    str2 = str;
+    ASSERT_EQ(str.Length(), str2.Length());
+    ASSERT_EQ(str, str2);
+  }
+}
+
+TEST_P(StringTest, MoveAssignment) {
+  String str{"\n 1234567890\t\r", GetParam()};
+
+  {
+    String to_move = str;
+
+    String str2{"123", GetParam()};
+    ASSERT_EQ(3UL, str2.Length());
+
+    str2 = std::move(to_move);
+    ASSERT_EQ(str.Length(), str2.Length());
+    ASSERT_EQ(str, str2);
+  }
+  {
+    String to_move = str;
+
+    String str2{"0123456789012345678901234567890123456789", GetParam()};
+    ASSERT_EQ(40UL, str2.Length());
+
+    str2 = std::move(to_move);
+    ASSERT_EQ(str.Length(), str2.Length());
+    ASSERT_EQ(str, str2);
+  }
+
+  {
+    str.Strip();
+    String to_move = str;
+
+    String str2{"123", GetParam()};
+    ASSERT_EQ(3UL, str2.Length());
+
+    str2 = std::move(to_move);
+    ASSERT_EQ(str.Length(), str2.Length());
+    ASSERT_EQ(str, str2);
+  }
+}
+
 TEST_P(StringTest, StartsWith) {
   {
     String str{"1234", GetParam()};
