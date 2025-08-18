@@ -59,7 +59,7 @@ TEST(Thread, Cancel) {
   auto func = [](bool *is_called) {
 #if defined(_WIN32)
     Sleep(3000);
- #else
+#else
     sleep(3);
 #endif
     *is_called = true;

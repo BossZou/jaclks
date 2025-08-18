@@ -35,7 +35,7 @@ jobs:
       # see: http://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations#adding-a-matrix-strategy-to-your-workflow-job
       matrix:
         # The support os can see: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#choosing-github-hosted-runners
-        os: [ ubuntu-22.04, ubuntu-24.04, ubuntu-22.04-arm, ubuntu-24.04-arm, windows-2025 ]
+        os: [ ubuntu-22.04, ubuntu-24.04, ubuntu-22.04-arm, ubuntu-24.04-arm, windows-2025, windows-11-arm, macos-13, macos-15 ]
         build_type: [ Release ]
         c_compiler: [ gcc, cl]
         cpp_compiler: [ g++, cl ]
@@ -60,12 +60,27 @@ jobs:
             build_type: Release
             c_compiler: cl
             cpp_compiler: cl
+          - os: windows-11-arm
+            build_type: Release
+            c_compiler: cl
+            cpp_compiler: cl
+          - os: macos-13
+            build_type: Release
+            c_compiler: gcc
+            cpp_compiler: g++
+          - os: macos-15
+            build_type: Release
+            c_compiler: gcc
+            cpp_compiler: g++
         exclude:
           - os: ubuntu-22.04
           - os: ubuntu-24.04
           - os: ubuntu-22.04-arm
           - os: ubuntu-24.04-arm
           - os: windows-2025
+          - os: windows-11-arm
+          - os: macos-13
+          - os: macos-15
 
     steps:
       - uses: actions/checkout@v4
