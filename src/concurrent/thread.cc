@@ -45,7 +45,7 @@ void *thread_call(void *arg) {
 #endif
     char tname[THREAD_NAME_SIZE];
 #if defined(JACLKS_OS_WINDOWS)
-    auto tid = GetCurrentThreadId();
+    std::uint64_t tid = GetCurrentThreadId();
     PWSTR name = nullptr;
 
     if (auto hr = GetThreadDescription(GetCurrentThread(), &name);

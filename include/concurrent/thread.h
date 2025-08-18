@@ -42,7 +42,7 @@ class Thread {
    public:
     using Tuple = std::tuple<Args...>;
 
-    explicit RunnerImpl(Callable &&f, Args &&...args)
+    explicit RunnerImpl(Callable &&f, Args &&... args)
         : call_(std::forward<Callable>(f)),
           tuple_(std::forward<Args>(args)...) {}
 
@@ -68,7 +68,7 @@ class Thread {
   };
 
   template <typename Callable, typename... Args>
-  explicit Thread(Callable &&f, Args &&...args)
+  explicit Thread(Callable &&f, Args &&... args)
       : state_(State::kInit),
         tid_(),
         runner_(
