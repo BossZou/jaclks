@@ -3,7 +3,7 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
 #include <process.h>  // for _beginthreadex
 #include <windows.h>
 #else
@@ -23,7 +23,7 @@ namespace jaclks {
 
 namespace {
 
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
 static_assert(sizeof(HANDLE) <= sizeof(Thread::Id),
               "HANDLE size is smaller than Id");
 #else
@@ -31,7 +31,7 @@ static_assert(sizeof(pthread_t) <= sizeof(Thread::Id),
               "pthread_t size is smaller than Id");
 #endif
 
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
 unsigned __stdcall thread_call(void *arg) {
 #else
 void *thread_call(void *arg) {
@@ -47,8 +47,10 @@ void *thread_call(void *arg) {
     auto tid = GetCurrentThreadId();
     PWSTR name = nullptr;
 
-    if (auto hr = GetThreadDescription(GetCurrentThread(), &name); SUCCEEDED(hr)) {
-      WideCharToMultiByte(CP_UTF8, 0, name, -1, tname, THREAD_NAME_SIZE, nullptr, nullptr);
+    if (auto hr = GetThreadDescription(GetCurrentThread(), &name);
+        SUCCEEDED(hr)) {
+      WideCharToMultiByte(
+          CP_UTF8, 0, name, -1, tname, THREAD_NAME_SIZE, nullptr, nullptr);
       LocalFree(name);
     } else {
       strncpy_s(tname, THREAD_NAME_SIZE, "unhnown", 7);
@@ -79,7 +81,7 @@ void *thread_call(void *arg) {
     }
   }
 
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
   return 0;
 #else
   return nullptr;
@@ -108,7 +110,7 @@ Thread::~Thread() {
 }
 
 int Thread::Start() {
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
   int ret = 0;
   HANDLE hThread =
       (HANDLE)_beginthreadex(nullptr, 0, thread_call, runner_, 0, nullptr);
@@ -124,8 +126,15 @@ int Thread::Start() {
   runner_ = nullptr;
   return ret;
 #else
+#if defined(JACLKS_OS_MACOS)
+  auto ret = pthread_create(reinterpret_cast<pthread_t *>(&tid_.handle_),
+                            nullptr,
+                            thread_call,
+                            runner_);
+#else
   auto ret = pthread_create(
       reinterpret_cast<pthread_t *>(&tid_.id_), nullptr, thread_call, runner_);
+#endif
   if (0 != ret) {
     state_ = State::kFailed;
     delete runner_;
@@ -142,7 +151,7 @@ int Thread::Cancel() {
   if (state_ != State::kRunning) {
     return ESRCH;
   }
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
   auto handle = static_cast<HANDLE>(tid_.handle_);
   if (TerminateThread(handle, 0)) {
     CloseHandle(handle);
@@ -153,7 +162,11 @@ int Thread::Cancel() {
     return errno;
   }
 #else
+#if defined(JACLKS_OS_MACOS)
+  auto ptid = static_cast<pthread_t>(tid_.handle_);
+#else
   auto ptid = static_cast<pthread_t>(tid_.id_);
+#endif
   if (auto cancel_ret = pthread_cancel(ptid); cancel_ret != 0) {
     state_ = State::kFailed;
     return cancel_ret;
@@ -167,12 +180,16 @@ int Thread::Cancel() {
 
 int Thread::Join() noexcept {
   if (state_ == State::kRunning) {
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
     int ret = 0;
     auto handle = static_cast<HANDLE>(tid_.handle_);
     WaitForSingleObject(handle, INFINITE);
 #else
+#if defined(JACLKS_OS_MACOS)
+    auto ptid = static_cast<pthread_t>(tid_.handle_);
+#else
     auto ptid = static_cast<pthread_t>(tid_.id_);
+#endif
     auto ret = pthread_join(ptid, nullptr);
 #endif
     state_ = State::kDone;
