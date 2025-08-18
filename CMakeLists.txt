@@ -14,18 +14,31 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(ENABLE_GTEST "Enable build googletest executable" ON)
 option(ENABLE_COVERAGE "Enable build project with coverage options" OFF)
 
-if(MSVC)
-    # MSVC 编译器选项
-    add_compile_options(/W4 /WX)  # /W4 警告级别，/WX 将警告视为错误
-    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
-else()
-    # GCC/Clang 编译器选项
+include(cmake/DetectPlatform.cmake)
+
+if (PLATFORM_WINDOWS)
+    if (MSVC)
+        add_definitions(-DJACLKS_OS_WINDOWS)
+        add_compile_options(/W4 /WX)  # /W4 warning level, /WX regard warning as error
+        add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+    else ()
+        message(FATAL_ERROR "Unsupported C compiler ${CMAKE_C_COMPILER} or C++ compiler ${CMAKE_CXX_COMPILER}")
+    endif ()
+elseif (PLATFORM_LINUX OR PLATFORM_MACOS)
+    # GCC/Clang compiler options
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Wall -pthread -fPIC")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -pthread -fPIC")
-endif()
+    if (PLATFORM_LINUX)
+        add_definitions(-DJACLKS_OS_LINUX)
+    else ()
+        add_definitions(-DJACLKS_OS_MACOS)
+    endif ()
+else ()
+    message(FATAL_ERROR "Unsupported OS platform ${CMAKE_SYSTEM_NAME}")
+endif ()
 
 if(ENABLE_GTEST AND ENABLE_COVERAGE)
-    if(MSVC)
+    if(PLATFORM_WINDOWS)
         message(WARNING "Code coverage is not properly supported with MSVC in this configuration")
     else()
         message(STATUS "Compile code with coverage option")
@@ -40,7 +53,7 @@ message(STATUS "CMAKE_CXX_FLAGS = ${CMAKE_CXX_FLAGS}")
 
 find_package(Git REQUIRED)
 
-# 初始化并更新子模块
+# Initial and update git submodule
 execute_process(
         COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}

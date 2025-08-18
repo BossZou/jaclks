@@ -3,7 +3,7 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
 #include <process.h>  // for _beginthreadex
 #include <windows.h>
 #else
@@ -17,7 +17,7 @@ namespace jaclks {
 
 namespace {
 
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
 static_assert(sizeof(HANDLE) <= sizeof(Thread::Id),
               "HANDLE size is smaller than Id");
 #else
@@ -25,7 +25,7 @@ static_assert(sizeof(pthread_t) <= sizeof(Thread::Id),
               "pthread_t size is smaller than Id");
 #endif
 
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
 unsigned __stdcall thread_call(void *arg) {
 #else
 void *thread_call(void *arg) {
@@ -35,7 +35,7 @@ void *thread_call(void *arg) {
     runner->Run();
   }
 
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
   return 0;
 #else
   return nullptr;
@@ -49,7 +49,7 @@ Thread::~Thread() {
 }
 
 int Thread::Start() {
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
   int ret = 0;
   HANDLE hThread =
       (HANDLE)_beginthreadex(nullptr, 0, thread_call, runner_, 0, nullptr);
@@ -75,7 +75,7 @@ int Thread::Start() {
 }
 
 int Thread::Cancel() {
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
   auto handle = static_cast<HANDLE>(tid_.handle_);
   if (TerminateThread(handle, 0)) {
     CloseHandle(handle);
@@ -94,7 +94,7 @@ int Thread::Cancel() {
 }
 
 int Thread::Join() {
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
   auto handle = static_cast<HANDLE>(tid_.handle_);
   WaitForSingleObject(handle, INFINITE);
   return 0;
