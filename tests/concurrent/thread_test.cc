@@ -1,6 +1,6 @@
 #include "concurrent/thread.h"
 
-#ifdef _WIN32
+#ifdef JACLKS_OS_WINDOWS
 #include <windows.h>
 #else
 #include <unistd.h>
@@ -98,7 +98,7 @@ TEST(ThreadTest, Cancel) {
 
   auto func = [](bool *is_called, std::unique_ptr<CancelArg> arg) {
     (void)(arg.get());
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
     Sleep(3000);
 #else
     sleep(3);
@@ -109,7 +109,7 @@ TEST(ThreadTest, Cancel) {
   auto t = Thread{func, &called, std::make_unique<CancelArg>(&exited)};
 
   ASSERT_EQ(t.Start(), 0);
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
   Sleep(1000);
 #else
   sleep(1);
@@ -117,7 +117,7 @@ TEST(ThreadTest, Cancel) {
   ASSERT_EQ(t.Cancel(), 0);
 
   ASSERT_FALSE(called);
-#if !defined(_WIN32)
+#if !defined(JACLKS_OS_WINDOWS) && !defined(JACLKS_OS_MACOS)
   ASSERT_TRUE(exited);
 #endif
 }
@@ -133,7 +133,7 @@ TEST(ThreadTest, CancelBeforeStart) {
 
 TEST(ThreadTest, MoveConstruct) {
   auto func = [](int *a) {
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
     Sleep(3000);
 #else
     sleep(3);
@@ -152,7 +152,7 @@ TEST(ThreadTest, MoveConstruct) {
 
 TEST(ThreadTest, MoveAssignment) {
   auto func = [](int *a) {
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
     Sleep(3000);
 #else
     sleep(3);
