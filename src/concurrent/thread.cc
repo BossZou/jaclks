@@ -43,7 +43,7 @@ void *thread_call(void *arg) {
 #define THREAD_NAME_SIZE (256)
 #endif
     char tname[THREAD_NAME_SIZE];
-#if defined(_WIN32)
+#if defined(JACLKS_OS_WINDOWS)
     auto tid = GetCurrentThreadId();
     PWSTR name = nullptr;
 
@@ -56,7 +56,12 @@ void *thread_call(void *arg) {
       strncpy_s(tname, THREAD_NAME_SIZE, "unhnown", 7);
     }
 #else
+#if defined(JACLKS_OS_MACOS)
+    std::uint64_t tid = 0;
+    pthread_threadid_np(nullptr, &tid);
+#else
     auto tid = pthread_self();
+#endif
     pthread_getname_np(tid, tname, THREAD_NAME_SIZE);
 #endif
 
