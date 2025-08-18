@@ -63,8 +63,13 @@ int Thread::Start() {
   runner_ = nullptr;
   return ret;
 #else
+#if defined(JACLKS_OS_MACOS)
+  auto ret = pthread_create(
+      reinterpret_cast<pthread_t *>(&tid_.handle_), nullptr, thread_call, runner_);
+#else
   auto ret = pthread_create(
       reinterpret_cast<pthread_t *>(&tid_.id_), nullptr, thread_call, runner_);
+#endif
   if (0 != ret) {
     delete runner_;
   }
@@ -84,7 +89,11 @@ int Thread::Cancel() {
     return errno;
   }
 #else
+#if defined(JACLKS_OS_MACOS)
+  auto ptid = static_cast<pthread_t>(tid_.handle_);
+#else
   auto ptid = static_cast<pthread_t>(tid_.id_);
+#endif
   if (auto cancel_ret = pthread_cancel(ptid); cancel_ret != 0) {
     return cancel_ret;
   } else {
@@ -99,7 +108,11 @@ int Thread::Join() {
   WaitForSingleObject(handle, INFINITE);
   return 0;
 #else
+#if defined(JACLKS_OS_MACOS)
+  auto ptid = static_cast<pthread_t>(tid_.handle_);
+#else
   auto ptid = static_cast<pthread_t>(tid_.id_);
+#endif
   return pthread_join(ptid, nullptr);
 #endif
 }
