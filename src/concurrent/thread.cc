@@ -14,6 +14,7 @@ extern "C" {
 #endif
 
 #include <cerrno>
+#include <cinttypes>
 #include <cstdio>
 #include <cstring>
 #include <memory>
@@ -57,12 +58,14 @@ void *thread_call(void *arg) {
     }
 #else
 #if defined(JACLKS_OS_MACOS)
+    auto ptid = pthread_self();
     std::uint64_t tid = 0;
-    pthread_threadid_np(nullptr, &tid);
+    pthread_threadid_np(ptid, &tid);
+    pthread_getname_np(ptid, tname, THREAD_NAME_SIZE);
 #else
     auto tid = pthread_self();
-#endif
     pthread_getname_np(tid, tname, THREAD_NAME_SIZE);
+#endif
 #endif
 
     auto runner = static_cast<Thread::Runner *>(arg);
@@ -71,7 +74,7 @@ void *thread_call(void *arg) {
       runner->Run();
     } catch (const std::exception &e) {
       std::fprintf(stderr,
-                   "[Thread-%lu %s] terminate with exception: %s\n",
+                   "[Thread-%" PRIu64 " %s] terminate with exception: %s\n",
                    tid,
                    tname,
                    e.what());
@@ -79,7 +82,7 @@ void *thread_call(void *arg) {
       // throw;
     } catch (...) {
       std::fprintf(stderr,
-                   "[Thread-%lu %s] terminate with unknown exception\n",
+                   "[Thread-%" PRIu64 " %s] terminate with unknown exception\n",
                    tid,
                    tname);
       throw;
