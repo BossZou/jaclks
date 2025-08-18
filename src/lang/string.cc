@@ -200,6 +200,9 @@ void String::StripTrailing() {
 }
 
 std::vector<String> String::Split(const String &sub, std::size_t offset) const {
+  if (sub.len_ + offset <= len_) {
+    return {*this};
+  }
   // FIXME(John Doe): Implement it.
   return {};
 }
