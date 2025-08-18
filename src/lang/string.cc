@@ -10,6 +10,7 @@ typedef SSIZE_T ssize_t;
 #include <cstring>
 #include <new>
 #include <utility>
+#include <vector>
 
 #include "lang/character.h"
 
