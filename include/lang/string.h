@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <vector>
 
 namespace jaclks {
 
@@ -70,6 +71,8 @@ class String {
    * Removes all trailing white space.
    */
   void StripTrailing();
+
+  std::vector<String> Split(const String &sub, std::size_t offset = 0) const;
 
   std::size_t Length() const;
 

@@ -198,6 +198,11 @@ void String::StripTrailing() {
   }
 }
 
+std::vector<String> String::Split(const String &sub, std::size_t offset) const {
+  // FIXME(John Doe): Implement it.
+  return {};
+}
+
 std::size_t String::Length() const {
   return len_;
 }
