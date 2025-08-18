@@ -64,8 +64,10 @@ int Thread::Start() {
   return ret;
 #else
 #if defined(JACLKS_OS_MACOS)
-  auto ret = pthread_create(
-      reinterpret_cast<pthread_t *>(&tid_.handle_), nullptr, thread_call, runner_);
+  auto ret = pthread_create(reinterpret_cast<pthread_t *>(&tid_.handle_),
+                            nullptr,
+                            thread_call,
+                            runner_);
 #else
   auto ret = pthread_create(
       reinterpret_cast<pthread_t *>(&tid_.id_), nullptr, thread_call, runner_);
