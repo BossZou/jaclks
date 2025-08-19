@@ -1,4 +1,4 @@
-#include "concurrent/thread.h"
+#include "javac-base/lang/thread.h"
 
 #ifdef JACLKS_OS_WINDOWS
 #include <windows.h>
@@ -12,7 +12,7 @@
 #include <memory>
 #include <mutex>
 
-namespace jaclks {
+namespace jaclks::javac_base {
 
 TEST(ThreadTest, Normal) {
   auto func = [](int *a) { *a += 1; };
@@ -172,4 +172,4 @@ TEST(ThreadTest, MoveAssignment) {
   ASSERT_EQ(12, val);
 }
 
-}  // namespace jaclks
+}  // namespace jaclks::javac_base

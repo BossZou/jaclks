@@ -5,7 +5,9 @@
 #include <type_traits>
 #include <utility>
 
-namespace jaclks {
+#include "javac-base/lang/runnable.h"
+
+namespace jaclks::javac_base {
 
 class Thread {
  public:
@@ -30,15 +32,8 @@ class Thread {
     };
   };
 
-  class Runner {
-   public:
-    virtual ~Runner() = default;
-
-    virtual void Run() = 0;
-  };
-
   template <typename Callable, typename... Args>
-  class RunnerImpl : public Runner {
+  class RunnerImpl : public Runnable {
    public:
     using Tuple = std::tuple<Args...>;
 
@@ -67,13 +62,18 @@ class Thread {
     Tuple tuple_;
   };
 
-  template <typename Callable, typename... Args>
+  template <typename Callable,
+            typename... Args,
+            typename = std::void_t<
+                decltype(std::declval<Callable>()(std::declval<Args>()...))>>
   explicit Thread(Callable &&f, Args &&... args)
-      : state_(State::kInit),
-        tid_(),
-        runner_(
-            new RunnerImpl<Callable, Args...>{std::forward<Callable>(f),
-                                              std::forward<Args>(args)...}) {}
+      : Thread(new RunnerImpl<Callable, Args...>{std::forward<Callable>(f),
+                                                 std::forward<Args>(args)...},
+               true) {}
+
+  explicit Thread(const Runnable *runnable);
+
+  explicit Thread(Runnable *runnable);
 
   Thread(Thread &) = delete;
   Thread(const Thread &) = delete;
@@ -105,9 +105,12 @@ class Thread {
   int Join() noexcept;
 
  private:
+  Thread(Runnable *runnable, bool owned);
+
   volatile State state_;
   Id tid_;
-  Runner *runner_;
+  Runnable *runner_;
+  bool owned_;
 };
 
-}  // namespace jaclks
+}  // namespace jaclks::javac_base

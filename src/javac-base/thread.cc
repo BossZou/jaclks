@@ -1,4 +1,4 @@
-#include "concurrent/thread.h"
+#include "javac-base/lang/thread.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -13,6 +13,7 @@ extern "C" {
 }
 #endif
 
+#include <atomic>
 #include <cerrno>
 #include <cinttypes>
 #include <cstdio>
@@ -20,10 +21,9 @@ extern "C" {
 #include <memory>
 #include <utility>
 
-namespace jaclks {
+namespace jaclks::javac_base {
 
 namespace {
-
 #if defined(JACLKS_OS_WINDOWS)
 static_assert(sizeof(HANDLE) <= sizeof(Thread::Id),
               "HANDLE size is smaller than Id");
@@ -32,61 +32,90 @@ static_assert(sizeof(pthread_t) <= sizeof(Thread::Id),
               "pthread_t size is smaller than Id");
 #endif
 
+struct RunnableArg {
+  RunnableArg(Runnable *_runnable, bool _owned)
+      : runnable(_runnable), running(false), owned(_owned) {}
+
+  Runnable *runnable;
+  std::atomic<bool> running;
+  bool owned;
+};
+
+struct RunnerDeleter {
+  explicit RunnerDeleter(bool _owned) : owned(_owned) {}
+
+  void operator()(Runnable *runnable) const {
+    if (runnable != nullptr && owned) {
+      delete runnable;
+    }
+  }
+
+  bool owned;
+};
+
 #if defined(JACLKS_OS_WINDOWS)
 unsigned __stdcall thread_call(void *arg) {
 #else
 void *thread_call(void *arg) {
+  if (arg == nullptr) {
+    std::terminate();
+  }
+
+  auto *runnable_arg = static_cast<RunnableArg *>(arg);
+  bool owned = runnable_arg->owned;
+  auto runner = runnable_arg->runnable;
+
+  runnable_arg->running.store(true);
+
 #endif
-  if (arg != nullptr) {
 #if defined(__linux__)
 #define THREAD_NAME_SIZE (16)
 #else
 #define THREAD_NAME_SIZE (256)
 #endif
-    char tname[THREAD_NAME_SIZE];
+  char tname[THREAD_NAME_SIZE];
 #if defined(JACLKS_OS_WINDOWS)
-    std::uint64_t tid = GetCurrentThreadId();
-    PWSTR name = nullptr;
+  std::uint64_t tid = GetCurrentThreadId();
+  PWSTR name = nullptr;
 
-    if (auto hr = GetThreadDescription(GetCurrentThread(), &name);
-        SUCCEEDED(hr)) {
-      WideCharToMultiByte(
-          CP_UTF8, 0, name, -1, tname, THREAD_NAME_SIZE, nullptr, nullptr);
-      LocalFree(name);
-    } else {
-      strncpy_s(tname, THREAD_NAME_SIZE, "unhnown", 7);
-    }
+  if (auto hr = GetThreadDescription(GetCurrentThread(), &name);
+      SUCCEEDED(hr)) {
+    WideCharToMultiByte(
+        CP_UTF8, 0, name, -1, tname, THREAD_NAME_SIZE, nullptr, nullptr);
+    LocalFree(name);
+  } else {
+    strncpy_s(tname, THREAD_NAME_SIZE, "unhnown", 7);
+  }
 #else
 #if defined(JACLKS_OS_MACOS)
-    auto ptid = pthread_self();
-    std::uint64_t tid = 0;
-    pthread_threadid_np(ptid, &tid);
-    pthread_getname_np(ptid, tname, THREAD_NAME_SIZE);
+  auto ptid = pthread_self();
+  std::uint64_t tid = 0;
+  pthread_threadid_np(ptid, &tid);
+  pthread_getname_np(ptid, tname, THREAD_NAME_SIZE);
 #else
-    auto tid = pthread_self();
-    pthread_getname_np(tid, tname, THREAD_NAME_SIZE);
+  auto tid = pthread_self();
+  pthread_getname_np(tid, tname, THREAD_NAME_SIZE);
 #endif
 #endif
 
-    auto runner = static_cast<Thread::Runner *>(arg);
-    auto defer = std::unique_ptr<Thread::Runner>(runner);
-    try {
-      runner->Run();
-    } catch (const std::exception &e) {
-      std::fprintf(stderr,
-                   "[Thread-%" PRIu64 " %s] terminate with exception: %s\n",
-                   tid,
-                   tname,
-                   e.what());
-      // FIXME(BossZou): Consider if need rethrow exception here.
-      // throw;
-    } catch (...) {
-      std::fprintf(stderr,
-                   "[Thread-%" PRIu64 " %s] terminate with unknown exception\n",
-                   tid,
-                   tname);
-      throw;
-    }
+  auto defer =
+      std::unique_ptr<Runnable, RunnerDeleter>(runner, RunnerDeleter{owned});
+  try {
+    runner->Run();
+  } catch (const std::exception &e) {
+    std::fprintf(stderr,
+                 "[Thread-%" PRIu64 " %s] terminate with exception: %s\n",
+                 tid,
+                 tname,
+                 e.what());
+    // FIXME(BossZou): Consider if need rethrow exception here.
+    // throw;
+  } catch (...) {
+    std::fprintf(stderr,
+                 "[Thread-%" PRIu64 " %s] terminate with unknown exception\n",
+                 tid,
+                 tname);
+    throw;
   }
 
 #if defined(JACLKS_OS_WINDOWS)
@@ -98,11 +127,19 @@ void *thread_call(void *arg) {
 
 }  // namespace
 
+Thread::Thread(const Runnable *runnable)
+    : Thread(const_cast<Runnable *>(runnable), false) {}
+
+Thread::Thread(Runnable *runnable) : Thread(runnable, true) {}
+
 Thread::Thread(Thread &&other) noexcept
-    : state_(other.state_), tid_(other.tid_), runner_(other.runner_) {
+    : state_(other.state_),
+      tid_(other.tid_),
+      runner_(other.runner_),
+      owned_(other.owned_) {
   other.state_ = State::kDone;
   other.tid_.id_ = 0;
-  other.runner_ = nullptr;
+  other.owned_ = false;
 }
 
 Thread &Thread::operator=(Thread &&other) noexcept {
@@ -134,6 +171,7 @@ int Thread::Start() {
   runner_ = nullptr;
   return ret;
 #else
+  RunnableArg arg{runner_, owned_};
 #if defined(JACLKS_OS_MACOS)
   auto ret = pthread_create(reinterpret_cast<pthread_t *>(&tid_.handle_),
                             nullptr,
@@ -141,12 +179,15 @@ int Thread::Start() {
                             runner_);
 #else
   auto ret = pthread_create(
-      reinterpret_cast<pthread_t *>(&tid_.id_), nullptr, thread_call, runner_);
+      reinterpret_cast<pthread_t *>(&tid_.id_), nullptr, thread_call, &arg);
 #endif
   if (0 != ret) {
     state_ = State::kFailed;
     delete runner_;
   } else {
+    while (!arg.running.load()) {
+      pthread_yield();
+    }
     state_ = State::kRunning;
   }
 
@@ -210,4 +251,7 @@ int Thread::Join() noexcept {
   return 0;
 }
 
-}  // namespace jaclks
+Thread::Thread(Runnable *runnable, bool owned)
+    : state_(State::kInit), tid_(0), runner_(runnable), owned_(owned) {}
+
+}  // namespace jaclks::javac_base
