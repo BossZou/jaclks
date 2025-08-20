@@ -2,7 +2,7 @@
 aux_source_directory(${PROJECT_SOURCE_DIR}/src/javac-base/lang JBASE_SRC_FILES)
 
 # add all test files
-aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR} JBASE_TEST_SRC_FILES)
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/lang JBASE_TEST_SRC_FILES)
 
 add_executable(jbase_gtest main.cc ${JBASE_SRC_FILES} ${JBASE_TEST_SRC_FILES})
 

@@ -142,6 +142,7 @@ Thread::Thread(Thread &&other) noexcept
       owned_(other.owned_) {
   other.state_ = State::kDone;
   other.tid_.id_ = 0;
+  other.runner_ = nullptr;
   other.owned_ = false;
 }
 
