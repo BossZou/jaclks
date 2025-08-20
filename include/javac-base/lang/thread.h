@@ -107,7 +107,7 @@ class Thread {
 
   static void Yield() noexcept;
 
-    static void Sleep(std::int64_t millis);
+  static void Sleep(std::int64_t millis);
 
  private:
   Thread(Runnable *runnable, bool owned);

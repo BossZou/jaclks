@@ -174,4 +174,8 @@ TEST(ThreadTest, MoveAssignment) {
   ASSERT_EQ(12, val);
 }
 
+TEST(ThreadTest, Sleep) {
+  Thread::Sleep(0);
+}
+
 }  // namespace jaclks::javac_base
