@@ -9,8 +9,11 @@
 #include <gtest/gtest.h>
 
 #include <cerrno>
+#include <cmath>
 #include <memory>
 #include <mutex>
+
+#include "javac-base/lang/system.h"
 
 namespace jaclks::javac_base {
 
@@ -175,7 +178,41 @@ TEST(ThreadTest, MoveAssignment) {
 }
 
 TEST(ThreadTest, Sleep) {
-  Thread::Sleep(0);
+  {
+    auto t0 = System::CurrentTimeMillis();
+    Thread::Sleep(0);
+    auto t1 = System::CurrentTimeMillis();
+
+    ASSERT_LT(t1 - t0, 20);
+  }
+  {
+    auto t0 = System::CurrentTimeMillis();
+    Thread::Sleep(100);
+    auto t1 = System::CurrentTimeMillis();
+
+    ASSERT_LT(std::abs(t1 - t0 - 100), 20);
+  }
+  {
+    auto t0 = System::CurrentTimeMillis();
+    Thread::Sleep(10000);
+    auto t1 = System::CurrentTimeMillis();
+
+    ASSERT_LT(std::abs(t1 - t0 - 10000), 50);
+  }
+}
+
+TEST(ThreadTest, Yield) {
+  auto func = []() {
+    auto t0 = System::CurrentTimeMillis();
+
+    while (System::CurrentTimeMillis() - t0 < 1000) {
+      Thread::Yield();
+    }
+  };
+
+  auto t = Thread{func};
+  ASSERT_EQ(0, t.Start());
+  ASSERT_EQ(0, t.Join());
 }
 
 }  // namespace jaclks::javac_base
