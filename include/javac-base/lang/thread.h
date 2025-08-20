@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <thread>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -104,6 +105,8 @@ class Thread {
 
   int Join() noexcept;
 
+  static void Yield() noexcept;
+
  private:
   Thread(Runnable *runnable, bool owned);
 
@@ -112,11 +115,5 @@ class Thread {
   Runnable *runner_;
   bool owned_;
 };
-
-namespace this_thread {
-
-void Yield() noexcept;
-
-}  // namespace this_thread
 
 }  // namespace jaclks::javac_base

@@ -11,7 +11,6 @@
 #include <cerrno>
 #include <memory>
 #include <mutex>
-#include <thread>
 
 namespace jaclks::javac_base {
 
