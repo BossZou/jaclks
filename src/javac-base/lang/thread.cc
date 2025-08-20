@@ -257,9 +257,15 @@ Thread::Thread(Runnable *runnable, bool owned)
 
 namespace this_thread {
 
+#if defined(JACLKS_OS_WINDOWS)
+void Yield() noexcept {
+  SwitchToThread();
+}
+#else
 void Yield() noexcept {
   sched_yield();
 }
+#endif
 
 }  // namespace this_thread
 
