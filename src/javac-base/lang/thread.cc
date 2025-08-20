@@ -253,8 +253,11 @@ int Thread::Join() noexcept {
   return 0;
 }
 
+Thread::Thread(Runnable *runnable, bool owned)
+    : state_(State::kInit), tid_(0), runner_(runnable), owned_(owned) {}
+
 #if defined(JACLKS_OS_WINDOWS)
-#ifdef Yield    // ![Note]: Yield is a macro on windows, here must undef it first.
+#ifdef Yield  // ![Note]: Yield is a macro on windows, here must undef it first.
 #undef Yield
 #endif
 void Thread::Yield() noexcept {
@@ -262,11 +265,8 @@ void Thread::Yield() noexcept {
 }
 #else
 void Thread::Yield() noexcept {
- sched_yield();
+  sched_yield();
 }
 #endif
-
-Thread::Thread(Runnable *runnable, bool owned)
-    : state_(State::kInit), tid_(0), runner_(runnable), owned_(owned) {}
 
 }  // namespace jaclks::javac_base
