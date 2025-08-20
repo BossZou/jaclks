@@ -19,6 +19,7 @@ extern "C" {
 #include <cstdio>
 #include <cstring>
 #include <memory>
+#include <thread>
 #include <utility>
 
 namespace jaclks::javac_base {
@@ -252,15 +253,20 @@ int Thread::Join() noexcept {
   return 0;
 }
 
+#if defined(JACLKS_OS_WINDOWS)
+#ifdef Yield    // ![Note]: Yield is a macro on windows, here must undef it first.
+#undef Yield
+#endif
+void Thread::Yield() noexcept {
+  SwitchToThread();
+}
+#else
+void Thread::Yield() noexcept {
+ sched_yield();
+}
+#endif
+
 Thread::Thread(Runnable *runnable, bool owned)
     : state_(State::kInit), tid_(0), runner_(runnable), owned_(owned) {}
-
-void Thread::Yield() noexcept {
-#if defined(JACLKS_OS_WINDOWS)
-  SwitchToThread();
-#else
-  sched_yield();
-#endif
-}
 
 }  // namespace jaclks::javac_base
