@@ -14,5 +14,7 @@ target_link_libraries(jaclks_gtest PRIVATE gtest gtest_main)
 
 add_dependencies(jaclks_gtest build_thirdparty)
 
+add_subdirectory(javac-base)
+
 # Registers googletests
-add_test(NAME google_tests COMMAND jaclks_gtest)
+add_test(NAME jaclks_gtest COMMAND $<TARGET_FILE:jaclks_gtest>)

@@ -1,14 +1,25 @@
 #pragma once
 
 #include <cstdint>
+#include <thread>
 #include <tuple>
 #include <type_traits>
 #include <utility>
 
-namespace jaclks {
+#include "javac-base/lang/runnable.h"
+
+namespace jaclks::javac_base {
 
 class Thread {
  public:
+  enum class State {
+    kInit = 0,
+    kRunning,
+    kFailed,
+    kCanceled,
+    kDone,
+  };
+
   class Id final {
    public:
     explicit Id(std::int64_t id = 0) : id_(id) {}
@@ -22,19 +33,12 @@ class Thread {
     };
   };
 
-  class Runner {
-   public:
-    virtual ~Runner() = default;
-
-    virtual void Run() = 0;
-  };
-
   template <typename Callable, typename... Args>
-  class RunnerImpl : public Runner {
+  class RunnerImpl : public Runnable {
    public:
     using Tuple = std::tuple<Args...>;
 
-    explicit RunnerImpl(Callable &&f, Args &&...args)
+    explicit RunnerImpl(Callable &&f, Args &&... args)
         : call_(std::forward<Callable>(f)),
           tuple_(std::forward<Args>(args)...) {}
 
@@ -59,12 +63,30 @@ class Thread {
     Tuple tuple_;
   };
 
-  template <typename Callable, typename... Args>
-  explicit Thread(Callable &&f, Args &&...args)
-      : tid_(),
-        runner_(
-            new RunnerImpl<Callable, Args...>{std::forward<Callable>(f),
-                                              std::forward<Args>(args)...}) {}
+  template <typename Callable,
+            typename... Args,
+            typename = std::void_t<
+                decltype(std::declval<Callable>()(std::declval<Args>()...))>>
+  explicit Thread(Callable &&f, Args &&... args)
+      : Thread(new RunnerImpl<Callable, Args...>{std::forward<Callable>(f),
+                                                 std::forward<Args>(args)...},
+               true) {}
+
+  explicit Thread(const Runnable *runnable);
+
+  explicit Thread(Runnable *runnable);
+
+  Thread(Thread &) = delete;
+  Thread(const Thread &) = delete;
+
+  Thread(const Thread &&) = delete;
+
+  Thread(Thread &&other) noexcept;
+
+  Thread &operator=(Thread &) = delete;
+  Thread &operator=(const Thread &) = delete;
+
+  Thread &operator=(Thread &&other) noexcept;
 
   ~Thread();
 
@@ -81,11 +103,19 @@ class Thread {
    */
   int Cancel();
 
-  int Join();
+  int Join() noexcept;
+
+  static void Yield() noexcept;
+
+  static void Sleep(std::int64_t millis);
 
  private:
+  Thread(Runnable *runnable, bool owned);
+
+  volatile State state_;
   Id tid_;
-  Runner *runner_;
+  Runnable *runner_;
+  bool owned_;
 };
 
-}  // namespace jaclks
+}  // namespace jaclks::javac_base
