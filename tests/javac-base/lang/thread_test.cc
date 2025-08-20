@@ -206,6 +206,9 @@ TEST(ThreadTest, Yield) {
     auto t0 = System::CurrentTimeMillis();
 
     while (System::CurrentTimeMillis() - t0 < 1000) {
+#if defined(JACLKS_OS_WINDOWS)
+#undef Yield
+#endif
       Thread::Yield();
     }
   };
