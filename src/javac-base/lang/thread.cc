@@ -24,6 +24,7 @@ extern "C" {
 namespace jaclks::javac_base {
 
 namespace {
+
 #if defined(JACLKS_OS_WINDOWS)
 static_assert(sizeof(HANDLE) <= sizeof(Thread::Id),
               "HANDLE size is smaller than Id");
@@ -57,6 +58,7 @@ struct RunnerDeleter {
 unsigned __stdcall thread_call(void *arg) {
 #else
 void *thread_call(void *arg) {
+#endif
   if (arg == nullptr) {
     std::terminate();
   }
@@ -67,7 +69,6 @@ void *thread_call(void *arg) {
 
   runnable_arg->running.store(true);
 
-#endif
 #if defined(__linux__)
 #define THREAD_NAME_SIZE (16)
 #else
