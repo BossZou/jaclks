@@ -1,6 +1,5 @@
 #include "javac-base/lang/thread.h"
 
-#include <unistd.h>
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -9,6 +8,7 @@ extern "C" {
 #include <windows.h>
 #else
 #include <pthread.h>
+#include <unistd.h>
 #endif
 #if defined(__cplusplus)
 }
