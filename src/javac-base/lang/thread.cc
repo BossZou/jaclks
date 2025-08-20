@@ -266,7 +266,7 @@ void Thread::Yield() noexcept {
 }
 
 void Thread::Sleep(std::int64_t millis) {
-  Sleep(millis);
+  ::Sleep(millis);
 }
 #else
 void Thread::Yield() noexcept {
