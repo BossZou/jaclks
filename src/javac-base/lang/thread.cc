@@ -1,5 +1,6 @@
 #include "javac-base/lang/thread.h"
 
+#include <unistd.h>
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -263,9 +264,17 @@ Thread::Thread(Runnable *runnable, bool owned)
 void Thread::Yield() noexcept {
   SwitchToThread();
 }
+
+void Thread::Sleep(std::int64_t millis) {
+  Sleep(millis);
+}
 #else
 void Thread::Yield() noexcept {
   sched_yield();
+}
+
+void Thread::Sleep(std::int64_t millis) {
+  usleep(millis * 1000);
 }
 #endif
 
