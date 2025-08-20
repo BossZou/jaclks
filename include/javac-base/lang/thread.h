@@ -113,4 +113,10 @@ class Thread {
   bool owned_;
 };
 
+namespace this_thread {
+
+void Yield() noexcept;
+
+}  // namespace this_thread
+
 }  // namespace jaclks::javac_base

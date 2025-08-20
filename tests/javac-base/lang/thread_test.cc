@@ -11,6 +11,7 @@
 #include <cerrno>
 #include <memory>
 #include <mutex>
+#include <thread>
 
 namespace jaclks::javac_base {
 
@@ -24,6 +25,8 @@ TEST(ThreadTest, Normal) {
   ASSERT_EQ(t.Join(), 0);
 
   ASSERT_EQ(val, 11);
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
 TEST(ThreadTest, NoParam) {

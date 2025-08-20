@@ -186,7 +186,7 @@ int Thread::Start() {
     delete runner_;
   } else {
     while (!arg.running.load()) {
-      pthread_yield();
+      this_thread::Yield();
     }
     state_ = State::kRunning;
   }
@@ -253,5 +253,13 @@ int Thread::Join() noexcept {
 
 Thread::Thread(Runnable *runnable, bool owned)
     : state_(State::kInit), tid_(0), runner_(runnable), owned_(owned) {}
+
+namespace this_thread {
+
+void Yield() noexcept {
+  sched_yield();
+}
+
+}  // namespace this_thread
 
 }  // namespace jaclks::javac_base
