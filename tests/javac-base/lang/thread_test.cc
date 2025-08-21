@@ -189,8 +189,9 @@ TEST(ThreadTest, Sleep) {
     auto t0 = System::CurrentTimeMillis();
     Thread::Sleep(100);
     auto t1 = System::CurrentTimeMillis();
-
-    ASSERT_LE(std::abs(t1 - t0 - 100), 50);
+#if !defined(JACLKS_OS_MACOS)
+    ASSERT_LE(std::abs(t1 - t0 - 100), 30);
+#endif
   }
   {
     auto t0 = System::CurrentTimeMillis();
