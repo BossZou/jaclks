@@ -178,6 +178,12 @@ TEST(ThreadTest, MoveAssignment) {
 }
 
 TEST(ThreadTest, MoveAssignmentSelf) {
+  struct ThreadRef {
+    explicit ThreadRef(Thread &_ref) : ref(_ref) {}
+
+    Thread &ref;
+  };
+
   auto func = [](int *a) {
 #if defined(JACLKS_OS_WINDOWS)
     Sleep(3000);
@@ -191,7 +197,8 @@ TEST(ThreadTest, MoveAssignmentSelf) {
   auto t = Thread{func, &val};
   t.Start();
 
-  t = std::move(t);
+  ThreadRef ref{t};
+  t = std::move(ref.ref);
 
   ASSERT_EQ(0, t.Join());
   ASSERT_EQ(11, val);
