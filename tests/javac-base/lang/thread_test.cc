@@ -177,6 +177,92 @@ TEST(ThreadTest, MoveAssignment) {
   ASSERT_EQ(12, val);
 }
 
+TEST(ThreadTest, MoveAssignmentSelf) {
+  auto func = [](int *a) {
+#if defined(JACLKS_OS_WINDOWS)
+    Sleep(3000);
+#else
+    sleep(3);
+#endif
+    *a += 1;
+  };
+
+  int val = 10;
+  auto t = Thread{func, &val};
+  t.Start();
+
+  t = std::move(t);
+
+  ASSERT_EQ(0, t.Join());
+  ASSERT_EQ(11, val);
+}
+
+TEST(ThreadTest, OwnRunnable) {
+  class SingleRunner : public Runnable {
+   public:
+    explicit SingleRunner(std::shared_ptr<int> val, std::atomic<bool> &flag)
+        : val_(std::move(val)), flag_(flag) {}
+
+    ~SingleRunner() override {
+      flag_.store(true);
+    }
+
+    void Run() override {
+      *val_ += 5;
+    }
+
+   private:
+    std::shared_ptr<int> val_;
+    std::atomic<bool> &flag_;
+  };
+
+  auto val = std::make_shared<int>(5);
+  std::atomic<bool> flag{false};
+
+  Thread t{new SingleRunner(val, flag)};
+
+  t.Start();
+  t.Join();
+
+  ASSERT_EQ(10, *val);
+  ASSERT_TRUE(flag.load());
+}
+
+TEST(ThreadTest, UnownRunnable) {
+  class SingleRunner : public Runnable {
+   public:
+    explicit SingleRunner(std::atomic<int> &counter) : counter_(counter) {}
+
+    ~SingleRunner() override {
+      counter_.fetch_add(1);
+    }
+
+    void Run() override {}
+
+   private:
+    std::atomic<int> &counter_;
+  };
+
+  std::atomic<int> counter{0};
+
+  int thread_num = 50;
+  std::vector<Thread> threads;
+
+  SingleRunner runner{counter};
+  for (auto i = 0; i < thread_num; ++i) {
+    threads.emplace_back(static_cast<const Runnable *>(&runner));
+  }
+
+  for (auto &t : threads) {
+    ASSERT_EQ(0, t.Start());
+  }
+  for (auto &t : threads) {
+    ASSERT_EQ(0, t.Join());
+  }
+
+  ASSERT_EQ(0, counter.load());
+}
+
 TEST(ThreadTest, Sleep) {
   {
     auto t0 = System::CurrentTimeMillis();
