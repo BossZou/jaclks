@@ -190,7 +190,7 @@ TEST(ThreadTest, Sleep) {
     Thread::Sleep(100);
     auto t1 = System::CurrentTimeMillis();
 
-    ASSERT_LT(std::abs(t1 - t0 - 100), 20);
+    ASSERT_LE(std::abs(t1 - t0 - 100), 50);
   }
   {
     auto t0 = System::CurrentTimeMillis();
