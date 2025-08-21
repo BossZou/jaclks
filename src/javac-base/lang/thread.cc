@@ -23,6 +23,12 @@ extern "C" {
 #include <thread>
 #include <utility>
 
+#if defined(JACLKS_OS_WINDOWS)
+#ifdef Yield  // ![Note]: Yield is a macro on windows, here must undef it first.
+#undef Yield
+#endif
+#endif
+
 namespace jaclks::javac_base {
 
 namespace {
@@ -142,6 +148,7 @@ Thread::Thread(Thread &&other) noexcept
       owned_(other.owned_) {
   other.state_ = State::kDone;
   other.tid_.id_ = 0;
+  other.runner_ = nullptr;
   other.owned_ = false;
 }
 
@@ -157,33 +164,40 @@ Thread::~Thread() {
   Join();
 }
 
-int Thread::Start() {
 #if defined(JACLKS_OS_WINDOWS)
+int Thread::Start() {
+  RunnableArg arg{runner_, owned_};
   int ret = 0;
   HANDLE hThread =
-      (HANDLE)_beginthreadex(nullptr, 0, thread_call, runner_, 0, nullptr);
+      (HANDLE)_beginthreadex(nullptr, 0, thread_call, &arg, 0, nullptr);
   if (hThread == nullptr) {
     ret = errno;
     state_ = State::kFailed;
     delete runner_;
   } else {
     tid_.handle_ = hThread;
+
+    while (!arg.running.load()) {
+      Yield();
+    }
+
     state_ = State::kRunning;
   }
 
   runner_ = nullptr;
   return ret;
+}
 #else
+int Thread::Start() {
   RunnableArg arg{runner_, owned_};
 #if defined(JACLKS_OS_MACOS)
-  auto ret = pthread_create(reinterpret_cast<pthread_t *>(&tid_.handle_),
-                            nullptr,
-                            thread_call,
-                            runner_);
+  auto ret = pthread_create(
+      reinterpret_cast<pthread_t *>(&tid_.handle_), nullptr, thread_call, &arg);
 #else
   auto ret = pthread_create(
       reinterpret_cast<pthread_t *>(&tid_.id_), nullptr, thread_call, &arg);
 #endif
+
   if (0 != ret) {
     state_ = State::kFailed;
     delete runner_;
@@ -196,8 +210,8 @@ int Thread::Start() {
 
   runner_ = nullptr;
   return ret;
-#endif
 }
+#endif
 
 int Thread::Cancel() {
   if (state_ != State::kRunning) {
@@ -258,9 +272,6 @@ Thread::Thread(Runnable *runnable, bool owned)
     : state_(State::kInit), tid_(0), runner_(runnable), owned_(owned) {}
 
 #if defined(JACLKS_OS_WINDOWS)
-#ifdef Yield  // ![Note]: Yield is a macro on windows, here must undef it first.
-#undef Yield
-#endif
 void Thread::Yield() noexcept {
   SwitchToThread();
 }
