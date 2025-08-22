@@ -1,4 +1,4 @@
-#include "lang/character.h"
+#include "javac-base/lang/character.h"
 
 #include <gtest/gtest.h>
 
