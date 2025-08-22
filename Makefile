@@ -28,7 +28,15 @@ clean_gtest:
 rebuild_gtest:	clean_gtest gtest
 	@echo "Rebuild googletest done"
 
-format:
+cpp-format:
 	@echo "Formatting source files with clang-format..."
-	find src/ include/ tests -name '*.cc' -o -name '*.h' | xargs clang-format -verbose -style=file -i
+	find src/ include/ tests/ -name '*.cc' -o -name '*.h' | xargs clang-format -verbose -style=file -i
 	@echo "Formatting source files with clang-format done."
+
+# pip3 install cmake-format
+cmake-format:
+	@echo "Formatting cmake files with cmake-format..."
+	 find cmake/ src/ tests/ -name '*.cmake' -o -name 'CMakeLists.txt' | xargs cmake-format -l debug -i
+	@echo "Formatting source files with clang-format done."
+
+format: cpp-format cmake-format
