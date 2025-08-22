@@ -1,9 +1,6 @@
 # add all src files
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/concurrent SRC_FILES)
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/lang SRC_FILES)
 
 # add all test files
-aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/concurrent TEST_SRC_FILES)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/function TEST_SRC_FILES)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/hash TEST_SRC_FILES)
 
