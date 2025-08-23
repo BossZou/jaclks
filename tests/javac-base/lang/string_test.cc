@@ -670,7 +670,50 @@ TEST_P(StringTest, StrIndexOf) {
   String src{"0123456789abcdef", GetParam()};
 
   ASSERT_EQ(10, String::IndexOf(src, String{"abc", GetParam()}, 0));
-  ASSERT_EQ(-1, String::IndexOf(src, String{"0123456789abcdefg", GetParam()}, 0));
+  ASSERT_EQ(-1,
+            String::IndexOf(src, String{"0123456789abcdefg", GetParam()}, 0));
+  ASSERT_EQ(10, String::IndexOf(src, String{"abc", GetParam()}, 10));
+  ASSERT_EQ(-1, String::IndexOf(src, String{"abc", GetParam()}, 11));
+  ASSERT_EQ(-1, String::IndexOf(src, String{"abc", GetParam()}, 16));
+  ASSERT_EQ(16, String::IndexOf(src, String{"", GetParam()}, 16));
+  ASSERT_EQ(16, String::IndexOf(src, String{"", GetParam()}, 17));
+  ASSERT_EQ(0, String::IndexOf(src, String{"", GetParam()}, 0));
+  ASSERT_EQ(7, String::IndexOf(src, String{"", GetParam()}, 7));
+}
+
+TEST_P(StringTest, CharLastIndexOf) {
+  String src{"0123456789abcdef", GetParam()};
+
+  ASSERT_EQ(15, src.LastIndexOf('f'));
+  ASSERT_EQ(-1, src.LastIndexOf('f', 14));
+  ASSERT_EQ(15, src.LastIndexOf('f', 15));
+  ASSERT_EQ(15, src.LastIndexOf('f', 16));
+  ASSERT_EQ(15, src.LastIndexOf('f', 17));
+
+  ASSERT_EQ(0, src.LastIndexOf('0'));
+  ASSERT_EQ(0, src.LastIndexOf('0', 0));
+  ASSERT_EQ(-1, src.LastIndexOf('A'));
+}
+
+TEST_P(StringTest, StrLastIndexOf) {
+  String src{"0123456789abcdef", GetParam()};
+
+  ASSERT_EQ(13, src.LastIndexOf(String{"def", GetParam()}));
+  ASSERT_EQ(13,
+            String::LastIndexOf(src, String{"def", GetParam()}, src.Length()));
+  ASSERT_EQ(13, src.LastIndexOf(String{"def", GetParam()}, src.Length()));
+  ASSERT_EQ(13, src.LastIndexOf(String{"def", GetParam()}, src.Length() - 1));
+  ASSERT_EQ(13, src.LastIndexOf(String{"def", GetParam()}, 13));
+  ASSERT_EQ(-1, src.LastIndexOf(String{"def", GetParam()}, 12));
+
+  ASSERT_EQ(-1, src.LastIndexOf(String{"0123456789abcdefg", GetParam()}));
+  ASSERT_EQ(1, src.LastIndexOf(String{"123456789abcdef", GetParam()}));
+  ASSERT_EQ(-1, src.LastIndexOf(String{"xyz", GetParam()}));
+
+  ASSERT_EQ(static_cast<std::int64_t>(src.Length()),
+            src.LastIndexOf(String{"", GetParam()}));
+  ASSERT_EQ(static_cast<std::int64_t>(src.Length() - 1),
+            src.LastIndexOf(String{"", GetParam()}, src.Length() - 1));
 }
 
 TEST_P(StringTest, Reset) {

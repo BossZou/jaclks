@@ -252,7 +252,6 @@ std::vector<String> String::Split(const String &sub, std::size_t offset) const {
 std::int64_t String::IndexOf(char c, std::size_t from_index) const {
   auto max = len_;
   if (from_index >= max) {
-    // Note: fromIndex might be near -1>>>1.
     return -1;
   }
   for (auto i = from_index; i < max; i++) {
@@ -264,12 +263,20 @@ std::int64_t String::IndexOf(char c, std::size_t from_index) const {
 }
 
 std::int64_t String::IndexOf(const String &sub, std::size_t from_index) const {
-  auto idx = std::min(from_index, len_ - 1);
-  if (len_ < sub.len_ + idx) {
+  if (from_index >= len_) {
+    return sub.len_ == 0 ? len_ : -1;
+  }
+
+  if (sub.len_ == 0) {
+    return from_index;
+  }
+
+  if (sub.len_ > len_) {
     return -1;
   }
 
-  return std::strstr(buf_ + from_index, sub.buf_) - buf_;
+  auto pos = std::strstr(buf_ + from_index, sub.buf_);
+  return pos != nullptr ? pos - buf_ : -1;
 }
 
 std::int64_t String::LastIndexOf(char c) const {
@@ -287,31 +294,54 @@ std::int64_t String::LastIndexOf(char c, std::size_t from_index) const {
 }
 
 std::int64_t String::LastIndexOf(const String &sub) const {
-  return LastIndexOf(sub, len_ - 1);
+  return LastIndexOf(sub, len_);
 }
 
 std::int64_t String::LastIndexOf(const String &sub,
                                  std::size_t from_index) const {
-  auto idx = std::min(from_index, len_ - 1);
-  if (len_ < sub.len_ + idx) {
-    return -1;
+  /*
+   * Check arguments; return immediately where possible. For
+   * consistency, don't check for null str.
+   */
+  auto idx = static_cast<std::int64_t>(from_index);
+  if (auto right_idx =
+          static_cast<std::int64_t>(len_) - static_cast<std::int64_t>(sub.len_);
+      idx > right_idx) {
+    idx = right_idx;
   }
 
-  // TODO(John Doe): Use KMP to optimize.
-  for (auto ri = static_cast<std::int64_t>(len_ - 1),
-            slen = static_cast<std::int64_t>(sub.len_);
-       ri >= 0;
-       --ri) {
-    for (auto j = 0L; j < slen; ++j) {
-      if (buf_[ri - j] != sub.buf_[slen - 1 - j]) {
-        break;
-      }
-      if (j == slen - 1) {
-        return ri - j;
+  if (idx < 0) {
+    return -1;
+  }
+  /* Empty string always matches. */
+  if (sub.len_ == 0) {
+    return idx;
+  }
+
+  auto min = static_cast<std::int64_t>(sub.len_ - 1);
+  auto i = min + idx;
+  auto str_last_index = static_cast<std::int64_t>(sub.len_ - 1);
+  char str_last_char = sub.buf_[str_last_index];
+
+start_search:
+  while (true) {
+    while (i >= min && buf_[i] != str_last_char) {
+      i--;
+    }
+    if (i < min) {
+      return -1;
+    }
+    auto j = i - 1;
+    auto start = j - str_last_index;
+    auto k = str_last_index - 1;
+    while (j > start) {
+      if (buf_[j--] != sub.buf_[k--]) {
+        i--;
+        goto start_search;
       }
     }
+    return start + 1;
   }
-  return -1;
 }
 
 std::size_t String::Length() const {
