@@ -54,7 +54,7 @@ class String {
   static String Format(const String &format, Args &&... args) {
     // FIXME(John Doe): Implement it.
     return {};
-  };
+  }
 
   String();
 
