@@ -169,8 +169,9 @@ void String::Trim() {
     ++st;
     --len;
   }
+  buf = buf_ + st;
   while ((len > 0) && ((buf[len - 1] & 0xff) <= ' ')) {
-    len--;
+    --len;
   }
 
   if (len == 0) {
@@ -187,7 +188,7 @@ void String::Trim() {
     } else {
       buf_ = buf;
       len_ = len;
-      buf[len] = '\0';
+      buf_[len] = '\0';
     }
   }
 }

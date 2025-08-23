@@ -248,7 +248,8 @@ TEST_P(StringTest, Trim) {
 
       str.Trim();
       ASSERT_EQ(sizeof(bytes) - 2, str.Length());
-      ASSERT_EQ((String{"0123456789", true}), str);
+      ASSERT_EQ((String{"0123456789", true}), str)
+          << "c=" << c << ", str=" << str.CStr();
     }
   }
   {
@@ -268,7 +269,8 @@ TEST_P(StringTest, Trim) {
 
     str.Trim();
     ASSERT_EQ((String{"0123456789987654321", GetParam()}), str);
-    ASSERT_EQ(str.Length() - 12, str.Length());
+    ASSERT_EQ((String{"0123456789987654321", GetParam()}).Length(),
+              str.Length());
   }
 }
 
