@@ -161,7 +161,35 @@ bool String::EndsWith(const String &suffix) const {
 }
 
 void String::Trim() {
-  // FIXME(John Doe): Implement it. Consider difference from Strip().
+  auto buf = buf_;
+  auto len = static_cast<std::int64_t>(len_);
+  std::size_t st = 0;
+
+  while ((st < len_) && ((buf[st] & 0xff) <= ' ')) {
+    ++st;
+    --len;
+  }
+  while ((len > 0) && ((buf[len - 1] & 0xff) <= ' ')) {
+    len--;
+  }
+
+  if (len == 0) {
+    *this = {};
+  } else {
+    if (!own_) {
+      if (st + len < len_) {
+        *this = String{buf, static_cast<std::size_t>(len)};
+      } else {
+        buf_ = buf;
+        len_ = len;
+        info_.cap = len + 1;
+      }
+    } else {
+      buf_ = buf;
+      len_ = len;
+      buf[len] = '\0';
+    }
+  }
 }
 
 void String::Strip() {

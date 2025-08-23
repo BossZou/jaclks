@@ -239,6 +239,39 @@ TEST_P(StringTest, StaticTrim) {
   }
 }
 
+TEST_P(StringTest, Trim) {
+  {
+    char bytes[]{'\0', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '\0'};
+    for (char c = 0; c < ' '; ++c) {
+      bytes[0] = c;
+      String str{bytes, sizeof(bytes) - 1};
+
+      str.Trim();
+      ASSERT_EQ(sizeof(bytes) - 2, str.Length());
+      ASSERT_EQ((String{"0123456789", true}), str);
+    }
+  }
+  {
+    char bytes[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '\0', '\0'};
+    for (char c = 0; c < ' '; ++c) {
+      bytes[sizeof(bytes) - 2] = c;
+      String str{bytes, sizeof(bytes) - 1};
+
+      str.Trim();
+      ASSERT_EQ(sizeof(bytes) - 2, str.Length());
+      ASSERT_EQ((String{"0123456789", true}), str);
+    }
+  }
+  {
+    auto cstr = " \t\r\n\f\v0123456789987654321 \v\f\r\n\t";
+    String str{cstr, GetParam()};
+
+    str.Trim();
+    ASSERT_EQ((String{"0123456789987654321", GetParam()}), str);
+    ASSERT_EQ(str.Length() - 12, str.Length());
+  }
+}
+
 TEST_P(StringTest, StaticStrip) {
   {
     auto cstr = " \t\r\n\f\v0123456789";
