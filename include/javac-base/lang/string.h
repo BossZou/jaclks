@@ -42,6 +42,14 @@ class String {
 
   static String StripTrailing(const String &str);
 
+  static std::int64_t IndexOf(const String &src,
+                              const String &sub,
+                              std::size_t from_index);
+
+  static std::int64_t LastIndexOf(const String &src,
+                                  const String &sub,
+                                  std::size_t from_index);
+
   String();
 
   explicit String(const char *str, bool ref = false);
@@ -77,9 +85,15 @@ class String {
 
   std::int64_t IndexOf(char c, std::size_t from_index = 0) const;
 
+  std::int64_t IndexOf(const String &sub, std::size_t from_index = 0) const;
+
   std::int64_t LastIndexOf(char c) const;
 
   std::int64_t LastIndexOf(char c, std::size_t from_index) const;
+
+  std::int64_t LastIndexOf(const String &sub) const;
+
+  std::int64_t LastIndexOf(const String &sub, std::size_t from_index) const;
 
   std::size_t Length() const;
 

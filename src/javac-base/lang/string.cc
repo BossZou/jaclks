@@ -5,6 +5,7 @@
 typedef SSIZE_T ssize_t;
 #endif
 
+#include <algorithm>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -78,6 +79,18 @@ String String::StripTrailing(const String &str) {
   }
 
   return String{str.buf_, len};
+}
+
+std::int64_t String::IndexOf(const String &src,
+                             const String &sub,
+                             std::size_t from_index) {
+  return src.IndexOf(sub, from_index);
+}
+
+std::int64_t String::LastIndexOf(const String &src,
+                                 const String &sub,
+                                 std::size_t from_index) {
+  return src.LastIndexOf(sub, from_index);
 }
 
 String::String() : info_(), own_(true), len_(0), buf_(local_buf_) {}
@@ -250,6 +263,15 @@ std::int64_t String::IndexOf(char c, std::size_t from_index) const {
   return -1;
 }
 
+std::int64_t String::IndexOf(const String &sub, std::size_t from_index) const {
+  auto idx = std::min(from_index, len_ - 1);
+  if (len_ < sub.len_ + idx) {
+    return -1;
+  }
+
+  return std::strstr(buf_ + from_index, sub.buf_) - buf_;
+}
+
 std::int64_t String::LastIndexOf(char c) const {
   return LastIndexOf(c, len_ - 1);
 }
@@ -262,6 +284,34 @@ std::int64_t String::LastIndexOf(char c, std::size_t from_index) const {
   }
 
   return len_ > 0 && buf_[0] == c ? 0 : -1;
+}
+
+std::int64_t String::LastIndexOf(const String &sub) const {
+  return LastIndexOf(sub, len_ - 1);
+}
+
+std::int64_t String::LastIndexOf(const String &sub,
+                                 std::size_t from_index) const {
+  auto idx = std::min(from_index, len_ - 1);
+  if (len_ < sub.len_ + idx) {
+    return -1;
+  }
+
+  // TODO(John Doe): Use KMP to optimize.
+  for (auto ri = static_cast<std::int64_t>(len_ - 1),
+            slen = static_cast<std::int64_t>(sub.len_);
+       ri >= 0;
+       --ri) {
+    for (auto j = 0L; j < slen; ++j) {
+      if (buf_[ri - j] != sub.buf_[slen - 1 - j]) {
+        break;
+      }
+      if (j == slen - 1) {
+        return ri - j;
+      }
+    }
+  }
+  return -1;
 }
 
 std::size_t String::Length() const {
