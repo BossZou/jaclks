@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 #include <vector>
 
 namespace jaclks {
@@ -73,6 +74,12 @@ class String {
   void StripTrailing();
 
   std::vector<String> Split(const String &sub, std::size_t offset = 0) const;
+
+  std::int64_t IndexOf(char c, std::size_t from_index = 0) const;
+
+  std::int64_t LastIndexOf(char c) const;
+
+  std::int64_t LastIndexOf(char c, std::size_t from_index) const;
 
   std::size_t Length() const;
 

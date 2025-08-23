@@ -236,6 +236,34 @@ std::vector<String> String::Split(const String &sub, std::size_t offset) const {
   return {};
 }
 
+std::int64_t String::IndexOf(char c, std::size_t from_index) const {
+  auto max = len_;
+  if (from_index >= max) {
+    // Note: fromIndex might be near -1>>>1.
+    return -1;
+  }
+  for (auto i = from_index; i < max; i++) {
+    if (buf_[i] == c) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+std::int64_t String::LastIndexOf(char c) const {
+  return LastIndexOf(c, len_ - 1);
+}
+
+std::int64_t String::LastIndexOf(char c, std::size_t from_index) const {
+  for (auto idx = std::min(from_index, len_ - 1); idx > 0; --idx) {
+    if (buf_[idx] == c) {
+      return idx;
+    }
+  }
+
+  return len_ > 0 && buf_[0] == c ? 0 : -1;
+}
+
 std::size_t String::Length() const {
   return len_;
 }
