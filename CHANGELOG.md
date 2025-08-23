@@ -17,6 +17,7 @@ Please mark all change in change log and use the issue from GitHub
 ### String class implementation
 - [#13](https://github.com/BossZou/jaclks/pull/13) Add String class and implement essential functionality
 - [#17](https://github.com/BossZou/jaclks/pull/17) Add StartsWith/EndsWith method && write README
+- [#24](https://github.com/BossZou/jaclks/pull/24) Add Trim/Strip/IndexOf/StartsWith/EndsWith methods
 
 ## Improvement
 - [#29](https://github.com/BossZou/jaclks/pull/29) Support on windows 2025 x86 platform

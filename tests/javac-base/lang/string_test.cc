@@ -706,6 +706,8 @@ TEST_P(StringTest, StrLastIndexOf) {
   ASSERT_EQ(13, src.LastIndexOf(String{"def", GetParam()}, 13));
   ASSERT_EQ(-1, src.LastIndexOf(String{"def", GetParam()}, 12));
 
+  ASSERT_EQ(-1, src.LastIndexOf(String{"568", GetParam()}));
+  ASSERT_EQ(-1, src.LastIndexOf(String{"8abc", GetParam()}));
   ASSERT_EQ(-1, src.LastIndexOf(String{"0123456789abcdefg", GetParam()}));
   ASSERT_EQ(1, src.LastIndexOf(String{"123456789abcdef", GetParam()}));
   ASSERT_EQ(-1, src.LastIndexOf(String{"xyz", GetParam()}));
