@@ -653,6 +653,26 @@ TEST_P(StringTest, StripTrailing) {
   }
 }
 
+TEST_P(StringTest, CharIndexOf) {
+  String src{"0123456789abcdef", GetParam()};
+
+  ASSERT_EQ(0, src.IndexOf('0'));
+  ASSERT_EQ(10, src.IndexOf('a'));
+  ASSERT_EQ(15, src.IndexOf('f'));
+  ASSERT_EQ(-1, src.IndexOf('A'));
+
+  ASSERT_EQ(0, src.IndexOf('0', 0));
+  ASSERT_EQ(15, src.IndexOf('f', 15));
+  ASSERT_EQ(-1, src.IndexOf('f', 16));
+}
+
+TEST_P(StringTest, StrIndexOf) {
+  String src{"0123456789abcdef", GetParam()};
+
+  ASSERT_EQ(10, String::IndexOf(src, String{"abc", GetParam()}, 0));
+  ASSERT_EQ(-1, String::IndexOf(src, String{"0123456789abcdefg", GetParam()}, 0));
+}
+
 TEST_P(StringTest, Reset) {
   {
     auto cstr = "123456789098765432101234567890987654321";
