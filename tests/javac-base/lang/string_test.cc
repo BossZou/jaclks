@@ -264,6 +264,15 @@ TEST_P(StringTest, Trim) {
     }
   }
   {
+    auto cstr = " \t\r\n\f\v0123456789987654321";
+    String str{cstr, GetParam()};
+
+    str.Trim();
+    ASSERT_EQ((String{"0123456789987654321", GetParam()}), str);
+    ASSERT_EQ((String{"0123456789987654321", GetParam()}).Length(),
+              str.Length());
+  }
+  {
     auto cstr = " \t\r\n\f\v0123456789987654321 \v\f\r\n\t";
     String str{cstr, GetParam()};
 
@@ -271,6 +280,12 @@ TEST_P(StringTest, Trim) {
     ASSERT_EQ((String{"0123456789987654321", GetParam()}), str);
     ASSERT_EQ((String{"0123456789987654321", GetParam()}).Length(),
               str.Length());
+  }
+  {  // Trim to empty.
+    String str{"\r\n  \t", GetParam()};
+    str.Trim();
+    ASSERT_EQ(0UL, str.Length());
+    ASSERT_EQ(String{""}, str);
   }
 }
 

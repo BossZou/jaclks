@@ -21,10 +21,10 @@ String String::Trim(const String &str) {
   auto len = str.len_;
   std::size_t st = 0;
 
-  while ((st < len) && ((buf[st] & 0xff) <= ' ')) {
+  while ((st < len) && (buf[st] <= ' ')) {
     st++;
   }
-  while ((st < len) && ((buf[len - 1] & 0xff) <= ' ')) {
+  while ((st < len) && (buf[len - 1] <= ' ')) {
     len--;
   }
   return ((st > 0) || (len < str.len_)) ? String{buf + st, len - st} : String{};
@@ -165,12 +165,12 @@ void String::Trim() {
   auto len = static_cast<std::int64_t>(len_);
   std::size_t st = 0;
 
-  while ((st < len_) && ((buf[st] & 0xff) <= ' ')) {
+  while ((st < len_) && (buf[st] <= ' ')) {
     ++st;
     --len;
   }
   buf = buf_ + st;
-  while ((len > 0) && ((buf[len - 1] & 0xff) <= ' ')) {
+  while ((len > 0) && (buf[len - 1] <= ' ')) {
     --len;
   }
 
