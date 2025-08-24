@@ -22,6 +22,7 @@ Please mark all change in change log and use the issue from GitHub
 ## Improvement
 - [#29](https://github.com/BossZou/jaclks/pull/29) Support on windows 2025 x86 platform
 - [#35](https://github.com/BossZou/jaclks/pull/35) Support on windows 11 arm64 and Macos x86/arm platform
+- [#41](https://github.com/BossZou/jaclks/pull/41) Add cmake install target to install lib and header files
 
 ## Bugs
 

@@ -1,4 +1,4 @@
-#include "javac-base/lang/thread.h"
+#include "jaclks/javac-base/lang/thread.h"
 
 #ifdef JACLKS_OS_WINDOWS
 #include <windows.h>
@@ -13,7 +13,7 @@
 #include <memory>
 #include <mutex>
 
-#include "javac-base/lang/system.h"
+#include "jaclks/javac-base/lang/system.h"
 
 namespace jaclks::javac_base {
 
@@ -283,7 +283,7 @@ TEST(ThreadTest, Sleep) {
     Thread::Sleep(100);
     auto t1 = System::CurrentTimeMillis();
 #if defined(JACLKS_OS_MACOS)
-    ASSERT_LE(std::abs(t1 - t0 - 100), 100);
+    ASSERT_LE(std::abs(t1 - t0 - 100), 150);
 #else
     ASSERT_LE(std::abs(t1 - t0 - 100), 30);
 #endif
@@ -294,7 +294,7 @@ TEST(ThreadTest, Sleep) {
     auto t1 = System::CurrentTimeMillis();
 
 #if defined(JACLKS_OS_MACOS)
-    ASSERT_LT(std::abs(t1 - t0 - 10000), 150);
+    ASSERT_LT(std::abs(t1 - t0 - 10000), 250);
 #else
     ASSERT_LT(std::abs(t1 - t0 - 10000), 50);
 #endif

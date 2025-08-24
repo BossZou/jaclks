@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <utility>
 
-#include "javac-base/lang/runnable.h"
+#include "jaclks/javac-base/lang/runnable.h"
 
 namespace jaclks::javac_base {
 
