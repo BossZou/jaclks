@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(jaclks LANGUAGES C CXX)
+project(Jaclks LANGUAGES C CXX VERSION 0.0.1)
 
 # 全局标准设置
 set(CMAKE_C_STANDARD 11)
@@ -13,7 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(PROJECT_ROOT_DIR ${PROJECT_SOURCE_DIR})
 
-option(ENABLE_GTEST "Enable build googletest executable" ON)
+option(ENABLE_GTEST "Enable build googletest executable" OFF)
 option(ENABLE_COVERAGE "Enable build project with coverage options" OFF)
 
 include(cmake/DetectPlatform.cmake)
