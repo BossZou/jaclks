@@ -4,7 +4,7 @@
 #include <string_view>
 #include <type_traits>
 
-#include "compile/type_traits.h"
+#include "jaclks/compile/type_traits.h"
 
 namespace jaclks {
 
@@ -28,8 +28,8 @@ struct Comparator<std::string> {
 
 template <>
 struct Comparator<std::string_view> {
-  int operator()(const std::string_view &a,
-                 const std::string_view &b) const noexcept {
+  int operator()(const std::string_view &a, const std::string_view &b) const
+      noexcept {
     return a.compare(b);
   }
 };
