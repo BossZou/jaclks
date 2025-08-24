@@ -28,7 +28,7 @@ Please mark all change in change log and use the issue from GitHub
 
 ## CI
 - [#26](https://github.com/BossZou/jaclks/pull/26) Add debug ssh job in actions
-- [#42](https://github.com/BossZou/jaclks/pull/42) Remove unworked modify-squash-commit.yml
+- [#43](https://github.com/BossZou/jaclks/pull/43) Remove unworked modify-squash-commit.yml
 
 ## Document
 - [#22](https://github.com/BossZou/jaclks/pull/22) Add license Apcache 2.0 and code quality badge
