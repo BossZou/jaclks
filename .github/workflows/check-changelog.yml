@@ -1,0 +1,24 @@
+name: Check CHANGELOG
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+
+jobs:
+  check-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if CHANGELOG was modified
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            changelog:
+              - CHANGELOG.md
+
+      - name: Fail if no CHANGELOG changes
+        if: steps.changes.outputs.changelog == 'false'
+        run: |
+          echo "❌ CHANGELOG was not updated!"
+          echo "Please update the CHANGELOG file to describe your changes."
+          exit 1

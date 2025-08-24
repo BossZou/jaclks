@@ -1,16 +1,16 @@
-aux_source_directory(./function TEST_SRC_FILES)
-aux_source_directory(./hash TEST_SRC_FILES)
+# add all src files
 
-add_executable(tests main.cc
-        ${TEST_SRC_FILES}
-)
+# add all test files
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/function TEST_SRC_FILES)
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/hash TEST_SRC_FILES)
 
-target_link_libraries(tests PRIVATE
-        gtest
-        gtest_main
-)
+add_executable(jaclks_gtest main.cc ${SRC_FILES} ${TEST_SRC_FILES})
 
-add_dependencies(tests build_thirdparty)
+target_link_libraries(jaclks_gtest PRIVATE gtest gtest_main)
+
+add_dependencies(jaclks_gtest build_thirdparty)
+
+add_subdirectory(javac-base)
 
 # Registers googletests
-add_test(NAME google_tests COMMAND tests)
+add_test(NAME jaclks_gtest COMMAND $<TARGET_FILE:jaclks_gtest>)
