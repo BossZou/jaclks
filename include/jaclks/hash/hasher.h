@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 #include "jaclks/compile/type_traits.h"
+#include "jaclks/hash/types.h"
 
 namespace jaclks {
 
