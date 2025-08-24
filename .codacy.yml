@@ -9,9 +9,6 @@ engines:
     exclude:
       - "missingInclude"    # 忽略头文件未找到错误
       - "missingIncludeSystem"
-
-#    config:
-      # 指定 C++ 标准
-#      std: c++17
-#      # 使用抑制文件
-#      suppressions: "cppcheck-suppressions.txt"
+    config:
+      std: c++17 #  specify C++ standard
+      suppressions: "cppcheck-suppressions.txt"
