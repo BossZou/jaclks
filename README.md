@@ -67,3 +67,5 @@ $ gcovr -r ${WORKSPACE} --xml -o ${WORKSPACE}/coverage.xml -e '/usr/.*' -e '.*/t
 ```
 
 Therefore
+
+Then
