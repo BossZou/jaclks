@@ -65,3 +65,5 @@ Then use `gcovr` to collect coverage information
 ```shell
 $ gcovr -r ${WORKSPACE} --xml -o ${WORKSPACE}/coverage.xml -e '/usr/.*' -e '.*/tests/.*' -e '.*/thirdparty/.*'
 ```
+
+Therefore
