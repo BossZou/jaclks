@@ -3,7 +3,7 @@
 #include <functional>
 #include <unordered_map>
 
-#include "compile/type_traits.h"
+#include "jaclks/compile/type_traits.h"
 
 namespace jaclks {
 

@@ -4,7 +4,7 @@
 #include <string_view>
 #include <type_traits>
 
-#include "compile/type_traits.h"
+#include "jaclks/compile/type_traits.h"
 
 namespace jaclks {
 
