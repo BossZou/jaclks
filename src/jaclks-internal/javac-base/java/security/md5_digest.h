@@ -19,13 +19,13 @@ class MD5Digest : public MessageDigestSpi {
   static constexpr int kMD5BlockSize = 64;
   static constexpr int kMD5DigestLength = 16;
 
-  void init();
+  void md5_init();
 
-  void update(const std::uint8_t *data, std::size_t len);
+  void md5_update(const std::uint8_t *data, std::size_t len);
 
   void transform(const std::uint8_t *data, std::size_t len);
 
-  String final();
+  String md5_final();
 
   std::uint32_t h_[kMD5StateNum];
   std::uint32_t Nl_, Nh_;

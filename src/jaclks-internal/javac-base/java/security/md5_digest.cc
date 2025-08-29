@@ -69,20 +69,20 @@
 
 #define ROTATE(a, n) (((a) << (n)) | ((a) >> (32 - (n))))
 
-#define HOST_c2l(c, l)                     \
-  do {                                     \
-    (l) = (((uint32_t)(*((c)++))) << 24);  \
-    (l) |= (((uint32_t)(*((c)++))) << 16); \
-    (l) |= (((uint32_t)(*((c)++))) << 8);  \
-    (l) |= (((uint32_t)(*((c)++))));       \
+#define HOST_c2l(c, l)                                     \
+  do {                                                     \
+    (l) = ((static_cast<std::uint32_t>(*((c)++))) << 24);  \
+    (l) |= ((static_cast<std::uint32_t>(*((c)++))) << 16); \
+    (l) |= ((static_cast<std::uint32_t>(*((c)++))) << 8);  \
+    (l) |= ((static_cast<std::uint32_t>(*((c)++))));       \
   } while (0)
 
-#define HOST_l2c(l, c)                        \
-  do {                                        \
-    *((c)++) = (uint8_t)(((l) >> 24) & 0xff); \
-    *((c)++) = (uint8_t)(((l) >> 16) & 0xff); \
-    *((c)++) = (uint8_t)(((l) >> 8) & 0xff);  \
-    *((c)++) = (uint8_t)(((l)) & 0xff);       \
+#define HOST_l2c(l, c)                                        \
+  do {                                                        \
+    *((c)++) = static_cast<std::uint8_t>(((l) >> 24) & 0xff); \
+    *((c)++) = static_cast<std::uint8_t>(((l) >> 16) & 0xff); \
+    *((c)++) = static_cast<std::uint8_t>(((l) >> 8) & 0xff);  \
+    *((c)++) = static_cast<std::uint8_t>(((l)) & 0xff);       \
   } while (0)
 
 #define HASH_MAKE_STRING(h, s) \
@@ -129,25 +129,25 @@
 namespace jaclks::javac_base {
 
 MD5Digest::MD5Digest() : h_{}, Nl_(0), Nh_(0), data_{}, num_(0) {
-  init();
+  md5_init();
 }
 
 void MD5Digest::EngineUpdate(const char *data, std::size_t num) {
-  update(reinterpret_cast<const std::uint8_t *>(data), num);
+  md5_update(reinterpret_cast<const std::uint8_t *>(data), num);
 }
 
 String MD5Digest::EngineDigest() {
-  return final();
+  return md5_final();
 }
 
-void MD5Digest::init() {
+void MD5Digest::md5_init() {
   h_[0] = 0x67452301UL;
   h_[1] = 0xefcdab89UL;
   h_[2] = 0x98badcfeUL;
   h_[3] = 0x10325476UL;
 }
 
-void MD5Digest::update(const std::uint8_t *data, std::size_t len) {
+void MD5Digest::md5_update(const std::uint8_t *data, std::size_t len) {
   if (len == 0) {
     return;
   }
@@ -313,7 +313,7 @@ void MD5Digest::transform(const std::uint8_t *data, std::size_t num) {
 #undef X
 }
 
-String MD5Digest::final() {
+String MD5Digest::md5_final() {
   auto out = static_cast<std::uint8_t *>(alloca(kMD5DigestLength));
 
   // |c->data| always has room for at least one byte. A full block would have

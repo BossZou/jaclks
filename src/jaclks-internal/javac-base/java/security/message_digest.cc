@@ -1,5 +1,8 @@
 #include "jaclks/javac-base/java/security/message_digest.h"
 
+#include <memory>
+#include <utility>
+
 #include "jaclks-internal/javac-base/java/security/md5_digest.h"
 #include "jaclks-internal/javac-base/java/security/message_digest_spi.h"
 
@@ -15,7 +18,7 @@ MessageDigest MessageDigest::GetInstance(String algorithm) {
     digest = std::make_unique<MD5Digest>();
   }
 
-  return MessageDigest(std::move(algorithm), std::move(digest));
+  return {std::move(algorithm), std::move(digest)};
 }
 
 MessageDigest::MessageDigest(String algorithm,
