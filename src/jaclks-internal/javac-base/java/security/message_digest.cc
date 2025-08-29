@@ -24,8 +24,8 @@ MessageDigest::MessageDigest(String algorithm,
       algorithm_(std::move(algorithm)),
       digest_(std::move(digest)) {}
 
-void MessageDigest::Update(char input) {
-  digest_->EngineUpdate(input);
+void MessageDigest::Update(const char *data, std::size_t num) {
+  digest_->EngineUpdate(data, num);
 }
 
 }  // namespace jaclks::javac_base

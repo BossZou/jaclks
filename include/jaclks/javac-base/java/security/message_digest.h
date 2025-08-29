@@ -12,7 +12,7 @@ class MessageDigest {
  public:
   static MessageDigest GetInstance(String algorithm);
 
-  void Update(char input);
+  void Update(const char *data, std::size_t num);
 
  private:
   static const int kInitial;
