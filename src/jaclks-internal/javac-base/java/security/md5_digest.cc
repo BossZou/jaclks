@@ -56,67 +56,8 @@
 
 #include "jaclks-internal/javac-base/java/security/md5_digest.h"
 
-// #include <openssl/md5.h>
-//
-// #include <string.h>
-//
-// #include <openssl/mem.h>
-//
-// #include "internal.h"
-// #include "../../internal.h"
-
-#define MD5_DIGEST_LENGTH 16
-
-
-uint8_t *MD5(const uint8_t *data, size_t len, uint8_t out[MD5_DIGEST_LENGTH]) {
-  MD5_CTX ctx;
-  MD5_Init(&ctx);
-  MD5_Update(&ctx, data, len);
-  MD5_Final(out, &ctx);
-
-  return out;
-}
-
-int MD5_Init(MD5_CTX *md5) {
-  OPENSSL_memset(md5, 0, sizeof(MD5_CTX));
-  md5->h[0] = 0x67452301UL;
-  md5->h[1] = 0xefcdab89UL;
-  md5->h[2] = 0x98badcfeUL;
-  md5->h[3] = 0x10325476UL;
-  return 1;
-}
-
-#if defined(MD5_ASM)
-#define md5_block_data_order md5_block_asm_data_order
-#else
-static void md5_block_data_order(uint32_t *state, const uint8_t *data,
-                                 size_t num);
-#endif
-
-
-#define DATA_ORDER_IS_LITTLE_ENDIAN
-
-#define HASH_CTX MD5_CTX
-#define HASH_CBLOCK 64
-#define HASH_DIGEST_LENGTH 16
-#define HASH_UPDATE MD5_Update
-#define HASH_TRANSFORM MD5_Transform
-#define HASH_FINAL MD5_Final
-#define HASH_MAKE_STRING(c, s) \
-  do {                         \
-    uint32_t ll;               \
-    ll = (c)->h[0];            \
-    HOST_l2c(ll, (s));         \
-    ll = (c)->h[1];            \
-    HOST_l2c(ll, (s));         \
-    ll = (c)->h[2];            \
-    HOST_l2c(ll, (s));         \
-    ll = (c)->h[3];            \
-    HOST_l2c(ll, (s));         \
-  } while (0)
-#define HASH_BLOCK_DATA_ORDER md5_block_data_order
-
-#include "../digest/md32_common.h"
+#include <cassert>
+#include <cstring>
 
 // As pointed out by Wei Dai <weidai@eskimo.com>, the above can be
 // simplified to the code below.  Wei attributes these optimizations
@@ -127,6 +68,35 @@ static void md5_block_data_order(uint32_t *state, const uint8_t *data,
 #define I(b, c, d) (((~(d)) | (b)) ^ (c))
 
 #define ROTATE(a, n) (((a) << (n)) | ((a) >> (32 - (n))))
+
+#define HOST_c2l(c, l)                     \
+  do {                                     \
+    (l) = (((uint32_t)(*((c)++))) << 24);  \
+    (l) |= (((uint32_t)(*((c)++))) << 16); \
+    (l) |= (((uint32_t)(*((c)++))) << 8);  \
+    (l) |= (((uint32_t)(*((c)++))));       \
+  } while (0)
+
+#define HOST_l2c(l, c)                        \
+  do {                                        \
+    *((c)++) = (uint8_t)(((l) >> 24) & 0xff); \
+    *((c)++) = (uint8_t)(((l) >> 16) & 0xff); \
+    *((c)++) = (uint8_t)(((l) >> 8) & 0xff);  \
+    *((c)++) = (uint8_t)(((l)) & 0xff);       \
+  } while (0)
+
+#define HASH_MAKE_STRING(h, s) \
+  do {                         \
+    uint32_t ll;               \
+    ll = (h)[0];               \
+    HOST_l2c(ll, (s));         \
+    ll = (h)[1];               \
+    HOST_l2c(ll, (s));         \
+    ll = (h)[2];               \
+    HOST_l2c(ll, (s));         \
+    ll = (h)[3];               \
+    HOST_l2c(ll, (s));         \
+  } while (0)
 
 #define R0(a, b, c, d, k, s, t)            \
   do {                                     \
@@ -156,21 +126,80 @@ static void md5_block_data_order(uint32_t *state, const uint8_t *data,
     (a) += (b);                            \
   } while (0)
 
-#ifndef MD5_ASM
-#ifdef X
-#undef X
-#endif
-static void md5_block_data_order(uint32_t *state, const uint8_t *data,
-                                 size_t num) {
+namespace jaclks::javac_base {
+
+#define HASH_CTX MD5_CTX
+#define HASH_CBLOCK 64
+#define HASH_DIGEST_LENGTH 16
+
+void MD5Digest::EngineUpdate(char input) {}
+
+int MD5Digest::init() {
+  std::memset(&md5_, 0, sizeof(md5_));
+
+  md5_.h[0] = 0x67452301UL;
+  md5_.h[1] = 0xefcdab89UL;
+  md5_.h[2] = 0x98badcfeUL;
+  md5_.h[3] = 0x10325476UL;
+  return 1;
+}
+
+int MD5Digest::update(const std::uint8_t *data, std::size_t len) {
+  if (len == 0) {
+    return 1;
+  }
+
+  uint32_t l = md5_.Nl + (((uint32_t)len) << 3);
+  if (l < md5_.Nl) {
+    // Handle carries.
+    md5_.Nh++;
+  }
+  md5_.Nh += (uint32_t)(len >> 29);
+  md5_.Nl = l;
+
+  size_t n = md5_.num;
+  if (n != 0) {
+    if (len >= MD5Ctx::kMD5BlockSize || len + n >= MD5Ctx::kMD5BlockSize) {
+      std::memcpy(md5_.data + n, data, MD5Ctx::kMD5BlockSize - n);
+      transform(md5_.data, 1);
+      n = MD5Ctx::kMD5BlockSize - n;
+      data += n;
+      len -= n;
+      md5_.num = 0;
+      // Keep |c->data| zeroed when unused.
+      std::memset(md5_.data, 0, MD5Ctx::kMD5BlockSize);
+    } else {
+      std::memcpy(md5_.data + n, data, len);
+      md5_.num += static_cast<unsigned>(len);
+      return 1;
+    }
+  }
+
+  n = len / MD5Ctx::kMD5BlockSize;
+  if (n > 0) {
+    transform(data, n);
+    n *= MD5Ctx::kMD5BlockSize;
+    data += n;
+    len -= n;
+  }
+
+  if (len != 0) {
+    md5_.num = static_cast<unsigned>(len);
+    std::memcpy(md5_.data, data, len);
+  }
+  return 1;
+}
+
+void MD5Digest::transform(const std::uint8_t *data, std::size_t num) {
   uint32_t A, B, C, D, l;
   uint32_t XX0, XX1, XX2, XX3, XX4, XX5, XX6, XX7, XX8, XX9, XX10, XX11, XX12,
       XX13, XX14, XX15;
 #define X(i) XX##i
 
-  A = state[0];
-  B = state[1];
-  C = state[2];
-  D = state[3];
+  A = md5_.h[0];
+  B = md5_.h[1];
+  C = md5_.h[2];
+  D = md5_.h[3];
 
   for (; num--;) {
     HOST_c2l(data, l);
@@ -274,38 +303,47 @@ static void md5_block_data_order(uint32_t *state, const uint8_t *data,
     R3(C, D, A, B, X(2), 15, 0x2ad7d2bbL);
     R3(B, C, D, A, X(9), 21, 0xeb86d391L);
 
-    A = state[0] += A;
-    B = state[1] += B;
-    C = state[2] += C;
-    D = state[3] += D;
+    A = md5_.h[0] += A;
+    B = md5_.h[1] += B;
+    C = md5_.h[2] += C;
+    D = md5_.h[3] += D;
   }
-}
 #undef X
+}
+
+void MD5Digest::final() {
+  auto out = static_cast<std::uint8_t *>(alloca(kMD5DigestLength));
+
+  // |c->data| always has room for at least one byte. A full block would have
+  // been consumed.
+  size_t n = md5_.num;
+  assert(n < MD5Ctx::kMD5BlockSize);
+  md5_.data[n] = 0x80;
+  n++;
+
+  // Fill the block with zeros if there isn't room for a 64-bit length.
+  if (n > (MD5Ctx::kMD5BlockSize - 8)) {
+    std::memset(md5_.data + n, 0, MD5Ctx::kMD5BlockSize - n);
+    n = 0;
+    transform(md5_.data, 1);
+  }
+  std::memset(md5_.data + n, 0, MD5Ctx::kMD5BlockSize - 8 - n);
+
+  // Append a 64-bit length to the block and process it.
+  uint8_t *p = md5_.data + MD5Ctx::kMD5BlockSize - 8;
+#if defined(JACLKS_BIG_ENDIAN)
+  HOST_l2c(c->Nh, p);
+  HOST_l2c(c->Nl, p);
+#elif defined(JACLKS_LITTLE_ENDIAN)
+  HOST_l2c(md5_.Nl, p);
+  HOST_l2c(md5_.Nh, p);
 #endif
+  assert(p == md5_.data + MD5Ctx::kMD5BlockSize);
+  transform(md5_.data, 1);
+  md5_.num = 0;
+  std::memset(md5_.data, 0, MD5Ctx::kMD5BlockSize);
 
-#undef DATA_ORDER_IS_LITTLE_ENDIAN
-#undef HASH_CTX
-#undef HASH_CBLOCK
-#undef HASH_DIGEST_LENGTH
-#undef HASH_UPDATE
-#undef HASH_TRANSFORM
-#undef HASH_FINAL
-#undef HASH_MAKE_STRING
-#undef HASH_BLOCK_DATA_ORDER
-#undef F
-#undef G
-#undef H
-#undef I
-#undef ROTATE
-#undef R0
-#undef R1
-#undef R2
-#undef R3
-#undef HOST_c2l
-#undef HOST_l2c
-
-namespace jaclks::javac_base {
-
-void MD5Digest::EngineUpdate(char input) {}
+  HASH_MAKE_STRING(md5_.h, out);
+}
 
 }  // namespace jaclks::javac_base

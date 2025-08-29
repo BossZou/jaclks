@@ -18,6 +18,12 @@ option(ENABLE_COVERAGE "Enable build project with coverage options" OFF)
 
 include(cmake/DetectPlatform.cmake)
 
+if(BYTE_ORDER_BING_ENDIAN)
+  add_definitions(-DJACLKS_BIG_ENDIAN)
+else ()
+  add_definitions(-DJACLKS_LITTLE_ENDIAN)
+endif ()
+
 if(PLATFORM_WINDOWS)
   if(MSVC)
     add_definitions(-DJACLKS_OS_WINDOWS)
