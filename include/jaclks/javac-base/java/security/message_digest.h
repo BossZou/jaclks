@@ -10,11 +10,15 @@ class MessageDigestSpi;
 
 class MessageDigest {
  public:
+  static MessageDigest GetInstance(String algorithm);
+
   void Update(char input);
 
  private:
   static const int kInitial;
   static const int kInProgress;
+
+  MessageDigest(String algorithm, std::unique_ptr<MessageDigestSpi> digest);
 
   int state_;
   String algorithm_;
