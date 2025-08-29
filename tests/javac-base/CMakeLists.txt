@@ -1,5 +1,5 @@
 # add all src files
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/javac-base/lang JBASE_SRC_FILES)
+aux_source_directory(../../src/jaclks-internal/javac-base/lang JBASE_SRC_FILES)
 
 # add all test files
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/lang JBASE_TEST_SRC_FILES)

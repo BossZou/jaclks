@@ -15,7 +15,7 @@ typedef SSIZE_T ssize_t;
 
 #include "jaclks/javac-base/lang/character.h"
 
-namespace jaclks {
+namespace jaclks::javac_base {
 
 String String::Trim(const String &str) {
   auto buf = str.buf_;
@@ -399,4 +399,4 @@ bool String::is_local_data() const {
   return buf_ptr >= local_ptr && buf_ptr < local_ptr + kLocalCapacity;
 }
 
-}  // namespace jaclks
+}  // namespace jaclks::javac_base
