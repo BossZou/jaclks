@@ -23,7 +23,7 @@ class MD5Digest : public MessageDigestSpi {
 
   void md5_update(const std::uint8_t *data, std::size_t len);
 
-  void transform(const std::uint8_t *data, std::size_t len);
+  void md5_transform(const std::uint8_t *data, std::size_t len);
 
   String md5_final();
 

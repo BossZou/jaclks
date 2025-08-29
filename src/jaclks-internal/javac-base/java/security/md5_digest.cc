@@ -164,7 +164,7 @@ void MD5Digest::md5_update(const std::uint8_t *data, std::size_t len) {
   if (n != 0) {
     if (len >= kMD5BlockSize || len + n >= kMD5BlockSize) {
       std::memcpy(data_ + n, data, kMD5BlockSize - n);
-      transform(data_, 1);
+      md5_transform(data_, 1);
       n = kMD5BlockSize - n;
       data += n;
       len -= n;
@@ -180,7 +180,7 @@ void MD5Digest::md5_update(const std::uint8_t *data, std::size_t len) {
 
   n = len / kMD5BlockSize;
   if (n > 0) {
-    transform(data, n);
+    md5_transform(data, n);
     n *= kMD5BlockSize;
     data += n;
     len -= n;
@@ -192,7 +192,7 @@ void MD5Digest::md5_update(const std::uint8_t *data, std::size_t len) {
   }
 }
 
-void MD5Digest::transform(const std::uint8_t *data, std::size_t num) {
+void MD5Digest::md5_transform(const std::uint8_t *data, std::size_t num) {
   uint32_t A, B, C, D, l;
   uint32_t XX0, XX1, XX2, XX3, XX4, XX5, XX6, XX7, XX8, XX9, XX10, XX11, XX12,
       XX13, XX14, XX15;
@@ -327,7 +327,7 @@ String MD5Digest::md5_final() {
   if (n > (kMD5BlockSize - 8)) {
     std::memset(data_ + n, 0, kMD5BlockSize - n);
     n = 0;
-    transform(data_, 1);
+    md5_transform(data_, 1);
   }
   std::memset(data_ + n, 0, kMD5BlockSize - 8 - n);
 
@@ -341,7 +341,7 @@ String MD5Digest::md5_final() {
   HOST_l2c(Nh_, p);
 #endif
   assert(p == data_ + kMD5BlockSize);
-  transform(data_, 1);
+  md5_transform(data_, 1);
   num_ = 0;
   std::memset(data_, 0, kMD5BlockSize);
 
