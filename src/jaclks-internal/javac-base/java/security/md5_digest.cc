@@ -56,6 +56,13 @@
 
 #include "jaclks-internal/javac-base/java/security/md5_digest.h"
 
+#if defined(JACLKS_OS_WINDOWS)
+#include <malloc.h>
+#define alloca _alloca
+#else
+#include <alloca.h>
+#endif
+
 #include <cassert>
 #include <cstring>
 
