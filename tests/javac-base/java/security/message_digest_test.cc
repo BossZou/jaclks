@@ -69,7 +69,7 @@ TEST_F(MessageDigestTest, MD5UpdatePartial) {
     ASSERT_EQ(16UL, res2.Length());
   }
 
-  ASSERT_EQ(res1, res2);
+  ASSERT_EQ(res1, res2) << "r1:" << res1.CStr() << ", r2:" << res2.CStr();
 }
 
 }  // namespace jaclks::javac_base
