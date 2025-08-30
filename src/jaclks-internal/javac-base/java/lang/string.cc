@@ -1,4 +1,4 @@
-#include "jaclks/javac-base/lang/string.h"
+#include "jaclks/javac-base/java/lang/string.h"
 
 #ifdef _WIN32
 #include <BaseTsd.h>
@@ -13,7 +13,7 @@ typedef SSIZE_T ssize_t;
 #include <utility>
 #include <vector>
 
-#include "jaclks/javac-base/lang/character.h"
+#include "jaclks/javac-base/java/lang/character.h"
 
 namespace jaclks::javac_base {
 

@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "jaclks/javac-base/lang/string.h"
+#include "jaclks/javac-base/java/lang/string.h"
 
 namespace jaclks::javac_base {
 

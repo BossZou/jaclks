@@ -1,8 +1,11 @@
 # add all src files
-aux_source_directory(../../src/jaclks-internal/javac-base/lang JBASE_SRC_FILES)
+aux_source_directory(
+  ${PROJECT_ROOT_DIR}/src/jaclks-internal/javac-base/java/lang JBASE_SRC_FILES)
 
 # add all test files
-aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/lang JBASE_TEST_SRC_FILES)
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/java/lang JBASE_TEST_SRC_FILES)
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/java/security
+                     JBASE_TEST_SRC_FILES)
 
 add_executable(jbase_gtest main.cc ${JBASE_SRC_FILES} ${JBASE_TEST_SRC_FILES})
 
