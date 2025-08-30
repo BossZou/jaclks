@@ -4,6 +4,9 @@
 # aux_source_directory(${JBASE_SRC_ROOT_DIR}/java/security JBASE_SRC_FILES)
 
 link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+if(PLATFORM_WINDOWS)
+  link_directories(${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+endif()
 
 # add all test files
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/java/lang JBASE_TEST_SRC_FILES)
