@@ -5,7 +5,10 @@
 namespace jaclks::javac_base {
 
 std::int64_t System::CurrentTimeMillis() {
-  using namespace std::chrono;
+  using std::chrono::duration_cast;
+  using std::chrono::milliseconds;
+  using std::chrono::system_clock;
+
   auto now = system_clock::now();
   return duration_cast<milliseconds>(now.time_since_epoch()).count();
 }
