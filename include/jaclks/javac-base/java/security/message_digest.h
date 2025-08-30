@@ -12,6 +12,8 @@ class MessageDigest {
  public:
   static MessageDigest GetInstance(String algorithm);
 
+  ~MessageDigest();
+
   void Update(const std::uint8_t *data, std::size_t num);
 
   String Digest();

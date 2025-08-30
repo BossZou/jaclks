@@ -27,6 +27,10 @@ MessageDigest::MessageDigest(String algorithm,
       algorithm_(std::move(algorithm)),
       digest_(std::move(digest)) {}  // NOLINT(whitespace/indent_namespace)
 
+MessageDigest::~MessageDigest() {
+  digest_.reset();
+}
+
 void MessageDigest::Update(const std::uint8_t *data, std::size_t num) {
   digest_->EngineUpdate(data, num);
   state_ = kInProgress;
