@@ -5,7 +5,12 @@ aux_source_directory(${SRC_ROOT_DIR}/javac-base/java/security SRC_FILES)
 
 add_library(jaclks_shared SHARED ${SRC_FILES})
 target_include_directories(jaclks_shared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-set_target_properties(jaclks_shared PROPERTIES OUTPUT_NAME "jaclks")
+set_target_properties(
+  jaclks_shared
+  PROPERTIES OUTPUT_NAME "jaclks"
+             ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}"
+             LIBRARY_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
+             RUNTIME_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 
 # Install library
 include(GNUInstallDirs)
