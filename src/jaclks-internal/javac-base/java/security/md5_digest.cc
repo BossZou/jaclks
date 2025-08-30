@@ -77,21 +77,43 @@
 
 #define ROTATE(a, n) (((a) << (n)) | ((a) >> (32 - (n))))
 
-#define HOST_c2l(c, l)                                     \
-  do {                                                     \
-    (l) = ((static_cast<std::uint32_t>(*((c)++))) << 24);  \
-    (l) |= ((static_cast<std::uint32_t>(*((c)++))) << 16); \
-    (l) |= ((static_cast<std::uint32_t>(*((c)++))) << 8);  \
-    (l) |= ((static_cast<std::uint32_t>(*((c)++))));       \
+#if defined(JACLKS_BIG_ENDIAN)
+
+#define HOST_c2l(c, l)                     \
+  do {                                     \
+    (l) = (((uint32_t)(*((c)++))) << 24);  \
+    (l) |= (((uint32_t)(*((c)++))) << 16); \
+    (l) |= (((uint32_t)(*((c)++))) << 8);  \
+    (l) |= (((uint32_t)(*((c)++))));       \
   } while (0)
 
-#define HOST_l2c(l, c)                                        \
-  do {                                                        \
-    *((c)++) = static_cast<std::uint8_t>(((l) >> 24) & 0xff); \
-    *((c)++) = static_cast<std::uint8_t>(((l) >> 16) & 0xff); \
-    *((c)++) = static_cast<std::uint8_t>(((l) >> 8) & 0xff);  \
-    *((c)++) = static_cast<std::uint8_t>(((l)) & 0xff);       \
+#define HOST_l2c(l, c)                        \
+  do {                                        \
+    *((c)++) = (uint8_t)(((l) >> 24) & 0xff); \
+    *((c)++) = (uint8_t)(((l) >> 16) & 0xff); \
+    *((c)++) = (uint8_t)(((l) >> 8) & 0xff);  \
+    *((c)++) = (uint8_t)(((l)) & 0xff);       \
   } while (0)
+
+#elif defined(JACLKS_LITTLE_ENDIAN)
+
+#define HOST_c2l(c, l)                     \
+  do {                                     \
+    (l) = (((uint32_t)(*((c)++))));        \
+    (l) |= (((uint32_t)(*((c)++))) << 8);  \
+    (l) |= (((uint32_t)(*((c)++))) << 16); \
+    (l) |= (((uint32_t)(*((c)++))) << 24); \
+  } while (0)
+
+#define HOST_l2c(l, c)                        \
+  do {                                        \
+    *((c)++) = (uint8_t)(((l)) & 0xff);       \
+    *((c)++) = (uint8_t)(((l) >> 8) & 0xff);  \
+    *((c)++) = (uint8_t)(((l) >> 16) & 0xff); \
+    *((c)++) = (uint8_t)(((l) >> 24) & 0xff); \
+  } while (0)
+
+#endif
 
 #define HASH_MAKE_STRING(h, s) \
   do {                         \
