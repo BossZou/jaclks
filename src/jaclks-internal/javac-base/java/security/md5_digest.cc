@@ -65,6 +65,7 @@
 
 #include <cassert>
 #include <cstring>
+#include <new>
 
 // As pointed out by Wei Dai <weidai@eskimo.com>, the above can be
 // simplified to the code below.  Wei attributes these optimizations
@@ -145,6 +146,11 @@ void MD5Digest::EngineUpdate(const char *data, std::size_t num) {
 
 String MD5Digest::EngineDigest() {
   return md5_final();
+}
+
+void MD5Digest::EngineReset() {
+  this->~MD5Digest();
+  new (this) MD5Digest();
 }
 
 void MD5Digest::md5_init() {

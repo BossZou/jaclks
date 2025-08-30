@@ -14,6 +14,10 @@ class MessageDigest {
 
   void Update(const char *data, std::size_t num);
 
+  String Digest();
+
+  void Reset();
+
  private:
   static const int kInitial;
   static const int kInProgress;

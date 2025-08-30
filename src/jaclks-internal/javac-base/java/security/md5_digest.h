@@ -14,6 +14,8 @@ class MD5Digest : public MessageDigestSpi {
 
   String EngineDigest() override;
 
+  void EngineReset() override;
+
  private:
   static constexpr int kMD5StateNum = 4;
   static constexpr int kMD5BlockSize = 64;

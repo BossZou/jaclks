@@ -11,6 +11,8 @@ class MessageDigestSpi {
   virtual void EngineUpdate(const char *data, std::size_t num) = 0;
 
   virtual String EngineDigest() = 0;
+
+  virtual void EngineReset() = 0;
 };
 
 }  // namespace jaclks::javac_base

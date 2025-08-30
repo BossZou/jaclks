@@ -29,6 +29,18 @@ MessageDigest::MessageDigest(String algorithm,
 
 void MessageDigest::Update(const char *data, std::size_t num) {
   digest_->EngineUpdate(data, num);
+  state_ = kInProgress;
+}
+
+String MessageDigest::Digest() {
+  auto digest = digest_->EngineDigest();
+  state_ = kInitial;
+  return digest;
+}
+
+void MessageDigest::Reset() {
+  digest_->EngineReset();
+  state_ = kInitial;
 }
 
 }  // namespace jaclks::javac_base
