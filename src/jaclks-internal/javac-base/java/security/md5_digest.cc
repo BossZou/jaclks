@@ -187,7 +187,7 @@ void MD5Digest::md5_update(const std::uint8_t *data, std::size_t len) {
     return;
   }
 
-  uint32_t l = Nl_ + (static_cast<std::uint32_t>(len) << 3);
+  std::uint32_t l = Nl_ + (static_cast<std::uint32_t>(len) << 3);
   if (l < Nl_) {
     // Handle carries.
     Nh_++;
@@ -195,7 +195,7 @@ void MD5Digest::md5_update(const std::uint8_t *data, std::size_t len) {
   Nh_ += static_cast<std::uint32_t>(len >> 29);
   Nl_ = l;
 
-  size_t n = num_;
+  std::size_t n = num_;
   if (n != 0) {
     if (len >= kMD5BlockSize || len + n >= kMD5BlockSize) {
       std::memcpy(data_ + n, data, kMD5BlockSize - n);
