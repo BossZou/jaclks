@@ -4,6 +4,9 @@ aux_source_directory(${SRC_ROOT_DIR}/javac-base/java/lang SRC_FILES)
 aux_source_directory(${SRC_ROOT_DIR}/javac-base/java/security SRC_FILES)
 
 add_library(jaclks_shared SHARED ${SRC_FILES})
+if(PLATFORM_WINDOWS)
+  target_compile_definitions(jaclks_shared PRIVATE MYDLL_EXPORTS)
+endif()
 target_include_directories(jaclks_shared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 set_target_properties(
   jaclks_shared

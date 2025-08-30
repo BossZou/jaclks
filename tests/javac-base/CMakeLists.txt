@@ -3,9 +3,11 @@
 # aux_source_directory(${JBASE_SRC_ROOT_DIR}/java/lang JBASE_SRC_FILES)
 # aux_source_directory(${JBASE_SRC_ROOT_DIR}/java/security JBASE_SRC_FILES)
 
-link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 if(PLATFORM_WINDOWS)
-  link_directories(${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+  link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE})
+  link_directories(${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE})
+else()
+  link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 endif()
 
 # add all test files
@@ -15,7 +17,7 @@ aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/java/security
 
 add_executable(jbase_gtest main.cc ${JBASE_TEST_SRC_FILES})
 
-target_link_libraries(jbase_gtest PRIVATE gtest jaclks)
+target_link_libraries(jbase_gtest PRIVATE gtest jaclks_shared)
 
 add_dependencies(jbase_gtest build_thirdparty jaclks_shared)
 
