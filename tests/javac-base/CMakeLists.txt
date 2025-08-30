@@ -17,9 +17,9 @@ aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/java/security
 
 add_executable(jbase_gtest main.cc ${JBASE_TEST_SRC_FILES})
 
-target_link_libraries(jbase_gtest PRIVATE jaclks_shared gtest)
+target_link_libraries(jbase_gtest PRIVATE jaclks_static gtest)
 
-add_dependencies(jbase_gtest build_thirdparty jaclks_shared)
+add_dependencies(jbase_gtest build_thirdparty jaclks_static)
 
 add_custom_command(TARGET jbase_gtest PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
