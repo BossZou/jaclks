@@ -17,9 +17,16 @@ aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/java/security
 
 add_executable(jbase_gtest main.cc ${JBASE_TEST_SRC_FILES})
 
-target_link_libraries(jbase_gtest PRIVATE gtest jaclks_shared)
+target_link_libraries(jbase_gtest PRIVATE jaclks_shared gtest)
 
 add_dependencies(jbase_gtest build_thirdparty jaclks_shared)
+
+add_custom_command(TARGET jbase_gtest PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        $<TARGET_FILE:jaclks_shared>
+        $<TARGET_FILE_DIR:jbase_gtest>
+    COMMENT "Copying DLL to executable directory"
+)
 
 # Registers googletests
 add_test(NAME jbase_gtest COMMAND $<TARGET_FILE:jbase_gtest>)

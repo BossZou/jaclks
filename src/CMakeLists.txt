@@ -15,11 +15,23 @@ set_target_properties(
              LIBRARY_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
              RUNTIME_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 
+add_library(jaclks_static STATIC ${SRC_FILES})
+if(PLATFORM_WINDOWS)
+  target_compile_definitions(jaclks_static PRIVATE MYDLL_EXPORTS)
+endif()
+target_include_directories(jaclks_static PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+set_target_properties(
+  jaclks_static
+  PROPERTIES OUTPUT_NAME "jaclks"
+             ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}"
+             LIBRARY_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
+             RUNTIME_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+
 # Install library
 include(GNUInstallDirs)
 
 install(
-  TARGETS jaclks_shared
+  TARGETS jaclks_shared jaclks_static
   EXPORT JaclksTargets # cmake config (.cmake)
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} # static lib (.a)
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} # dynamic lib (.so)
