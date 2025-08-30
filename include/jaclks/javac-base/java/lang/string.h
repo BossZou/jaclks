@@ -52,7 +52,7 @@ class String {
 
   String();
 
-  explicit String(const char *str, bool ref = false);
+  String(const char *str, bool ref = false);
 
   explicit String(const char *str, std::size_t len);
 

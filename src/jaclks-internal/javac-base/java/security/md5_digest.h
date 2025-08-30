@@ -10,7 +10,7 @@ class MD5Digest : public MessageDigestSpi {
 
   ~MD5Digest() override = default;
 
-  void EngineUpdate(const char *data, std::size_t num) override;
+  void EngineUpdate(const std::uint8_t *data, std::size_t num) override;
 
   String EngineDigest() override;
 

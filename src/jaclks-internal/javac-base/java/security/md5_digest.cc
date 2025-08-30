@@ -140,8 +140,8 @@ MD5Digest::MD5Digest() : h_{}, Nl_(0), Nh_(0), data_{}, num_(0) {
   md5_init();
 }
 
-void MD5Digest::EngineUpdate(const char *data, std::size_t num) {
-  md5_update(reinterpret_cast<const std::uint8_t *>(data), num);
+void MD5Digest::EngineUpdate(const std::uint8_t *data, std::size_t num) {
+  md5_update(data, num);
 }
 
 String MD5Digest::EngineDigest() {

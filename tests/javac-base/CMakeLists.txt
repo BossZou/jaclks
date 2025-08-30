@@ -1,6 +1,7 @@
 # add all src files
-aux_source_directory(
-  ${PROJECT_ROOT_DIR}/src/jaclks-internal/javac-base/java/lang JBASE_SRC_FILES)
+set(JBASE_SRC_ROOT_DIR ${PROJECT_ROOT_DIR}/src/jaclks-internal/javac-base)
+aux_source_directory(${JBASE_SRC_ROOT_DIR}/java/lang JBASE_SRC_FILES)
+aux_source_directory(${JBASE_SRC_ROOT_DIR}/java/security JBASE_SRC_FILES)
 
 # add all test files
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/java/lang JBASE_TEST_SRC_FILES)
