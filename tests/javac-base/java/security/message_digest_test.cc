@@ -61,9 +61,8 @@ TEST_F(MessageDigestTest, MD5UpdatePartial) {
   {
     auto md5 = MessageDigest::GetInstance("MD5");
     for (auto i = 0UL; i < size; i += 9999) {
-      auto left = std::min(9999UL, size - i);
       md5.Update(reinterpret_cast<const std::uint8_t *>(buffer.get() + i),
-                 left);
+                 std::min(9999UL, size - i));
     }
 
     res2 = md5.Digest();

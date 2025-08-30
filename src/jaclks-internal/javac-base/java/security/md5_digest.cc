@@ -165,12 +165,12 @@ void MD5Digest::md5_update(const std::uint8_t *data, std::size_t len) {
     return;
   }
 
-  uint32_t l = Nl_ + (static_cast<uint32_t>(len) << 3);
+  uint32_t l = Nl_ + (static_cast<std::uint32_t>(len) << 3);
   if (l < Nl_) {
     // Handle carries.
     Nh_++;
   }
-  Nh_ += static_cast<uint32_t>(len >> 29);
+  Nh_ += static_cast<std::uint32_t>(len >> 29);
   Nl_ = l;
 
   size_t n = num_;
