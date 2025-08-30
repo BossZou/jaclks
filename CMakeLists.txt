@@ -11,12 +11,27 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Set output directory for executables
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+
+# Set output directory for static libraries
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
+# Set output directory for shared libraries
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
 set(PROJECT_ROOT_DIR ${PROJECT_SOURCE_DIR})
 
 option(ENABLE_GTEST "Enable build googletest executable" OFF)
 option(ENABLE_COVERAGE "Enable build project with coverage options" OFF)
 
 include(cmake/DetectPlatform.cmake)
+
+if(BYTE_ORDER_BIG_ENDIAN)
+  add_definitions(-DJACLKS_BIG_ENDIAN)
+else ()
+  add_definitions(-DJACLKS_LITTLE_ENDIAN)
+endif ()
 
 if(PLATFORM_WINDOWS)
   if(MSVC)

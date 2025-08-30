@@ -1,8 +1,8 @@
-#include "jaclks/javac-base/lang/string.h"
+#include "jaclks/javac-base/java/lang/string.h"
 
 #include <gtest/gtest.h>
 
-namespace jaclks {
+namespace jaclks::javac_base {
 
 namespace {
 
@@ -737,4 +737,4 @@ TEST_P(StringTest, Reset) {
   }
 }
 
-}  // namespace jaclks
+}  // namespace jaclks::javac_base

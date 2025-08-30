@@ -1,5 +1,18 @@
 # cmake/DetectPlatform.cmake
 
+include(TestBigEndian)
+
+test_big_endian(IS_BIG_ENDIAN)
+
+if(IS_BIG_ENDIAN)
+  message(STATUS "Platform is Big-Endian byte order")
+  set(BYTE_ORDER_BIG_ENDIAN
+      ON
+      CACHE INTERNAL "Big-Endian byte order")
+else()
+  message(STATUS "Platform is Little-Endian byte order")
+endif()
+
 # Detect Operation System
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(PLATFORM_WINDOWS
