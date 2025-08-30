@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(Jaclks LANGUAGES C CXX VERSION 0.0.1)
+project(
+  Jaclks
+  LANGUAGES C CXX
+  VERSION 0.0.1)
 
 # 全局标准设置
 set(CMAKE_C_STANDARD 11)
@@ -25,13 +28,20 @@ set(PROJECT_ROOT_DIR ${PROJECT_SOURCE_DIR})
 option(ENABLE_GTEST "Enable build googletest executable" OFF)
 option(ENABLE_COVERAGE "Enable build project with coverage options" OFF)
 
+# Initial and update git submodule
+execute_process(
+  COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  RESULT_VARIABLE GIT_SUBMOD_RESULT)
+
 include(cmake/DetectPlatform.cmake)
+include(cmake/HandleDependencies.cmake)
 
 if(BYTE_ORDER_BIG_ENDIAN)
   add_definitions(-DJACLKS_BIG_ENDIAN)
-else ()
+else()
   add_definitions(-DJACLKS_LITTLE_ENDIAN)
-endif ()
+endif()
 
 if(PLATFORM_WINDOWS)
   if(MSVC)
@@ -75,19 +85,6 @@ endif()
 
 message(STATUS "CMAKE_C_FLAGS = ${CMAKE_C_FLAGS}")
 message(STATUS "CMAKE_CXX_FLAGS = ${CMAKE_CXX_FLAGS}")
-
-find_package(Git REQUIRED)
-
-# Initial and update git submodule
-execute_process(
-  COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  RESULT_VARIABLE GIT_SUBMOD_RESULT)
-
-if(NOT GIT_SUBMOD_RESULT EQUAL "0")
-  message(
-    FATAL_ERROR "Failed to initialize git submodules: ${GIT_SUBMOD_RESULT}")
-endif()
 
 # Third party configurations
 if(MSVC)

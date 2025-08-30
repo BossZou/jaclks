@@ -36,6 +36,7 @@ cpp-format:
 # pip3 install cmake-format
 cmake-format:
 	@echo "Formatting cmake files with cmake-format..."
+	cmake-format -l debug -i CMakeLists.txt
 	 find cmake/ src/ tests/ -name '*.cmake' -o -name 'CMakeLists.txt' | xargs cmake-format -l debug -i
 	@echo "Formatting source files with clang-format done."
 
