@@ -1,18 +1,17 @@
 name: Windows Build
 
+#on:
+#  push:
+#    branches: [ "main" ]
+#  pull_request:
+#    branches: [ "main" ]
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  repository_dispatch:
+    types: [cpplint_success]
 
 jobs:
-  cpplint:
-    uses: ./.github/workflows/cpp-lint.yml
-
   windows-build:
     runs-on: ${{ matrix.os }}
-    needs: [cpplint]
 
     strategy:
       # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.

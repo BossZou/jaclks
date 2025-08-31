@@ -1,7 +1,6 @@
 name: Cpp Lint
 
 on:
-  workflow_call:
   push:
     branches: [ "main" ]
   pull_request:
@@ -17,3 +16,10 @@ jobs:
           pip install cpplint
           sleep 1m
           cpplint --recursive src/ include/
+      - name: Trigger Build
+        if: success()
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.PAT }}  # 同样需要使用 PAT，而不是 GITHUB_TOKEN
+          event-type: cpplint_success
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
