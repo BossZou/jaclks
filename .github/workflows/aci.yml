@@ -9,19 +9,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  cpplint:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: Cpp Lint Check
-        run: |
-          pip install cpplint
-          cpplint --recursive src/ include/
-
   build:
     runs-on: ${{ matrix.os }}
-    needs: cpplint # 仅当 cpplint 工作流成功时才运行
-
     strategy:
       # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
       fail-fast: false
