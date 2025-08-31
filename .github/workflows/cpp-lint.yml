@@ -15,4 +15,5 @@ jobs:
       - name: Cpp Lint Check
         run: |
           pip install cpplint
+          sleep 1m
           cpplint --recursive src/ include/
