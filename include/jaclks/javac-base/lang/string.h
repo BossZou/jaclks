@@ -50,6 +50,12 @@ class String {
                                   const String &sub,
                                   std::size_t from_index);
 
+  template <typename... Args>
+  static String Format(const String &format, Args &&... args) {
+    // FIXME(John Doe): Implement it.
+    return {};
+  }
+
   String();
 
   explicit String(const char *str, bool ref = false);
