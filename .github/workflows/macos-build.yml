@@ -1,0 +1,94 @@
+# This starter workflow is for a CMake project running on multiple platforms. There is a different starter workflow if you just want a single platform.
+# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
+name: Macos Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  macos-check-cpplint:
+    uses: ./.github/workflows/callable-check-job.yml
+    with:
+      job-name: cpplint
+      timeout: 60
+
+  macos-build:
+    runs-on: ${{ matrix.os }}
+    needs:
+      - macos-check-cpplint
+    strategy:
+      fail-fast: false
+      matrix:
+        # The support os can see: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#choosing-github-hosted-runners
+        os: [ macos-13, macos-15 ]
+        build_type: [ Release ]
+        c_compiler: [ gcc ]
+        cpp_compiler: [ g++ ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Reusable Strings
+        # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+          echo "gtest-build-output-dir=${{ github.workspace }}/build-gtest" >> "$GITHUB_OUTPUT"
+
+      - name: Configure CMake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -S ${{ github.workspace }}
+          -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
+          -DENABLE_GTEST=OFF
+
+      - name: Build
+        # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+
+      - name: Install
+        run: >
+          cmake --build ${{ steps.strings.outputs.build-output-dir }}
+          --config ${{ matrix.build_type }}
+          --target install
+
+      - name: Configure GTest CMake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: >
+          cmake -B ${{ steps.strings.outputs.gtest-build-output-dir }}
+          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -S ${{ github.workspace }}
+          -DENABLE_GTEST=ON
+
+      - name: GTest Build
+        # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
+        run: cmake --build ${{ steps.strings.outputs.gtest-build-output-dir }} --config ${{ matrix.build_type }}
+
+      - name: GTest
+        working-directory: ${{ steps.strings.outputs.gtest-build-output-dir }}
+        # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
+        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+        # optional args: --parallel 2
+        run: ctest --verbose --output-on-failure --build-config ${{ matrix.build_type }}
+
+  macos-result:
+    runs-on: ubuntu-24.04
+    needs:
+      - macos-build
+    steps:
+      - name: Print results
+        shell: bash
+        run: |
+          echo "Project build pass on macos platform"
