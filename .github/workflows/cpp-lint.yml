@@ -15,4 +15,3 @@ jobs:
         run: |
           pip install cpplint
           cpplint --recursive src/ include/
-          exit 1
