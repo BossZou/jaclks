@@ -2,7 +2,7 @@ name: Windows Build
 
 on:
   workflow_run:
-    workflows: [RCpp Lint]
+    workflows: [Cpp Lint]
     types:
       - completed
 
