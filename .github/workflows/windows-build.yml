@@ -13,8 +13,34 @@ on:
 #        - completed
 
 jobs:
+  check-cpplint:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Wait for CppLint
+        uses: fountainhead/action-wait-for-check@v1.2.0  # details: https://github.com/fountainhead/action-wait-for-check
+        id: wait-for-cpplint
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: cpplint
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          timeoutSeconds: 60
+
+      - name: Pass on success
+        if: steps.wait-for-build.outputs.conclusion == 'success'
+        shell: bash
+        run: |
+          echo "Cpp Lint pass, start build project on windows platrofm"
+
+      - name: Exit on failure
+        if: steps.wait-for-build.outputs.conclusion == 'failure'
+        shell: bash
+        run: |
+          echo "Cpp Lint failed, exit workflow"
+          exit 1
+
   windows-build:
     runs-on: ${{ matrix.os }}
+    needs: [ check-cpplint ]
 
     strategy:
       # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
