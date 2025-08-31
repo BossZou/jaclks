@@ -1,0 +1,39 @@
+name: Check Cpp Lint
+
+on:
+  workflow_call:
+    inputs:
+      job-name:
+        required: true
+        type: string
+      timeout:
+        required: false
+        type: number
+        default: 600
+      caller:
+        required: false
+        type: string
+        default: "Caller"
+
+jobs:
+  check-job:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Wait Job
+        uses: fountainhead/action-wait-for-check@v1.2.0  # details: https://github.com/fountainhead/action-wait-for-check
+        id: wait-job
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: ${{ inputs.job-name }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          timeoutSeconds: ${{ inputs.timeout }}
+      - name: Exit on failure
+        if: steps.wait-job.outputs.conclusion != 'success'
+        shell: bash
+        run: |
+          echo "Job failed with status ${{ steps.wait-job.outputs.conclusion }}, exit workflow."
+          exit 1
+      - name: Go on Caller
+        shell: bash
+        run: |
+          echo "Job pass, go on running caller job ${{ inputs.caller }}..."
