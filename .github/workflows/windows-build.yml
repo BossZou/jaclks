@@ -8,7 +8,7 @@ on:
 
 jobs:
   windows-check-cpplint:
-    uses: ./.github/workflows/callable/check-cpp-lint.yml
+    uses: ./.github/workflows/callable-check-cpp-lint.yml
 
   windows-build:
     runs-on: ${{ matrix.os }}
