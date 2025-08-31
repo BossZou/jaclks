@@ -10,6 +10,10 @@ on:
         required: false
         type: number
         default: 600
+      caller:
+        required: false
+        type: string
+        default: "Caller"
 
 jobs:
   check-job:
@@ -23,14 +27,13 @@ jobs:
           checkName: ${{ inputs.job-name }}
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           timeoutSeconds: ${{ inputs.timeout }}
-      - name: Pass on success
-        if: steps.wait-job.outputs.conclusion == 'success'
-        shell: bash
-        run: |
-          echo "Job pass, go on other jobs."
       - name: Exit on failure
-        if: steps.wait-job.outputs.conclusion == 'failure'
+        if: steps.wait-job.outputs.conclusion != 'success'
         shell: bash
         run: |
-          echo "Job failed, exit workflow."
+          echo "Job failed with status ${{ steps.wait-job.outputs.conclusion }}, exit workflow."
           exit 1
+      - name: Go on Caller
+        shell: bash
+        run: |
+          echo "Job pass, go on running caller job ${{ inputs.caller }}..."
