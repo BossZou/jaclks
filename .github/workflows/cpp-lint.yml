@@ -17,7 +17,3 @@ jobs:
         run: |
           pip install cpplint
           cpplint --recursive src/ include/
-      - name: Trigger Build
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          event-type: cpplint_success
