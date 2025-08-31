@@ -25,6 +25,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           timeoutSeconds: 60
 
+      - name: Echo CppLint status
+        shell: bash
+        run: |
+          echo "Job cpplint status: ${{ steps.wait-for-build.outputs.conclusion }}"
+
       - name: Pass on success
         if: steps.wait-for-build.outputs.conclusion == 'success'
         shell: bash
