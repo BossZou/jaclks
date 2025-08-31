@@ -1,13 +1,25 @@
 name: Windows Build
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+#on:
+#  push:
+#    branches: [ "main" ]
+#  pull_request:
+#    branches: [ "main" ]
 #on:
 #  repository_dispatch:
 #    types: [cpplint_success]
+
+on:
+  workflow_run:
+    workflows: [Cpp Lint]
+    types:
+      - completed
+
+#on:
+#  workflow_run:
+#    workflows: [Cpp Lint]
+#      types:
+#        - completed
 
 jobs:
   windows-build:
