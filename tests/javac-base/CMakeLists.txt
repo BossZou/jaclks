@@ -7,7 +7,7 @@ add_executable(jbase_gtest main.cc ${JBASE_TEST_SRC_FILES})
 
 target_link_libraries(jbase_gtest PRIVATE jaclks_static gtest)
 
-add_dependencies(jbase_gtest build_thirdparty jaclks_static)
+add_dependencies(jbase_gtest jaclks_static)
 
 # Registers googletests
 add_test(NAME jbase_gtest COMMAND $<TARGET_FILE:jbase_gtest>)
