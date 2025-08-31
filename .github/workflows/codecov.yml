@@ -12,19 +12,19 @@ jobs:
   ubuntu-check-build:
     uses: ./.github/workflows/callable-check-job.yml
     with:
-      job-name: ubuntu-build
+      job-name: ubuntu-result
       timeout: 600
 
   macos-check-build:
     uses: ./.github/workflows/callable-check-job.yml
     with:
-      job-name: macos-build
+      job-name: macos-result
       timeout: 600
 
   windows-check-build:
     uses: ./.github/workflows/callable-check-job.yml
     with:
-      job-name: windows-build
+      job-name: windows-result
       timeout: 600
 
   codecov:

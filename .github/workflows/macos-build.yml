@@ -82,3 +82,13 @@ jobs:
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
         # optional args: --parallel 2
         run: ctest --verbose --output-on-failure --build-config ${{ matrix.build_type }}
+
+  macos-result:
+    runs-on: ubuntu-24.04
+    needs:
+      - macos-build
+    steps:
+      - name: Print results
+        shell: bash
+        run: |
+          echo "Project build pass on macos platform"
