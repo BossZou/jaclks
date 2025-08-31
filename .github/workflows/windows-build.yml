@@ -1,13 +1,13 @@
 name: Windows Build
 
-#on:
-#  push:
-#    branches: [ "main" ]
-#  pull_request:
-#    branches: [ "main" ]
 on:
-  repository_dispatch:
-    types: [cpplint_success]
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+#on:
+#  repository_dispatch:
+#    types: [cpplint_success]
 
 jobs:
   windows-build:
