@@ -26,6 +26,7 @@ option(ENABLE_GTEST "Enable build googletest executable" OFF)
 option(ENABLE_COVERAGE "Enable build project with coverage options" OFF)
 
 include(cmake/DetectPlatform.cmake)
+include(cmake/HandleDeps.cmake)
 
 if(BYTE_ORDER_BIG_ENDIAN)
   add_definitions(-DJACLKS_BIG_ENDIAN)
