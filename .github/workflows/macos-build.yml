@@ -10,7 +10,10 @@ on:
 
 jobs:
   macos-check-cpplint:
-    uses: ./.github/workflows/callable-check-cpp-lint.yml
+    uses: ./.github/workflows/callable-check-job.yml
+    with:
+      job-name: cpplint
+      timeout: 60
 
   macos-build:
     runs-on: ${{ matrix.os }}
