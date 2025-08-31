@@ -13,7 +13,7 @@ on:
 #        - completed
 
 jobs:
-  check-cpplint:
+  windows-check-cpplint:
     runs-on: ubuntu-24.04
     steps:
       - name: Wait for CppLint
@@ -28,16 +28,16 @@ jobs:
       - name: Echo CppLint status
         shell: bash
         run: |
-          echo "Job cpplint status: ${{ steps.wait-for-build.outputs.conclusion }}"
+          echo "Job cpplint status: ${{ steps.wait-for-cpplint.outputs.conclusion }}"
 
       - name: Pass on success
-        if: steps.wait-for-build.outputs.conclusion == 'success'
+        if: steps.wait-for-cpplint.outputs.conclusion == 'success'
         shell: bash
         run: |
           echo "Cpp Lint pass, start build project on windows platrofm"
 
       - name: Exit on failure
-        if: steps.wait-for-build.outputs.conclusion == 'failure'
+        if: steps.wait-for-cpplint.outputs.conclusion == 'failure'
         shell: bash
         run: |
           echo "Cpp Lint failed, exit workflow"
@@ -45,7 +45,7 @@ jobs:
 
   windows-build:
     runs-on: ${{ matrix.os }}
-    needs: [ check-cpplint ]
+    needs: [ windows-check-cpplint ]
 
     strategy:
       # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
