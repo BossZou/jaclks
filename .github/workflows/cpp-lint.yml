@@ -9,17 +9,16 @@ on:
 jobs:
   cpplint:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Cpp Lint Check
         run: |
           pip install cpplint
-          sleep 1m
           cpplint --recursive src/ include/
       - name: Trigger Build
         if: success()
-        uses: peter-evans/repository-dispatch@v2
+        uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.PAT }}  # 同样需要使用 PAT，而不是 GITHUB_TOKEN
           event-type: cpplint_success
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
