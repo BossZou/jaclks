@@ -113,10 +113,6 @@ endif()
 #endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-include_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR}/dist/third-party/googletest/include)
-
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/dist/third-party/googletest/lib)
 
 enable_testing()
 
