@@ -84,6 +84,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        # Details see: https://github.com/actions/checkout
+        with:
+          submodules: true
+
+      - name: Build Dependencies
+        shell: bash
+        run: |
+          bash ${{ github.workspace }}/bin/build_deps.sh
 
       - name: Set Reusable Strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
