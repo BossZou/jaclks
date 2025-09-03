@@ -34,7 +34,7 @@ jobs:
       - name: Build Dependencies
         shell: bash
         run: |
-          bash ${{ github.workspace }}\\bin\\build_deps.sh
+          bash '${{ github.workspace }}/bin/build_deps.sh'
       - name: Set Reusable Strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
         id: strings
