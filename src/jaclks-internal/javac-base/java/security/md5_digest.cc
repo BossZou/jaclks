@@ -28,8 +28,8 @@ void MD5Digest::EngineReset() {
 
 void MD5Digest::md5_init() {
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
-  ctx_evp_ = EVP_MD_CTX_new();
-  EVP_DigestInit_ex(ctx_evp_, EVP_md5(), nullptr);
+  ctx_ = EVP_MD_CTX_new();
+  EVP_DigestInit_ex(ctx_, EVP_md5(), nullptr);
 #else
   MD5_Init(&ctx_);
 #endif
@@ -48,7 +48,7 @@ String MD5Digest::md5_final() {
 
 #ifdef USE_EVP_MD5
   unsigned int len;
-  EVP_DigestFinal_ex(ctx__, digest, &len);
+  EVP_DigestFinal_ex(ctx_, digest, &len);
 #else
   MD5_Final(digest, &ctx_);
 #endif
