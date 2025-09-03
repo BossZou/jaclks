@@ -27,7 +27,7 @@ void MD5Digest::EngineReset() {
 }
 
 void MD5Digest::md5_init() {
-#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+#ifdef USE_EVP_MD5
   ctx_ = EVP_MD_CTX_new();
   EVP_DigestInit_ex(ctx_, EVP_md5(), nullptr);
 #else

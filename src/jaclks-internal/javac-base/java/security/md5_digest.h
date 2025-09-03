@@ -5,11 +5,11 @@
 
 #include "jaclks-internal/javac-base/java/security/message_digest_spi.h"
 
-namespace jaclks::javac_base {
-
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
 #define USE_EVP_MD5  // OpenSSL 3.0+ Use EVP API
 #endif
+
+namespace jaclks::javac_base {
 
 class MD5Digest : public MessageDigestSpi {
  public:
