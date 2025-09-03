@@ -8,6 +8,7 @@ if(PLATFORM_WINDOWS)
   target_compile_definitions(jaclks_shared PRIVATE MYDLL_EXPORTS)
 endif()
 target_include_directories(jaclks_shared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(jaclks_shared PUBLIC MyThirdParty::All)
 set_target_properties(
   jaclks_shared
   PROPERTIES OUTPUT_NAME "jaclks"
@@ -20,6 +21,7 @@ if(PLATFORM_WINDOWS)
   target_compile_definitions(jaclks_static PRIVATE MYDLL_EXPORTS)
 endif()
 target_include_directories(jaclks_static PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(jaclks_static PUBLIC MyThirdParty::All)
 set_target_properties(
   jaclks_static
   PROPERTIES OUTPUT_NAME "jaclks"

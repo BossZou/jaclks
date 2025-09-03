@@ -1,5 +1,7 @@
 #pragma once
 
+#include <openssl/md5.h>
+
 #include "jaclks-internal/javac-base/java/security/message_digest_spi.h"
 
 namespace jaclks::javac_base {
@@ -25,14 +27,9 @@ class MD5Digest : public MessageDigestSpi {
 
   void md5_update(const std::uint8_t *data, std::size_t len);
 
-  void md5_transform(const std::uint8_t *data, std::size_t len);
-
   String md5_final();
 
-  std::uint32_t h_[kMD5StateNum];
-  std::uint32_t Nl_, Nh_;
-  std::uint8_t data_[kMD5BlockSize];
-  unsigned num_;
+  MD5_CTX ctx_;
 };
 
 }  // namespace jaclks::javac_base
