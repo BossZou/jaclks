@@ -31,6 +31,9 @@ jobs:
         # Details see: https://github.com/actions/checkout
         with:
           submodules: true
+      - name: List Openssl Dir
+        run: |
+          dir -Recurse "C:\Program Files\OpenSSL"
       - name: Build Dependencies
         shell: bash
         run: |
