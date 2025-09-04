@@ -34,6 +34,10 @@ jobs:
       - name: List Openssl Dir
         run: |
           dir -Recurse "C:\Program Files\OpenSSL"
+      - name: Create arm64 lib soft link
+        if: matrix.os == 'windows-11-arm'
+        run: |
+          mklink /D "C:/Program Files/OpenSSL/lib/VC/arm64" "C:/Program Files/OpenSSL/lib/VC/x64"
       - name: Build Dependencies
         shell: bash
         run: |
