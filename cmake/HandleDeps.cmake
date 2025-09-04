@@ -6,6 +6,7 @@ include(CMakeFindDependencyMacro)
 # Git required to update third-party
 find_package(Git REQUIRED)
 
+set(CMAKE_FIND_DEBUG_MODE TRUE)
 find_package(OpenSSL)
 if(OPENSSL_FOUND)
   message(STATUS "OpenSSL version: ${OPENSSL_VERSION}")
