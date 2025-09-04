@@ -48,6 +48,7 @@ void MD5Digest::md5_update(const std::uint8_t *data, std::size_t len) {
 }
 
 String MD5Digest::md5_final() {
+  constexpr std::size_t kDigestSize = MD5_DIGEST_LENGTH;
   unsigned char digest[MD5_DIGEST_LENGTH];
 
 #ifdef USE_EVP_MD5
@@ -56,8 +57,7 @@ String MD5Digest::md5_final() {
 #else
   MD5_Final(digest, &ctx_);
 #endif
-  return String{reinterpret_cast<const char *>(digest),
-                static_cast<std::size_t>(MD5_DIGEST_LENGTH)};
+  return String{reinterpret_cast<const char *>(digest), kDigestSize};
 }
 
 }  // namespace jaclks::javac_base
