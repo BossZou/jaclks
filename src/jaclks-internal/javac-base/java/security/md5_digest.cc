@@ -1,5 +1,9 @@
 #include "jaclks-internal/javac-base/java/security/md5_digest.h"
 
+#ifdef USE_EVP_MD5
+#include <openssl/md5.h>
+#endif
+
 namespace jaclks::javac_base {
 
 MD5Digest::MD5Digest() : ctx_{} {

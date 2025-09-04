@@ -1,13 +1,14 @@
 #pragma once
 
-#include <openssl/md5.h>
 #include <openssl/opensslv.h>  // used for openssl version
-
-#include "jaclks-internal/javac-base/java/security/message_digest_spi.h"
-
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
 #define USE_EVP_MD5  // OpenSSL 3.0+ Use EVP API
+#include <openssl/evp.h>
+#else
+#include <openssl/md5.h>
 #endif
+
+#include "jaclks-internal/javac-base/java/security/message_digest_spi.h"
 
 namespace jaclks::javac_base {
 
@@ -31,7 +32,7 @@ class MD5Digest : public MessageDigestSpi {
   String md5_final();
 
 #ifdef USE_EVP_MD5
-  EVP_MD_CTX ctx_;
+  EVP_MD_CTX *ctx_;
 #else
   MD5_CTX ctx_;
 #endif
