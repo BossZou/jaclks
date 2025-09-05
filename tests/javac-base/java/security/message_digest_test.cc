@@ -75,4 +75,22 @@ TEST_F(MessageDigestTest, MD5UpdatePartial) {
   ASSERT_EQ(res1, res2) << "r1:" << res1.CStr() << ", r2:" << res2.CStr();
 }
 
+TEST_F(MessageDigestTest, MD5Value) {
+  const String data{
+      "45v\xcc "
+      "?≈çœ∑´®†¥¨ˆøπ¬˚∆˙©ƒ∂ßåΩ≈ç√∫˜µ≤≥µ«≠–ºª•¶§∞¢£™¡`"
+      "mnbvcxzlkjhgfdsaqwertyuiop1234567890[]-=\\\xff\x99\x03\xee\xd9",
+      true};
+
+  auto md5 = MessageDigest::GetInstance("MD5");
+  md5.Update(reinterpret_cast<const std::uint8_t *>(data.CStr()),
+             data.Length());
+  auto res = md5.Digest();
+  ASSERT_EQ(
+      (String{
+          "\x3c\x0b\x47\xf7\xa1\x23\x50\x9e\xc4\x52\x1c\x73\x00\x69\xd2\xa5",
+          true}),
+      res);
+}
+
 }  // namespace jaclks::javac_base
