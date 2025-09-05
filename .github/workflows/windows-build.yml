@@ -15,6 +15,7 @@ jobs:
 
   windows-build:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30  #: see https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idtimeout-minutes
     needs:
       - windows-check-cpplint
     strategy:

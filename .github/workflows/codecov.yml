@@ -29,6 +29,7 @@ jobs:
 
   codecov:
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     needs:
       - ubuntu-check-build
       - macos-check-build

@@ -17,6 +17,7 @@ jobs:
 
   macos-build:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     needs:
       - macos-check-cpplint
     strategy:
