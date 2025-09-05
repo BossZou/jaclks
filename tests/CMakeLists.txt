@@ -6,9 +6,7 @@ aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/hash TEST_SRC_FILES)
 
 add_executable(jaclks_gtest main.cc ${SRC_FILES} ${TEST_SRC_FILES})
 
-target_link_libraries(jaclks_gtest PRIVATE gtest gtest_main)
-
-add_dependencies(jaclks_gtest build_thirdparty)
+target_link_libraries(jaclks_gtest PRIVATE GTest::gtest)
 
 add_subdirectory(javac-base)
 

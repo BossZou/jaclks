@@ -1,4 +1,4 @@
-#include "jaclks/javac-base/lang/thread.h"
+#include "jaclks/javac-base/java/lang/thread.h"
 
 #ifdef JACLKS_OS_WINDOWS
 #include <windows.h>
@@ -13,7 +13,7 @@
 #include <memory>
 #include <mutex>
 
-#include "jaclks/javac-base/lang/system.h"
+#include "jaclks/javac-base/java/lang/system.h"
 
 namespace jaclks::javac_base {
 

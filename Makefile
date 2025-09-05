@@ -36,7 +36,12 @@ cpp-format:
 # pip3 install cmake-format
 cmake-format:
 	@echo "Formatting cmake files with cmake-format..."
-	 find cmake/ src/ tests/ -name '*.cmake' -o -name 'CMakeLists.txt' | xargs cmake-format -l debug -i
+	find cmake/ src/ tests/ -name '*.cmake' -o -name 'CMakeLists.txt' | xargs cmake-format -l debug -i
 	@echo "Formatting source files with clang-format done."
 
-format: cpp-format cmake-format
+# snap install shfmt
+sh-format:
+	@echo "Formatting shell scripts with shfmt..."
+	find bin -name '*.sh' | xargs shfmt -w
+
+format: cpp-format cmake-format sh-format

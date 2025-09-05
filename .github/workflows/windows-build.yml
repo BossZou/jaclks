@@ -15,6 +15,7 @@ jobs:
 
   windows-build:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30  #: see https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idtimeout-minutes
     needs:
       - windows-check-cpplint
     strategy:
@@ -28,6 +29,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        # Details see: https://github.com/actions/checkout
+        with:
+          submodules: true
+      - name: Create arm64 lib soft link
+        # cmake not find libs in */lib/*/arm64/* folders, create soft link to fix it
+        if: matrix.os == 'windows-11-arm'
+        run: |
+          cmd /c mklink /D "C:/Program Files/OpenSSL/lib/VC/x64" "C:/Program Files/OpenSSL/lib/VC/arm64"
+      - name: Build Dependencies
+        shell: bash
+        run: |
+          bash '${{ github.workspace }}/bin/build_deps.sh'
       - name: Set Reusable Strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
         id: strings

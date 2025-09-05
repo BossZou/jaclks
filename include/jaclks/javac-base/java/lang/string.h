@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace jaclks {
+namespace jaclks::javac_base {
 
 class String {
  public:
@@ -52,7 +52,7 @@ class String {
 
   String();
 
-  explicit String(const char *str, bool ref = false);
+  String(const char *str, bool ref = false);  // NOLINT(runtime/explicit)
 
   explicit String(const char *str, std::size_t len);
 
@@ -135,4 +135,4 @@ class String {
   char *buf_;
 };
 
-}  // namespace jaclks
+}  // namespace jaclks::javac_base

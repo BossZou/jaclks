@@ -11,12 +11,28 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Set output directory for executables
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+
+# Set output directory for static libraries
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
+# Set output directory for shared libraries
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
 set(PROJECT_ROOT_DIR ${PROJECT_SOURCE_DIR})
 
 option(ENABLE_GTEST "Enable build googletest executable" OFF)
 option(ENABLE_COVERAGE "Enable build project with coverage options" OFF)
 
 include(cmake/DetectPlatform.cmake)
+include(cmake/HandleDeps.cmake)
+
+if(BYTE_ORDER_BIG_ENDIAN)
+  add_definitions(-DJACLKS_BIG_ENDIAN)
+else ()
+  add_definitions(-DJACLKS_LITTLE_ENDIAN)
+endif ()
 
 if(PLATFORM_WINDOWS)
   if(MSVC)
@@ -75,32 +91,28 @@ if(NOT GIT_SUBMOD_RESULT EQUAL "0")
 endif()
 
 # Third party configurations
-if(MSVC)
-  add_custom_target(
-    build_thirdparty
-    COMMAND cmake -E make_directory
-            ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/gtest-build
-    COMMAND
-      cd ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/gtest-build && cmake
-      ../googletest -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-      -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/dist/third-party/googletest
-      -DBUILD_SHARED_LIBS=OFF -Dgtest_force_shared_crt=ON -G "Ninja" && cmake
-      --build . --target install
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMENT "Building GTest with Ninja")
-else()
-  add_custom_target(
-    build_thirdparty
-    COMMAND ${CMAKE_MAKE_PROGRAM} gtest -f ${CMAKE_CURRENT_SOURCE_DIR}/Makefile
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMENT "Running make with custom Makefile")
-endif()
+#if(MSVC)
+#  add_custom_target(
+#    build_thirdparty
+#    COMMAND cmake -E make_directory
+#            ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/gtest-build
+#    COMMAND
+#      cd ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/gtest-build && cmake
+#      ../googletest -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+#      -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/dist/third-party/googletest
+#      -DBUILD_SHARED_LIBS=OFF -Dgtest_force_shared_crt=ON -G "Ninja" && cmake
+#      --build . --target install
+#    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#    COMMENT "Building GTest with Ninja")
+#else()
+#  add_custom_target(
+#    build_thirdparty
+#    COMMAND ${CMAKE_MAKE_PROGRAM} gtest -f ${CMAKE_CURRENT_SOURCE_DIR}/Makefile
+#    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#    COMMENT "Running make with custom Makefile")
+#endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-include_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR}/dist/third-party/googletest/include)
-
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/dist/third-party/googletest/lib)
 
 enable_testing()
 
