@@ -57,6 +57,7 @@ jobs:
           -DCMAKE_C_COMPILER=gcc
           -DCMAKE_BUILD_TYPE=Debug
           -S ${{ github.workspace }}
+          -DBUILD_SHARED_LIBS=OFF
           -DENABLE_GTEST=ON
           -DENABLE_COVERAGE=ON
       - name: Build

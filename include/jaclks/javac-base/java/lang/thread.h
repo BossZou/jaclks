@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <thread>
 #include <tuple>
 #include <type_traits>
 #include <utility>

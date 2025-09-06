@@ -44,4 +44,9 @@ sh-format:
 	@echo "Formatting shell scripts with shfmt..."
 	find bin -name '*.sh' | xargs shfmt -w
 
-format: cpp-format cmake-format sh-format
+# pip3 install autopep8
+py-format:
+	@echo "Formatting python scrips with autopep8..."
+	find tools -name '*.py' | xargs autopep8 -i
+
+format: cpp-format cmake-format sh-format py-format
