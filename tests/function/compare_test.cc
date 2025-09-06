@@ -1,8 +1,8 @@
 #include "jaclks/function/compare.h"
 
-#include <gtest/gtest.h>
-
 #include <limits>
+
+#include <gtest/gtest.h>
 
 namespace jaclks {
 

@@ -58,14 +58,18 @@ ForEachMacros:
   - BOOST_FOREACH
 IncludeBlocks: Regroup
 IncludeCategories:
+  - Regex: '^<gtest/.*>$'
+    Priority: 4
+  - Regex: '^<boost/.*>$'
+    Priority: 4
   - Regex: '^<ext/.*\.h>'
     Priority: 2
   - Regex: '^<.*\.h>'
     Priority: 1
-  - Regex: '^<.*'
-    Priority: 2
-  - Regex: '.*'
+  - Regex: '^<[^>]+>$'
     Priority: 3
+  - Regex: '^\".*\"$'
+    Priority: 5
 IncludeIsMainRegex: '([-_](test|unittest))?$'
 IndentCaseLabels: false
 IndentPPDirectives: None

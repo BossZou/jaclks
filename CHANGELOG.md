@@ -27,6 +27,7 @@ Please mark all change in change log and use the issue from GitHub
 - [#35](https://github.com/BossZou/jaclks/pull/35) Support on windows 11 arm64 and Macos x86/arm platform
 - [#41](https://github.com/BossZou/jaclks/pull/41) Add cmake install target to install lib and header files
 - [#48](https://github.com/BossZou/jaclks/pull/48) Add cmake BUILD_SHARED_LIBS option with default ON
+- [#50](https://github.com/BossZou/jaclks/pull/50) Customize header files include categories
 
 ## Bugs
 
