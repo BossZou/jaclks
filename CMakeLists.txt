@@ -22,6 +22,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 set(PROJECT_ROOT_DIR ${PROJECT_SOURCE_DIR})
 
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 option(ENABLE_GTEST "Enable build googletest executable" OFF)
 option(ENABLE_COVERAGE "Enable build project with coverage options" OFF)
 
