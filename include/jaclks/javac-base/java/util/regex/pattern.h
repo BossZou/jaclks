@@ -1,8 +1,11 @@
 #pragma once
 
 #include "jaclks/javac-base/java/lang/string.h"
+#include "jaclks/javac-base/java/util/regex/matcher.h"
 
 namespace jaclks::javac_base {
+
+class RegexImpl;
 
 class Pattern {
  public:
@@ -22,17 +25,19 @@ class Pattern {
 
   static Pattern Compile(String regex, int flags = 0);
 
+  static bool Matches(String regex, String input);
+
   ~Pattern();
 
- private:
-  class Regex;
+  Matcher Matcher(String input);
 
-  Pattern(String p, int f, Regex *regex);
+ private:
+  Pattern(String p, int f, RegexImpl *regex);
 
   String pattern_;
   int flags_;
 
-  Regex *regex_;
+  RegexImpl *regex_;
 };
 
 }  // namespace jaclks::javac_base

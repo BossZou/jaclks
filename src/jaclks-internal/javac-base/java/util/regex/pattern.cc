@@ -4,15 +4,9 @@
 
 #include <boost/regex.hpp>
 
+#include "jaclks-internal/javac-base/java/util/regex/regex_impl.h"
+
 namespace jaclks::javac_base {
-
-class Pattern::Regex {
- public:
-  explicit Regex(boost::regex regex) : regex_(std::move(regex)) {}
-
- private:
-  boost::regex regex_;
-};
 
 Pattern Pattern::Compile(String pattern, int flags) {
   boost::regex_constants::syntax_option_type options = boost::regex::normal;
@@ -30,12 +24,22 @@ Pattern Pattern::Compile(String pattern, int flags) {
     options |= boost::regex::mod_s;
   }
 
-  auto regex = new Regex(boost::regex(pattern.CStr(), options));
+  auto boost_regex = boost::regex(pattern.CStr(), options);
+  auto regex = new RegexImpl(boost_regex);
+
+  std::string str = "input";
+  boost::smatch matches;
+  boost::regex_search(str, matches, boost_regex);
 
   return {std::move(pattern), flags, regex};
 }
 
-Pattern::Pattern(String p, int f, Regex *regex)
+bool Pattern::Matches(String regex, String input) {
+  auto pattern = Compile(std::move(regex));
+  return false;
+}
+
+Pattern::Pattern(String p, int f, RegexImpl *regex)
     : pattern_(std::move(p)), flags_(f), regex_(regex) {}
 
 Pattern::~Pattern() {
@@ -43,6 +47,10 @@ Pattern::~Pattern() {
     delete regex_;
     regex_ = nullptr;
   }
+}
+
+Matcher Pattern::Matcher(String input) {
+  return Matcher();
 }
 
 }  // namespace jaclks::javac_base
