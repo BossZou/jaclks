@@ -22,4 +22,11 @@ Pattern Pattern::Compile(String pattern, int flags) {
 Pattern::Pattern(String p, int f, Regex *regex)
     : pattern_(std::move(p)), flags_(f), regex_(regex) {}
 
+Pattern::~Pattern() {
+  if (regex_) {
+    delete regex_;
+    regex_ = nullptr;
+  }
+}
+
 }  // namespace jaclks::javac_base

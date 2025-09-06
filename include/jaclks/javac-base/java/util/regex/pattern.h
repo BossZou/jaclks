@@ -22,6 +22,8 @@ class Pattern {
 
   static Pattern Compile(String regex, int flags = 0);
 
+  ~Pattern();
+
  private:
   class Regex;
 
