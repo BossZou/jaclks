@@ -27,8 +27,6 @@ TEST(ThreadTest, Normal) {
   ASSERT_EQ(t.Join(), 0);
 
   ASSERT_EQ(val, 11);
-
-  std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
 TEST(ThreadTest, NoParam) {
@@ -207,8 +205,8 @@ TEST(ThreadTest, MoveAssignmentSelf) {
 TEST(ThreadTest, OwnRunnable) {
   class SingleRunner : public Runnable {
    public:
-    explicit SingleRunner(std::shared_ptr<int> val, std::atomic<bool> &flag)
-        : val_(std::move(val)), flag_(flag) {}
+    explicit SingleRunner(std::shared_ptr<int> val, std::atomic<bool> *flag)
+        : val_(std::move(val)), flag_(*flag) {}
 
     ~SingleRunner() override {
       flag_.store(true);
@@ -226,7 +224,7 @@ TEST(ThreadTest, OwnRunnable) {
   auto val = std::make_shared<int>(5);
   std::atomic<bool> flag{false};
 
-  Thread t{new SingleRunner(val, flag)};
+  Thread t{new SingleRunner(val, &flag)};
 
   t.Start();
   t.Join();

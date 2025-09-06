@@ -13,4 +13,4 @@ jobs:
       - uses: actions/checkout@v4
       - name: Cpp Lint Check
         run: |
-          python3 tools/cpplint/cpplint.py --recursive src/ include/
+          python3 tools/cpplint/cpplint.py --recursive src/ include/ tests/

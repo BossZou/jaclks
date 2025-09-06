@@ -5077,7 +5077,7 @@ def _ClassifyInclude(fileinfo, include, used_angle_brackets, include_order="defa
     # Mark include as C header if in list or in a known folder for standard-ish C headers.
     is_std_c_header = (include_order == "default") or (include in _C_HEADERS
                                                        # additional linux glibc header folders
-                                                       or Search(r'(?:%s)\/.*\.h' % "|".join(C_STANDARD_HEADER_FOLDERS), include))
+                                                       or Search(r'^(?:%s)\/.*\.h' % "|".join(C_STANDARD_HEADER_FOLDERS), include))
 
     # Headers with C++ extensions shouldn't be considered C system headers
     include_ext = os.path.splitext(include)[1]
