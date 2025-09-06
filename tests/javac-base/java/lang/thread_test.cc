@@ -6,12 +6,12 @@
 #include <unistd.h>
 #endif
 
-#include <gtest/gtest.h>
-
 #include <cerrno>
 #include <cmath>
 #include <memory>
 #include <mutex>
+
+#include <gtest/gtest.h>
 
 #include "jaclks/javac-base/java/lang/system.h"
 
