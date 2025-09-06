@@ -14,7 +14,7 @@ class Pattern::Regex {
 };
 
 Pattern Pattern::Compile(String pattern, int flags) {
-  auto regex = new Regex(boost::regex(pattern));
+  auto regex = new Regex(boost::regex(pattern.CStr()));
 
   return {std::move(pattern), flags, regex};
 }

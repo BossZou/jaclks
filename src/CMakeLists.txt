@@ -2,6 +2,7 @@ set(SRC_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/jaclks-internal)
 
 aux_source_directory(${SRC_ROOT_DIR}/javac-base/java/lang SRC_FILES)
 aux_source_directory(${SRC_ROOT_DIR}/javac-base/java/security SRC_FILES)
+aux_source_directory(${SRC_ROOT_DIR}/javac-base/java/util/regex SRC_FILES)
 
 if(BUILD_SHARED_LIBS)
   add_library(jaclks_shared SHARED ${SRC_FILES})
