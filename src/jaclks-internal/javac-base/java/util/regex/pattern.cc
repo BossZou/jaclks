@@ -15,7 +15,22 @@ class Pattern::Regex {
 };
 
 Pattern Pattern::Compile(String pattern, int flags) {
-  auto regex = new Regex(boost::regex(pattern.CStr()));
+  boost::regex_constants::syntax_option_type options = boost::regex::normal;
+
+  if (flags | kCaseInsensitive) {
+    options |= boost::regex::icase;
+  }
+  if (flags | kLiteral) {
+    options |= boost::regex::literal;
+  }
+  // if (flags | kMultiline) {
+  //   options |= boost::regex_constants::multiline;
+  // }
+  // if (flags & kDotall) {
+  //   options |= boost::regex_constants::dotall;
+  // }
+
+  auto regex = new Regex(boost::regex(pattern.CStr(), options));
 
   return {std::move(pattern), flags, regex};
 }

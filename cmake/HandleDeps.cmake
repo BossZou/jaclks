@@ -55,6 +55,6 @@ if(NOT TARGET MyThirdParty::All)
   target_link_libraries(MyThirdParty::All
                         INTERFACE OpenSSL::SSL OpenSSL::Crypto Boost::regex)
 
-  # # 添加编译定义（如果需要） target_compile_definitions(MyThirdParty::All INTERFACE
-  # USE_OPENSSL=1 USE_BOOST=1 )
+  # # 添加编译定义 target_compile_definitions(MyThirdParty::All INTERFACE
+  # BOOST_REGEX_STANDALONE)
 endif()
