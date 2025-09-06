@@ -8,7 +8,7 @@ namespace jaclks::javac_base {
 
 class Matcher::MatcherInner {
  public:
-  MatcherInner(boost::smatch what) : what_(what) {}
+  explicit MatcherInner(boost::smatch what) : what_(what) {}
 
   boost::smatch what_;
 };
