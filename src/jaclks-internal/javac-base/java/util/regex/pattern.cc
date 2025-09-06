@@ -23,12 +23,12 @@ Pattern Pattern::Compile(String pattern, int flags) {
   if (flags | kLiteral) {
     options |= boost::regex::literal;
   }
-  // if (flags | kMultiline) {
-  //   options |= boost::regex_constants::multiline;
-  // }
-  // if (flags & kDotall) {
-  //   options |= boost::regex_constants::dotall;
-  // }
+  if (flags | kMultiline) {
+    options |= boost::regex::newline_alt;
+  }
+  if (flags & kDotall) {
+    options |= boost::regex::mod_s;
+  }
 
   auto regex = new Regex(boost::regex(pattern.CStr(), options));
 
