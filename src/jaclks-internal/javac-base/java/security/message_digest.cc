@@ -25,7 +25,7 @@ MessageDigest::MessageDigest(String algorithm,
                              std::unique_ptr<MessageDigestSpi> digest)
     : state_(kInitial),
       algorithm_(std::move(algorithm)),
-      digest_(std::move(digest)) {}  // NOLINT(whitespace/indent_namespace)
+      digest_(std::move(digest)) {}
 
 MessageDigest::~MessageDigest() {
   digest_.reset();
