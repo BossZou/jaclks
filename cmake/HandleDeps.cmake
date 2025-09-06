@@ -6,7 +6,7 @@ include(CMakeFindDependencyMacro)
 # Git required to update third-party
 find_package(Git REQUIRED)
 
-# 1 find OpenSSL
+# 1. find OpenSSL
 find_package(OpenSSL REQUIRED)
 if(OPENSSL_FOUND)
   message(STATUS "OpenSSL version: ${OPENSSL_VERSION}")
@@ -16,13 +16,13 @@ else()
   message(FATAL_ERROR "OpenSSL not found")
 endif()
 
-# 1 find Boost.Regex
+# 2. find Boost.Regex
 set(BOOST_REGEX_STANDALONE
     ON
     CACHE BOOL "Build regex in standalone mode")
 add_subdirectory(${PROJECT_ROOT_DIR}/thirdparty/regex)
 
-# 2 find GTest
+# 3. find GTest
 if(ENABLE_GTEST)
   find_package(GTest REQUIRED)
   if(GTest_FOUND)
