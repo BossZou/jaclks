@@ -1,7 +1,8 @@
 #include "jaclks/javac-base/java/util/regex/pattern.h"
 
-#include <boost/regex.hpp>
 #include <utility>
+
+#include <boost/regex.hpp>
 
 namespace jaclks::javac_base {
 

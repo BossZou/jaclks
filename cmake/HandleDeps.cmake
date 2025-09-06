@@ -16,13 +16,13 @@ else()
   message(FATAL_ERROR "OpenSSL not found")
 endif()
 
-# 2. find Boost.Regex
+# 1. find Boost.Regex
 set(BOOST_REGEX_STANDALONE
     ON
     CACHE BOOL "Build regex in standalone mode")
 add_subdirectory(${PROJECT_ROOT_DIR}/thirdparty/regex)
 
-# 3. find GTest
+# 1. find GTest
 if(ENABLE_GTEST)
   find_package(GTest REQUIRED)
   if(GTest_FOUND)
