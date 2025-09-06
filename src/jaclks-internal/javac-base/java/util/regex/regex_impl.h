@@ -8,7 +8,9 @@ class RegexImpl {
  public:
   explicit RegexImpl(boost::regex regex) : regex_(std::move(regex)) {}
 
- private:
+  // private:
+  friend class Matcher;
+
   boost::regex regex_;
 };
 

@@ -344,6 +344,11 @@ start_search:
   }
 }
 
+String String::SubString(std::size_t begin_idx, std::size_t end_idx) const {
+  // FIXME(John Doe): Implement it.
+  return "";
+}
+
 std::size_t String::Length() const {
   return len_;
 }

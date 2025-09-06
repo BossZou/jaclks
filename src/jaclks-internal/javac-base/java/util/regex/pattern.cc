@@ -49,8 +49,8 @@ Pattern::~Pattern() {
   }
 }
 
-Matcher Pattern::Matcher(String input) {
-  return Matcher();
+::jaclks::javac_base::Matcher Pattern::Matcher(String input) {
+  return {regex_, std::move(input)};
 }
 
 }  // namespace jaclks::javac_base

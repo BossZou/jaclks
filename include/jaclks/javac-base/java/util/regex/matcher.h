@@ -1,20 +1,26 @@
 #pragma once
 
-#include "jaclks-internal/javac-base/java/util/regex/regex_impl.h"
 #include "jaclks/javac-base/java/lang/string.h"
 
 namespace jaclks::javac_base {
+
+class RegexImpl;
 
 class Matcher {
  public:
   Matcher(RegexImpl *regex, String input);
 
+  ~Matcher();
+
+  bool Matches();
+
+  String Group(int idx);
+
  private:
-  class MatcherInner;
-
   RegexImpl *regex_;
-
   String text_;
+
+  class MatcherInner;
   MatcherInner *inner_;
 };
 

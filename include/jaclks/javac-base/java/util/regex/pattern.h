@@ -29,7 +29,7 @@ class Pattern {
 
   ~Pattern();
 
-  Matcher Matcher(String input);
+  ::jaclks::javac_base::Matcher Matcher(String input);
 
  private:
   Pattern(String p, int f, RegexImpl *regex);
