@@ -5,24 +5,57 @@ namespace jaclks::cxx_detail {
 namespace {
 using std::string;
 
-std::size_t *StealLength(const string &str);
+/**
+ * Steal to access private _M_string_length member
+ */
+using size_type = string::size_type;
 
-template <const int string::*MEMBER_INT_PTR>
-struct GenerateThiefFunction {
-  // static_assert(std::is_same_v<MEMBER_INT_PTR, &string::_M_string_length>);
+size_type *StealLength(string *str);
 
-  friend std::size_t *StealLength(const string &victim_object) {
-    // dereferencing member pointer on instance - might look exotic but no magic
-    // here std::cout << victim_object.*MEMBER_INT_PTR << std::endl;
-    return &(victim_object.*MEMBER_INT_PTR);
+template <size_type string::*MEMBER_INT_PTR>
+struct LengthMemberAccesser {
+  friend size_type *StealLength(string *victim_object) {
+    return &(victim_object->*MEMBER_INT_PTR);
   }
 };
 
-template struct GenerateThiefFunction<&string::_M_string_length>;
+template struct LengthMemberAccesser<&string::_M_string_length>;
+
+/**
+ * Steal local capacity
+ */
+int StealLocalCapacity(const string &str);
+
+template <int Cap>
+struct LocalCapacityMemberAccesser {
+  friend int StealLocalCapacity(const string &victim_object) {
+    return Cap;
+  }
+};
+
+template struct LocalCapacityMemberAccesser<string::_S_local_capacity>;
+
+/**
+ * Steal to access private _M_is_local function
+ */
+bool IsLocalData(const string &str);
+
+template <bool (string::*Func)() const>
+struct LocalFunctionAccesser {
+  friend bool IsLocalData(const string &victim_object) {
+    return (victim_object.*Func)();
+    ;
+  }
+};
+
+template struct LocalFunctionAccesser<&string::_M_is_local>;
 
 }  // namespace
 
 std::string StringUtils::ToStdString(javac_base::String str) {
+  std::string result;
+
+
   return "";
 }
 
