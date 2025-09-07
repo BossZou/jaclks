@@ -1,18 +1,18 @@
 #pragma once
 
-#include <utility>
-
 #include <boost/regex.hpp>
 
 namespace jaclks::javac_base {
 
 class RegexImpl {
  public:
-  explicit RegexImpl(boost::regex regex) : regex_(std::move(regex)) {}
+  RegexImpl(const char *pattern,
+            boost::regex_constants::syntax_option_type options)
+      : regex_(pattern, options) {}
 
-  // private:
-  friend class Matcher;
+  boost::regex &Regex();
 
+ private:
   boost::regex regex_;
 };
 

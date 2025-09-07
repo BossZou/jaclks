@@ -344,9 +344,9 @@ start_search:
   }
 }
 
-String String::SubString(std::size_t begin_idx, std::size_t end_idx) const {
+String String::SubString(std::size_t, std::size_t) const {
   // FIXME(John Doe): Implement it.
-  return "";
+  return {};
 }
 
 std::size_t String::Length() const {
@@ -389,11 +389,14 @@ void String::construct(const char *str, std::size_t len) {
     local_buf_[len] = '\0';
     buf_ = local_buf_;
   } else {
-    buf_ = static_cast<char *>(malloc(len + 1));
-    memcpy(buf_, str, len);
-    buf_[len] = '\0';
-    info_.cap = len + 1;
-    info_.head = buf_;
+    if (buf_ = static_cast<char *>(malloc(len + 1)); buf_ == nullptr) {
+      throw new std::bad_alloc;
+    } else {
+      memcpy(buf_, str, len);
+      buf_[len] = '\0';
+      info_.cap = len + 1;
+      info_.head = buf_;
+    }
   }
 }
 

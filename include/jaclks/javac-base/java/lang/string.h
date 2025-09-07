@@ -95,7 +95,7 @@ class String {
 
   std::int64_t LastIndexOf(const String &sub, std::size_t from_index) const;
 
-  String SubString(std::size_t begin_idx, std::size_t end_idx) const;
+  String SubString(std::size_t, std::size_t) const;
 
   std::size_t Length() const;
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "jaclks/javac-base/java/lang/string.h"
 #include "jaclks/javac-base/java/util/regex/matcher.h"
 
@@ -23,13 +25,17 @@ class Pattern {
       kUnixLines | kCaseInsensitive | kComments | kMultiline | kLiteral |
       kDotall | kUnicodeCase | kCanonEq | kUnicodeCharacterClass;
 
-  static Pattern Compile(String regex, int flags = 0);
+  static Pattern Compile(const String &regex, int flags = 0);
 
-  static bool Matches(String regex, String input);
+  static bool Matches(const String &regex, const String &input);
 
   ~Pattern();
 
-  ::jaclks::javac_base::Matcher Matcher(String input);
+  ::jaclks::javac_base::Matcher Matcher(const String &input);
+
+  std::vector<String> Split(const String &input, int limit = 0) const;
+
+  int Flags() const;
 
  private:
   Pattern(String p, int f, RegexImpl *regex);

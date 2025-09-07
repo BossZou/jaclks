@@ -8,35 +8,32 @@
 
 namespace jaclks::javac_base {
 
-Pattern Pattern::Compile(String pattern, int flags) {
+Pattern Pattern::Compile(const String &pattern, int flags) {
   boost::regex_constants::syntax_option_type options = boost::regex::normal;
 
-  if (flags | kCaseInsensitive) {
+  if (flags & kCaseInsensitive) {
     options |= boost::regex::icase;
   }
-  if (flags | kLiteral) {
+  if (flags & kLiteral) {
     options |= boost::regex::literal;
   }
-  if (flags | kMultiline) {
+  if (flags & kMultiline) {
     options |= boost::regex::newline_alt;
   }
   if (flags & kDotall) {
     options |= boost::regex::mod_s;
   }
 
-  auto boost_regex = boost::regex(pattern.CStr(), options);
-  auto regex = new RegexImpl(boost_regex);
+  auto regex = new RegexImpl(pattern.CStr(), options);
 
-  std::string str = "input";
-  boost::smatch matches;
-  boost::regex_search(str, matches, boost_regex);
-
-  return {std::move(pattern), flags, regex};
+  return {pattern, flags, regex};
 }
 
-bool Pattern::Matches(String regex, String input) {
-  auto pattern = Compile(std::move(regex));
-  return false;
+bool Pattern::Matches(const String &regex, const String &input) {
+  auto pattern = Compile(regex);
+
+  auto macther = pattern.Matcher(input);
+  return macther.Matches();
 }
 
 Pattern::Pattern(String p, int f, RegexImpl *regex)
@@ -49,8 +46,31 @@ Pattern::~Pattern() {
   }
 }
 
-::jaclks::javac_base::Matcher Pattern::Matcher(String input) {
-  return {regex_, std::move(input)};
+::jaclks::javac_base::Matcher Pattern::Matcher(const String &input) {
+  return {regex_, input};
+}
+
+std::vector<String> Pattern::Split(const String &input, int limit) const {
+  std::string si{input.CStr()};
+  std::vector<String> parts;
+  boost::sregex_token_iterator it(si.begin(), si.end(), regex_->Regex(), -1);
+  boost::sregex_token_iterator end;
+
+  int count = 0;
+  while (it != end) {
+    if (limit > 0 && count >= limit) {
+      break;
+    }
+    parts.emplace_back(it->str().c_str());
+    ++it;
+    ++count;
+  }
+
+  return parts;
+}
+
+int Pattern::Flags() const {
+  return flags_;
 }
 
 }  // namespace jaclks::javac_base

@@ -17,7 +17,7 @@ Matcher::Matcher(RegexImpl *regex, String input)
     : regex_(regex), text_(std::move(input)), inner_(nullptr) {
   boost::smatch what;
 
-  boost::regex_search(std::string{text_.CStr()}, what, regex_->regex_);
+  boost::regex_search(std::string{text_.CStr()}, what, regex_->Regex());
   inner_ = new MatcherInner(std::move(what));
 }
 
@@ -29,7 +29,7 @@ Matcher::~Matcher() {
 }
 
 bool Matcher::Matches() {
-  return boost::regex_match(text_.CStr(), regex_->regex_);
+  return boost::regex_match(text_.CStr(), regex_->Regex());
 }
 
 String Matcher::Group(int idx) {
