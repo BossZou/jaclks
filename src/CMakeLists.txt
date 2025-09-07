@@ -1,7 +1,11 @@
 set(SRC_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/jaclks-internal)
 
-aux_source_directory(${SRC_ROOT_DIR}/javac-base/java/lang SRC_FILES)
-aux_source_directory(${SRC_ROOT_DIR}/javac-base/java/security SRC_FILES)
+set(CXX_SRC_ROOT_DIR ${SRC_ROOT_DIR}/cxx-detail)
+aux_source_directory(${CXX_SRC_ROOT_DIR}/utils SRC_FILES)
+
+set(JBASE_SRC_ROOT_DIR ${SRC_ROOT_DIR}/javac-base)
+aux_source_directory(${JBASE_SRC_ROOT_DIR}/java/lang SRC_FILES)
+aux_source_directory(${JBASE_SRC_ROOT_DIR}/java/security SRC_FILES)
 
 if(BUILD_SHARED_LIBS)
   add_library(jaclks_shared SHARED ${SRC_FILES})

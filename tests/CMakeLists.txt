@@ -8,6 +8,7 @@ add_executable(jaclks_gtest main.cc ${SRC_FILES} ${TEST_SRC_FILES})
 
 target_link_libraries(jaclks_gtest PRIVATE GTest::gtest)
 
+add_subdirectory(cxx-detail)
 add_subdirectory(javac-base)
 
 # Registers googletests
