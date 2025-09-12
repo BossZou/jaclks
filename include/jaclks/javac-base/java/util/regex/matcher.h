@@ -20,7 +20,7 @@ class Matcher {
 
   String Group(int idx);
 
-  String Group(const String& group);
+  String Group(const String &group);
 
  private:
   RegexImpl *regex_;

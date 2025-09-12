@@ -8,7 +8,8 @@ namespace jaclks::javac_base {
 
 class Matcher::MatcherInner {
  public:
-  explicit MatcherInner(RegexImpl* regex, String input) : find_(false), input_(std::move(input)) {
+  explicit MatcherInner(RegexImpl *regex, String input)
+      : find_(false), input_(std::move(input)) {
     find_ = boost::regex_search(input_.CStr(), what_, regex->Regex());
   }
 
@@ -34,7 +35,8 @@ bool Matcher::Matches() {
 }
 
 bool Matcher::LookingAt() {
-  return boost::regex_search(text_.CStr(), regex_->Regex(), boost::match_continuous);
+  return boost::regex_search(
+      text_.CStr(), regex_->Regex(), boost::match_continuous);
 }
 
 bool Matcher::Find() {
@@ -50,9 +52,9 @@ String Matcher::Group(int idx) {
   return String{group.str().c_str(), false};
 }
 
-String Matcher::Group(const String& group) {
+String Matcher::Group(const String &group) {
   if (Find()) {
-    if (const auto& ref = inner_->what_[group.CStr()]; ref.matched) {
+    if (const auto &ref = inner_->what_[group.CStr()]; ref.matched) {
       return String{ref.str().c_str()};
     }
   }
