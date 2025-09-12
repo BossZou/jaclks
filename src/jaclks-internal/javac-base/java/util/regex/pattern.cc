@@ -46,8 +46,8 @@ Pattern::~Pattern() {
   }
 }
 
-::jaclks::javac_base::Matcher Pattern::Matcher(const String &input) {
-  return {regex_, input};
+::jaclks::javac_base::Matcher Pattern::Matcher(String input) {
+  return {regex_, std::move(input)};
 }
 
 std::vector<String> Pattern::Split(const String &input, int limit) const {

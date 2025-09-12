@@ -390,7 +390,7 @@ void String::construct(const char *str, std::size_t len) {
     buf_ = local_buf_;
   } else {
     if (buf_ = static_cast<char *>(malloc(len + 1)); buf_ == nullptr) {
-      throw new std::bad_alloc;
+      throw std::bad_alloc();
     } else {
       memcpy(buf_, str, len);
       buf_[len] = '\0';

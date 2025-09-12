@@ -8,17 +8,18 @@ namespace jaclks::javac_base {
 
 class Matcher::MatcherInner {
  public:
-  explicit MatcherInner(boost::smatch what) : what_(what) {}
+  explicit MatcherInner(RegexImpl* regex, String input) : find_(false), input_(std::move(input)) {
+    find_ = boost::regex_search(input_.CStr(), what_, regex->Regex());
+  }
 
-  boost::smatch what_;
+  bool find_;
+  String input_;
+  boost::cmatch what_;
 };
 
 Matcher::Matcher(RegexImpl *regex, String input)
     : regex_(regex), text_(std::move(input)), inner_(nullptr) {
-  boost::smatch what;
-
-  boost::regex_search(std::string{text_.CStr()}, what, regex_->Regex());
-  inner_ = new MatcherInner(std::move(what));
+  inner_ = new MatcherInner(regex, text_);
 }
 
 Matcher::~Matcher() {
@@ -32,6 +33,14 @@ bool Matcher::Matches() {
   return boost::regex_match(text_.CStr(), regex_->Regex());
 }
 
+bool Matcher::LookingAt() {
+  return boost::regex_search(text_.CStr(), regex_->Regex(), boost::match_continuous);
+}
+
+bool Matcher::Find() {
+  return inner_->find_;
+}
+
 String Matcher::Group(int idx) {
   if (static_cast<std::size_t>(idx) > inner_->what_.size()) {
     throw std::invalid_argument("Group index out of range");
@@ -39,6 +48,16 @@ String Matcher::Group(int idx) {
 
   const auto &group = inner_->what_[idx];
   return String{group.str().c_str(), false};
+}
+
+String Matcher::Group(const String& group) {
+  if (Find()) {
+    if (const auto& ref = inner_->what_[group.CStr()]; ref.matched) {
+      return String{ref.str().c_str()};
+    }
+  }
+
+  return {};
 }
 
 }  // namespace jaclks::javac_base

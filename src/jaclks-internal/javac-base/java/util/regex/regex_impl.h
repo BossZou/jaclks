@@ -10,7 +10,13 @@ class RegexImpl {
             boost::regex_constants::syntax_option_type options)
       : regex_(pattern, options) {}
 
-  boost::regex &Regex();
+  boost::regex &Regex() {
+    return regex_;
+  }
+
+  const boost::regex &Regex() const {
+    return regex_;
+  }
 
  private:
   boost::regex regex_;

@@ -28,6 +28,7 @@ clean_gtest:
 rebuild_gtest:	clean_gtest gtest
 	@echo "Rebuild googletest done"
 
+# pip3 install clang-format
 cpp-format:
 	@echo "Formatting source files with clang-format..."
 	find src/ include/ tests/ -name '*.cc' -o -name '*.h' | xargs clang-format -verbose -style=file -i
@@ -39,7 +40,8 @@ cmake-format:
 	find cmake/ src/ tests/ -name '*.cmake' -o -name 'CMakeLists.txt' | xargs cmake-format -l debug -i
 	@echo "Formatting source files with clang-format done."
 
-# snap install shfmt
+# ubuntu: snap install shfmt
+# macos: brew install shfmt
 sh-format:
 	@echo "Formatting shell scripts with shfmt..."
 	find bin -name '*.sh' | xargs shfmt -w

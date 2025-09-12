@@ -54,4 +54,19 @@ TEST_F(PatternTest, SpliterSplit) {
   AssertVectorEquals<String>(expected, result);
 }
 
+TEST_F(PatternTest, NamedGroup) {
+  {
+    auto pattern = Pattern::Compile("(?<year>\\d{4})");
+    auto matcher = pattern.Matcher("2023");
+    auto res = matcher.Group("year");
+    ASSERT_STREQ("2023", res.CStr());
+  }
+  {
+    auto pattern = Pattern::Compile("Name: (?<name>[a-zA-Z ]+), Age: (?<age>\\d+)");
+    auto matcher = pattern.Matcher("Name: John Doe, Age: 30");
+    ASSERT_EQ((String{"John Doe", true}), matcher.Group("name"));
+    ASSERT_EQ((String{"30", true}), matcher.Group("age"));
+  }
+}
+
 }  // namespace jaclks::javac_base

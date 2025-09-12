@@ -14,7 +14,13 @@ class Matcher {
 
   bool Matches();
 
+  bool LookingAt();
+
+  bool Find();
+
   String Group(int idx);
+
+  String Group(const String& group);
 
  private:
   RegexImpl *regex_;

@@ -31,7 +31,7 @@ class Pattern {
 
   ~Pattern();
 
-  ::jaclks::javac_base::Matcher Matcher(const String &input);
+  ::jaclks::javac_base::Matcher Matcher(String input);
 
   std::vector<String> Split(const String &input, int limit = 0) const;
 
