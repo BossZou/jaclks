@@ -7,7 +7,7 @@
 namespace jaclks::javac_base {
 
 struct Matcher::MatcherInner {
-  MatcherInner(RegexImpl *regex, const char *input, std::size_t len)
+  MatcherInner(const char *input, std::size_t len)
       : input_(input),
         len_(len),
         what_(),
@@ -32,7 +32,7 @@ struct Matcher::MatcherInner {
 
 Matcher::Matcher(RegexImpl *regex, String input)
     : regex_(regex), text_(std::move(input)), inner_(nullptr) {
-  inner_ = new MatcherInner(regex, text_.CStr(), text_.Length());
+  inner_ = new MatcherInner(text_.CStr(), text_.Length());
 }
 
 Matcher::~Matcher() {
