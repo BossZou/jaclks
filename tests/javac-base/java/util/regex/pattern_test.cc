@@ -71,4 +71,16 @@ TEST_F(PatternTest, NamedGroup) {
   }
 }
 
+TEST_F(PatternTest, FindNamedGroup) {
+  auto pattern = Pattern::Compile("(?<year>\\d{4})");
+  auto matcher = pattern.Matcher("2023-2024-2025");
+
+  ASSERT_TRUE(matcher.Find());
+  ASSERT_EQ(String{"2023"}, matcher.Group("year"));
+  ASSERT_TRUE(matcher.Find());
+  ASSERT_EQ(String{"2024"}, matcher.Group("year"));
+  ASSERT_TRUE(matcher.Find());
+  ASSERT_EQ(String{"2025"}, matcher.Group("year"));
+}
+
 }  // namespace jaclks::javac_base

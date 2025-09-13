@@ -22,6 +22,7 @@ struct Matcher::MatcherInner {
         len_(len),
         what_(),
         begin_(nullptr),
+        last_(nullptr),
         end_(input_ + len) {
     boost::regex named_group_pattern(kGroupPattern);
     boost::cmatch matches;
@@ -48,7 +49,7 @@ struct Matcher::MatcherInner {
   }
 
   [[nodiscard]] const char *RegexBegin() const {
-    return begin_ == nullptr ? input_ : begin_;
+    return begin_ == nullptr ? input_ : last_;
   }
 
   static constexpr const char *kGroupPattern =
@@ -60,6 +61,7 @@ struct Matcher::MatcherInner {
   const std::size_t len_;
   boost::cmatch what_;
   const char *begin_;
+  const char *last_;
   const char *end_;
   std::map<String, int> named_groups_;
 };
@@ -82,6 +84,7 @@ bool Matcher::Matches() {
   if (const auto begin = inner_->RegexBegin();
       boost::regex_match(begin, inner_->end_, inner_->what_, regex_->Regex())) {
     inner_->begin_ = begin;
+    inner_->last_ = inner_->what_[0].end();
     return true;
   } else {
     inner_->begin_ = nullptr;
@@ -108,6 +111,7 @@ bool Matcher::Find() {
   if (const auto begin = inner_->RegexBegin(); boost::regex_search(
           begin, inner_->end_, inner_->what_, regex_->Regex())) {
     inner_->begin_ = begin;
+    inner_->last_ = inner_->what_[0].end();
     return true;
   } else {
     inner_->begin_ = nullptr;
