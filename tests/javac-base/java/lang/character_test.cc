@@ -18,4 +18,4 @@ TEST(CharacterTest, IsWhitespace) {
   }
 }
 
-}  // namespace jaclks
+}  // namespace jaclks::javac_base
