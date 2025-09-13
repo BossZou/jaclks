@@ -7,19 +7,23 @@
 namespace jaclks::javac_base {
 
 struct Matcher::MatcherInner {
-  MatcherInner(RegexImpl *regex, const char* input, std::size_t len)
-      : input_(input), len_(len), what_(), begin_(nullptr), end_(input_ + len) {}
+  MatcherInner(RegexImpl *regex, const char *input, std::size_t len)
+      : input_(input),
+        len_(len),
+        what_(),
+        begin_(nullptr),
+        end_(input_ + len) {}
 
   void Reset() {
     begin_ = nullptr;
     end_ = input_ + len_;
   }
 
-  [[nodiscard]] const char* RegexBegin() const {
+  [[nodiscard]] const char *RegexBegin() const {
     return begin_ == nullptr ? input_ : begin_;
   }
 
-  const char* input_;
+  const char *input_;
   const std::size_t len_;
   boost::cmatch what_;
   const char *begin_;
@@ -37,7 +41,8 @@ Matcher::~Matcher() {
 }
 
 bool Matcher::Matches() {
-  if (const auto begin = inner_->RegexBegin(); boost::regex_match(begin, inner_->end_, inner_->what_, regex_->Regex())) {
+  if (const auto begin = inner_->RegexBegin();
+      boost::regex_match(begin, inner_->end_, inner_->what_, regex_->Regex())) {
     inner_->begin_ = begin;
     return true;
   } else {
@@ -47,7 +52,12 @@ bool Matcher::Matches() {
 }
 
 bool Matcher::LookingAt() {
-  if (const auto begin = inner_->RegexBegin(); boost::regex_search(begin, inner_->end_, inner_->what_, regex_->Regex(), boost::match_continuous)) {
+  if (const auto begin = inner_->RegexBegin();
+      boost::regex_search(begin,
+                          inner_->end_,
+                          inner_->what_,
+                          regex_->Regex(),
+                          boost::match_continuous)) {
     inner_->begin_ = begin;
     return true;
   } else {
@@ -57,7 +67,8 @@ bool Matcher::LookingAt() {
 }
 
 bool Matcher::Find() {
-  if (const auto begin = inner_->RegexBegin(); boost::regex_search(begin, inner_->end_, inner_->what_, regex_->Regex())) {
+  if (const auto begin = inner_->RegexBegin(); boost::regex_search(
+          begin, inner_->end_, inner_->what_, regex_->Regex())) {
     inner_->begin_ = begin;
     return true;
   } else {
