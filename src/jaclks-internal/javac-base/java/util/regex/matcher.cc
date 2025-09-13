@@ -3,6 +3,7 @@
 #include <boost/regex.hpp>
 
 #include "jaclks-internal/javac-base/java/util/regex/regex_impl.h"
+#include "jaclks/javac-base/java/lang/index_out_of_bounds_exception.h"
 
 namespace jaclks::javac_base {
 
@@ -17,6 +18,10 @@ struct Matcher::MatcherInner {
   void Reset() {
     begin_ = nullptr;
     end_ = input_ + len_;
+  }
+
+  bool Found() const {
+    return begin_ != nullptr;
   }
 
   [[nodiscard]] const char *RegexBegin() const {
@@ -77,9 +82,13 @@ bool Matcher::Find() {
   }
 }
 
-String Matcher::Group(int idx) {
-  if (static_cast<std::size_t>(idx) > inner_->what_.size()) {
-    throw std::invalid_argument("Group index out of range");
+std::size_t Matcher::GroupCount() const {
+  return inner_->Found() ? inner_->what_.size() - 1 : 0;
+}
+
+String Matcher::Group(std::size_t idx) {
+  if (idx >= GroupCount()) {
+    throw IndexOutOfBoundsException("Group index out of range");
   }
 
   const auto &group = inner_->what_[idx];

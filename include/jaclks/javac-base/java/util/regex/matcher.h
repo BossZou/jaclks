@@ -18,7 +18,9 @@ class Matcher {
 
   bool Find();
 
-  String Group(int idx);
+  std::size_t GroupCount() const;
+
+  String Group(std::size_t idx = 0);
 
   String Group(const String &group);
 

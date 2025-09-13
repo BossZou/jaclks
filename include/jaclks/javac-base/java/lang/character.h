@@ -1,6 +1,6 @@
 #pragma once
 
-namespace jaclks {
+namespace jaclks::javac_base {
 
 class Character {
  public:
