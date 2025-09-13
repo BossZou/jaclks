@@ -2,8 +2,8 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <vector>
 #include <type_traits>
+#include <vector>
 
 namespace jaclks::javac_base {
 
@@ -144,5 +144,5 @@ template <>
 struct std::less<jaclks::javac_base::String> {
   using T = jaclks::javac_base::String;
 
-  bool operator()(const T& left, const T& right) const;
+  bool operator()(const T &left, const T &right) const;
 };

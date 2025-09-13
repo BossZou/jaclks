@@ -5,8 +5,8 @@
 namespace jaclks::javac_base {
 
 class IllegalArgumentException : public std::runtime_error {
-public:
-  explicit IllegalArgumentException(const char* s) : std::runtime_error(s) {}
+ public:
+  explicit IllegalArgumentException(const char *s) : std::runtime_error(s) {}
 };
 
-}
+}  // namespace jaclks::javac_base

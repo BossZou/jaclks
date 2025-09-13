@@ -7,4 +7,4 @@ class Character {
   static bool IsWhitespace(int c);
 };
 
-}  // namespace jaclks
+}  // namespace jaclks::javac_base

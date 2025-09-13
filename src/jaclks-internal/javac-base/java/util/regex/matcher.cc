@@ -12,17 +12,14 @@
 namespace jaclks::javac_base {
 
 struct Matcher::MatcherInner {
-  MatcherInner(const std::string& pattern, const char *input, std::size_t len)
-      : input_(input),
-        len_(len),
-        what_(),
-        begin_(nullptr),
-        end_(input_ + len) {
+  MatcherInner(const std::string &pattern, const char *input, std::size_t len)
+      : input_(input), len_(len), what_(), begin_(nullptr), end_(input_ + len) {
     boost::regex named_group_pattern("\\(\\?<([a-zA-Z][a-zA-Z0-9_]*)>");
     boost::cmatch matches;
 
     int group_count = 1;
-    for (auto begin = pattern.c_str(), end = pattern.c_str() + pattern.length(); boost::regex_search(begin, end, matches, named_group_pattern); ) {
+    for (auto begin = pattern.c_str(), end = pattern.c_str() + pattern.length();
+         boost::regex_search(begin, end, matches, named_group_pattern);) {
       String group_name{matches[1].str().c_str()};
       named_groups_.emplace(group_name, group_count);
 
@@ -122,7 +119,8 @@ String Matcher::Group(const String &group) {
     throw IllegalStateException("No match found");
   }
 
-  if (const auto it = inner_->named_groups_.find(group); it != inner_->named_groups_.end()) {
+  if (const auto it = inner_->named_groups_.find(group);
+      it != inner_->named_groups_.end()) {
     // TODO(John Doe): Add group name
     throw IllegalArgumentException("No group with name <group>");
   } else {

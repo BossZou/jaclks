@@ -8,4 +8,4 @@ bool Character::IsWhitespace(int c) {
   return std::isspace(c);
 }
 
-}  // namespace jaclks
+}  // namespace jaclks::javac_base
