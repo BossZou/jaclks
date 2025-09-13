@@ -26,7 +26,7 @@ class Matcher {
   RegexImpl *regex_;
   String text_;
 
-  class MatcherInner;
+  struct MatcherInner;
   MatcherInner *inner_;
 };
 

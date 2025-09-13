@@ -6,41 +6,64 @@
 
 namespace jaclks::javac_base {
 
-class Matcher::MatcherInner {
- public:
-  explicit MatcherInner(RegexImpl *regex, String input)
-      : find_(false), input_(std::move(input)) {
-    find_ = boost::regex_search(input_.CStr(), what_, regex->Regex());
+struct Matcher::MatcherInner {
+  MatcherInner(RegexImpl *regex, const char* input, std::size_t len)
+      : input_(input), len_(len), what_(), begin_(nullptr), end_(input_ + len) {}
+
+  void Reset() {
+    begin_ = nullptr;
+    end_ = input_ + len_;
   }
 
-  bool find_;
-  String input_;
+  [[nodiscard]] const char* RegexBegin() const {
+    return begin_ == nullptr ? input_ : begin_;
+  }
+
+  const char* input_;
+  const std::size_t len_;
   boost::cmatch what_;
+  const char *begin_;
+  const char *end_;
 };
 
 Matcher::Matcher(RegexImpl *regex, String input)
     : regex_(regex), text_(std::move(input)), inner_(nullptr) {
-  inner_ = new MatcherInner(regex, text_);
+  inner_ = new MatcherInner(regex, text_.CStr(), text_.Length());
 }
 
 Matcher::~Matcher() {
-  if (inner_) {
-    delete inner_;
-    inner_ = nullptr;
-  }
+  delete inner_;
+  inner_ = nullptr;
 }
 
 bool Matcher::Matches() {
-  return boost::regex_match(text_.CStr(), regex_->Regex());
+  if (const auto begin = inner_->RegexBegin(); boost::regex_match(begin, inner_->end_, inner_->what_, regex_->Regex())) {
+    inner_->begin_ = begin;
+    return true;
+  } else {
+    inner_->begin_ = nullptr;
+    return false;
+  }
 }
 
 bool Matcher::LookingAt() {
-  return boost::regex_search(
-      text_.CStr(), regex_->Regex(), boost::match_continuous);
+  if (const auto begin = inner_->RegexBegin(); boost::regex_search(begin, inner_->end_, inner_->what_, regex_->Regex(), boost::match_continuous)) {
+    inner_->begin_ = begin;
+    return true;
+  } else {
+    inner_->begin_ = nullptr;
+    return false;
+  }
 }
 
 bool Matcher::Find() {
-  return inner_->find_;
+  if (const auto begin = inner_->RegexBegin(); boost::regex_search(begin, inner_->end_, inner_->what_, regex_->Regex())) {
+    inner_->begin_ = begin;
+    return true;
+  } else {
+    inner_->begin_ = nullptr;
+    return false;
+  }
 }
 
 String Matcher::Group(int idx) {
