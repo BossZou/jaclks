@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-namespace jaclks {
+namespace jaclks::javac_base {
 
 TEST(CharacterTest, IsWhitespace) {
   std::set<int> white_chars{' ', '\t', '\n', '\r', '\f', '\v'};
