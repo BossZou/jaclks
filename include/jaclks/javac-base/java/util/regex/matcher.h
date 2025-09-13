@@ -8,7 +8,7 @@ class RegexImpl;
 
 class Matcher {
  public:
-  Matcher(RegexImpl *regex, String input);
+  Matcher(String pattern, RegexImpl *regex, String input);
 
   ~Matcher();
 
@@ -25,6 +25,7 @@ class Matcher {
   String Group(const String &group);
 
  private:
+  String pattern_;
   RegexImpl *regex_;
   String text_;
 

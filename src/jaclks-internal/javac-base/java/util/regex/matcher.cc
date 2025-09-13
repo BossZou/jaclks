@@ -12,25 +12,26 @@
 namespace jaclks::javac_base {
 
 struct Matcher::MatcherInner {
-  MatcherInner(const std::string &pattern, const char *input, std::size_t len)
-      : input_(input), len_(len), what_(), begin_(nullptr), end_(input_ + len) {
-    boost::regex named_group_pattern("\\(\\?<([a-zA-Z][a-zA-Z0-9_]*)>");
+  MatcherInner(const char *pattern, std::size_t pattern_len, const char *input, std::size_t len)
+      : pattern_(pattern), pattern_len_(pattern_len), input_(input), len_(len), what_(), begin_(nullptr), end_(input_ + len) {
+    boost::regex named_group_pattern(kGroupPattern);
     boost::cmatch matches;
 
     int group_count = 1;
-    for (auto begin = pattern.c_str(), end = pattern.c_str() + pattern.length();
+    for (auto begin = pattern_, end = pattern_ + pattern_len_;
          boost::regex_search(begin, end, matches, named_group_pattern);) {
       String group_name{matches[1].str().c_str()};
       named_groups_.emplace(group_name, group_count);
 
       begin = matches[0].second;
       group_count++;
-    }
+         }
   }
 
   void Reset() {
     begin_ = nullptr;
     end_ = input_ + len_;
+    named_groups_.clear();
   }
 
   bool Found() const {
@@ -41,6 +42,10 @@ struct Matcher::MatcherInner {
     return begin_ == nullptr ? input_ : begin_;
   }
 
+  static constexpr const char *kGroupPattern = "\\(\\?<([a-zA-Z][a-zA-Z0-9_]*)>";
+
+  const char *pattern_;
+  std::size_t pattern_len_;
   const char *input_;
   const std::size_t len_;
   boost::cmatch what_;
@@ -49,9 +54,9 @@ struct Matcher::MatcherInner {
   std::map<String, int> named_groups_;
 };
 
-Matcher::Matcher(RegexImpl *regex, String input)
-    : regex_(regex), text_(std::move(input)), inner_(nullptr) {
-  inner_ = new MatcherInner(regex->Regex().str(), text_.CStr(), text_.Length());
+Matcher::Matcher(String pattern, RegexImpl *regex, String input)
+    : pattern_(std::move(pattern)), regex_(regex), text_(std::move(input)), inner_(nullptr) {
+  inner_ = new MatcherInner(pattern_.CStr(), pattern_.Length(), text_.CStr(), text_.Length());
 }
 
 Matcher::~Matcher() {
@@ -120,7 +125,7 @@ String Matcher::Group(const String &group) {
   }
 
   if (const auto it = inner_->named_groups_.find(group);
-      it != inner_->named_groups_.end()) {
+      it == inner_->named_groups_.end()) {
     // TODO(John Doe): Add group name
     throw IllegalArgumentException("No group with name <group>");
   } else {
