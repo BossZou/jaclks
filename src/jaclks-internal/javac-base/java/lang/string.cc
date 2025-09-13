@@ -408,3 +408,7 @@ bool String::is_local_data() const {
 }
 
 }  // namespace jaclks::javac_base
+
+  bool std::less<jaclks::javac_base::String>::operator()(const T& left, const T& right) const {
+  return std::strncmp(left.CStr(), right.CStr(), left.Length()) < 0;
+}

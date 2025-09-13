@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <vector>
+#include <type_traits>
 
 namespace jaclks::javac_base {
 
@@ -138,3 +139,10 @@ class String {
 };
 
 }  // namespace jaclks::javac_base
+
+template <>
+struct std::less<jaclks::javac_base::String> {
+  using T = jaclks::javac_base::String;
+
+  bool operator()(const T& left, const T& right) const;
+};
