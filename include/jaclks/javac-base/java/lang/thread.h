@@ -37,7 +37,7 @@ class Thread {
    public:
     using Tuple = std::tuple<Args...>;
 
-    explicit RunnerImpl(Callable &&f, Args &&... args)
+    explicit RunnerImpl(Callable &&f, Args &&...args)
         : call_(std::forward<Callable>(f)),
           tuple_(std::forward<Args>(args)...) {}
 
@@ -66,7 +66,7 @@ class Thread {
             typename... Args,
             typename = std::void_t<
                 decltype(std::declval<Callable>()(std::declval<Args>()...))>>
-  explicit Thread(Callable &&f, Args &&... args)
+  explicit Thread(Callable &&f, Args &&...args)
       : Thread(new RunnerImpl<Callable, Args...>{std::forward<Callable>(f),
                                                  std::forward<Args>(args)...},
                true) {}

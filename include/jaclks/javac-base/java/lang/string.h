@@ -2,6 +2,8 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <functional>
+#include <type_traits>
 #include <vector>
 
 namespace jaclks::javac_base {
@@ -95,6 +97,8 @@ class String {
 
   std::int64_t LastIndexOf(const String &sub, std::size_t from_index) const;
 
+  String SubString(std::size_t, std::size_t) const;
+
   std::size_t Length() const;
 
   std::size_t Capacity() const;
@@ -136,3 +140,10 @@ class String {
 };
 
 }  // namespace jaclks::javac_base
+
+template <>
+struct std::less<jaclks::javac_base::String> {
+  using T = jaclks::javac_base::String;
+
+  bool operator()(const T &left, const T &right) const;
+};

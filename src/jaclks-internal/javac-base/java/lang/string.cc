@@ -344,6 +344,11 @@ start_search:
   }
 }
 
+String String::SubString(std::size_t, std::size_t) const {
+  // FIXME(John Doe): Implement it.
+  return {};
+}
+
 std::size_t String::Length() const {
   return len_;
 }
@@ -384,11 +389,14 @@ void String::construct(const char *str, std::size_t len) {
     local_buf_[len] = '\0';
     buf_ = local_buf_;
   } else {
-    buf_ = static_cast<char *>(malloc(len + 1));
-    memcpy(buf_, str, len);
-    buf_[len] = '\0';
-    info_.cap = len + 1;
-    info_.head = buf_;
+    if (buf_ = static_cast<char *>(malloc(len + 1)); buf_ == nullptr) {
+      throw std::bad_alloc();
+    } else {
+      memcpy(buf_, str, len);
+      buf_[len] = '\0';
+      info_.cap = len + 1;
+      info_.head = buf_;
+    }
   }
 }
 
@@ -400,3 +408,8 @@ bool String::is_local_data() const {
 }
 
 }  // namespace jaclks::javac_base
+
+bool std::less<jaclks::javac_base::String>::operator()(const T &left,
+                                                       const T &right) const {
+  return std::strncmp(left.CStr(), right.CStr(), left.Length()) < 0;
+}

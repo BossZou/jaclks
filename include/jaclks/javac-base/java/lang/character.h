@@ -1,10 +1,10 @@
 #pragma once
 
-namespace jaclks {
+namespace jaclks::javac_base {
 
 class Character {
  public:
   static bool IsWhitespace(int c);
 };
 
-}  // namespace jaclks
+}  // namespace jaclks::javac_base
