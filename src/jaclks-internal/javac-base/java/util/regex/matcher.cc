@@ -12,8 +12,17 @@
 namespace jaclks::javac_base {
 
 struct Matcher::MatcherInner {
-  MatcherInner(const char *pattern, std::size_t pattern_len, const char *input, std::size_t len)
-      : pattern_(pattern), pattern_len_(pattern_len), input_(input), len_(len), what_(), begin_(nullptr), end_(input_ + len) {
+  MatcherInner(const char *pattern,
+               std::size_t pattern_len,
+               const char *input,
+               std::size_t len)
+      : pattern_(pattern),
+        pattern_len_(pattern_len),
+        input_(input),
+        len_(len),
+        what_(),
+        begin_(nullptr),
+        end_(input_ + len) {
     boost::regex named_group_pattern(kGroupPattern);
     boost::cmatch matches;
 
@@ -25,7 +34,7 @@ struct Matcher::MatcherInner {
 
       begin = matches[0].second;
       group_count++;
-         }
+    }
   }
 
   void Reset() {
@@ -42,7 +51,8 @@ struct Matcher::MatcherInner {
     return begin_ == nullptr ? input_ : begin_;
   }
 
-  static constexpr const char *kGroupPattern = "\\(\\?<([a-zA-Z][a-zA-Z0-9_]*)>";
+  static constexpr const char *kGroupPattern =
+      "\\(\\?<([a-zA-Z][a-zA-Z0-9_]*)>";
 
   const char *pattern_;
   std::size_t pattern_len_;
@@ -55,8 +65,12 @@ struct Matcher::MatcherInner {
 };
 
 Matcher::Matcher(String pattern, RegexImpl *regex, String input)
-    : pattern_(std::move(pattern)), regex_(regex), text_(std::move(input)), inner_(nullptr) {
-  inner_ = new MatcherInner(pattern_.CStr(), pattern_.Length(), text_.CStr(), text_.Length());
+    : pattern_(std::move(pattern)),
+      regex_(regex),
+      text_(std::move(input)),
+      inner_(nullptr) {
+  inner_ = new MatcherInner(
+      pattern_.CStr(), pattern_.Length(), text_.CStr(), text_.Length());
 }
 
 Matcher::~Matcher() {
