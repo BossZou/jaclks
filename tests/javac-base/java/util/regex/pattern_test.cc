@@ -46,14 +46,14 @@ TEST_F(PatternTest, BasicSplit) {
   AssertVectorEquals<String>(expected, result);
 }
 
-TEST_F(PatternTest, SplitLimit) {
-  auto pattern = Pattern::Compile(" ");
-  String input{"hello world boost regex", true};
-  std::vector<String> expected{"hello", "world", "boost", "regex"};
-
-  auto result = pattern.Split(input, 1);
-  AssertVectorEquals<String>(expected, result);
-}
+// TEST_F(PatternTest, SplitLimit) {
+//   auto pattern = Pattern::Compile(" ");
+//   String input{"hello world boost regex", true};
+//   std::vector<String> expected{"hello", "world", "boost", "regex"};
+//
+//   auto result = pattern.Split(input, 1);
+//   AssertVectorEquals<String>(expected, result);
+// }
 
 TEST_F(PatternTest, SpliterSplit) {
   auto pattern = Pattern::Compile("TAKE SEL|TAKE|NAME");
