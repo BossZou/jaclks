@@ -36,19 +36,20 @@ cpp-format:
 
 # pip3 install cmake-format
 cmake-format:
-	@echo "Formatting cmake files with cmake-format..."
-	find cmake/ src/ tests/ -name '*.cmake' -o -name 'CMakeLists.txt' | xargs cmake-format -l debug -i
+	@echo "\nFormatting cmake files with cmake-format..."
+	find cmake/ src/ tests/ -name '*.cmake' -o -name 'CMakeLists.txt' -print0 | \
+	  xargs -0 -I {} sh -c 'echo "format cmake file {} ..."; cmake-format -l info -i "{}"'
 	@echo "Formatting source files with clang-format done."
 
 # ubuntu: snap install shfmt
 # macos: brew install shfmt
 sh-format:
-	@echo "Formatting shell scripts with shfmt..."
-	find bin -name '*.sh' | xargs shfmt -w
+	@echo "\nFormatting shell scripts with shfmt..."
+	find bin/ -name '*.sh' -print0 | xargs -0 -I {} sh -c 'echo "format bash shell file {} ..."; shfmt -w "{}"'
 
 # pip3 install autopep8
 py-format:
 	@echo "Formatting python scrips with autopep8..."
-	find tools -name '*.py' | xargs autopep8 -i
+	find tools/ -name '*.py' -print0 | xargs -0 -I {} sh -c 'echo "format python file {} ..."; autopep8 -i "{}"'
 
 format: cpp-format cmake-format sh-format py-format
