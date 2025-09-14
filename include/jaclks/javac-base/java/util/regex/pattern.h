@@ -11,6 +11,7 @@ class RegexImpl;
 
 class Pattern {
  public:
+  static constexpr int kNormal = 0x00;
   static constexpr int kUnixLines = 0x01;
   static constexpr int kCaseInsensitive = 0x02;
   static constexpr int kComments = 0x04;

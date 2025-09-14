@@ -9,6 +9,9 @@
 namespace jaclks::javac_base {
 
 Pattern Pattern::Compile(const String &pattern, int flags) {
+  static_assert(kNormal == boost::regex::normal,
+    "Normal option is not equal regex one");
+
   boost::regex_constants::syntax_option_type options = boost::regex::normal;
 
   if (flags & kCaseInsensitive) {
@@ -32,18 +35,15 @@ Pattern Pattern::Compile(const String &pattern, int flags) {
 bool Pattern::Matches(const String &regex, const String &input) {
   auto pattern = Compile(regex);
 
-  auto macther = pattern.Matcher(input);
-  return macther.Matches();
+  return pattern.Matcher(input).Matches();
 }
 
 Pattern::Pattern(String p, int f, RegexImpl *regex)
     : pattern_(std::move(p)), flags_(f), regex_(regex) {}
 
 Pattern::~Pattern() {
-  if (regex_) {
-    delete regex_;
-    regex_ = nullptr;
-  }
+  delete regex_;
+  regex_ = nullptr;
 }
 
 ::jaclks::javac_base::Matcher Pattern::Matcher(String input) {
@@ -56,6 +56,7 @@ std::vector<String> Pattern::Split(const String &input, int limit) const {
   boost::sregex_token_iterator it(si.begin(), si.end(), regex_->Regex(), -1);
   boost::sregex_token_iterator end;
 
+  // FIXME(John Doe): Implement correct logic. reference to: https://www.runoob.com/manual/jdk1.6/java.base/java/lang/String.html#split(java.lang.String,int)
   int count = 0;
   while (it != end) {
     if (limit > 0 && count >= limit) {
