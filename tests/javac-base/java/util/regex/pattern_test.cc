@@ -71,6 +71,23 @@ TEST_F(PatternTest, NamedGroup) {
   }
 }
 
+TEST_F(PatternTest, FindIndexGroup) {
+  auto pattern = Pattern::Compile("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})");
+  auto matcher = pattern.Matcher("2023-01-02 AND 2025-09-10");
+
+  ASSERT_TRUE(matcher.Find());
+  ASSERT_EQ(String{"2023-01-02"}, matcher.Group(0));
+  ASSERT_EQ(String{"2023"}, matcher.Group(1));
+  ASSERT_EQ(String{"01"}, matcher.Group(2));
+  ASSERT_EQ(String{"02"}, matcher.Group(3));
+
+  ASSERT_TRUE(matcher.Find());
+  ASSERT_EQ(String{"2025-09-10"}, matcher.Group(0));
+  ASSERT_EQ(String{"2025"}, matcher.Group(1));
+  ASSERT_EQ(String{"09"}, matcher.Group(2));
+  ASSERT_EQ(String{"10"}, matcher.Group(3));
+}
+
 TEST_F(PatternTest, FindNamedGroup) {
   auto pattern = Pattern::Compile("(?<year>\\d{4})");
   auto matcher = pattern.Matcher("2023-2024-2025");
