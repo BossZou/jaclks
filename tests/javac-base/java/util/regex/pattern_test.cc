@@ -95,6 +95,22 @@ TEST_F(PatternTest, FindIndexGroup) {
   ASSERT_EQ(String{"2025"}, matcher.Group(1));
   ASSERT_EQ(String{"09"}, matcher.Group(2));
   ASSERT_EQ(String{"10"}, matcher.Group(3));
+
+  ASSERT_FALSE(matcher.Find());
+}
+
+TEST_F(PatternTest, LookingAt) {
+  auto pattern =
+      Pattern::Compile("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})");
+
+  {
+    auto matcher = pattern.Matcher("2023-01-02 AND 2025-09-10");
+    ASSERT_TRUE(matcher.LookingAt());
+  }
+  {
+    auto matcher = pattern.Matcher("AND 2025-09-10");
+    ASSERT_FALSE(matcher.LookingAt());
+  }
 }
 
 TEST_F(PatternTest, IndexGroupException) {
@@ -103,6 +119,7 @@ TEST_F(PatternTest, IndexGroupException) {
   {
     auto matcher = pattern.Matcher("https://www.github.com");
     ASSERT_FALSE(matcher.Matches());
+    ASSERT_EQ(0UL, matcher.GroupCount());
     ASSERT_THROW(matcher.Group(), IllegalStateException);
   }
   {
@@ -151,6 +168,17 @@ TEST_F(PatternTest, RegionNamedGroup) {
   ASSERT_EQ(String{"2024"}, matcher.Group("year"));
   ASSERT_TRUE(matcher.Find());
   ASSERT_EQ(String{"2025"}, matcher.Group("year"));
+}
+
+TEST_F(PatternTest, RegionException) {
+  auto pattern = Pattern::Compile("(?<year>\\d{4})");
+  String input{"2023-2024-2025"};
+  auto matcher = pattern.Matcher(input);
+
+  ASSERT_TRUE(matcher.Find());
+
+  ASSERT_THROW(matcher.Region(1000, input.Length()), IndexOutOfBoundsException);
+  ASSERT_THROW(matcher.Region(4, input.Length() + 1), IndexOutOfBoundsException);
 }
 
 }  // namespace jaclks::javac_base
