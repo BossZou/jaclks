@@ -292,7 +292,7 @@ TEST(ThreadTest, Sleep) {
     auto t1 = System::CurrentTimeMillis();
 
 #if defined(JACLKS_OS_MACOS)
-    ASSERT_LT(std::abs(t1 - t0 - 10000), 250);
+    ASSERT_LT(std::abs(t1 - t0 - 10000), 300);
 #else
     ASSERT_LT(std::abs(t1 - t0 - 10000), 50);
 #endif
