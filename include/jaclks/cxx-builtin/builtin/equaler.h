@@ -10,4 +10,4 @@ struct Equaler {
   }
 };
 
-}
+}  // namespace jaclks

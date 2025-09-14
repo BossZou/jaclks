@@ -1,8 +1,8 @@
+#include "jaclks/cxx-builtin/builtin/comparator.h"
+
 #include <limits>
 
 #include <gtest/gtest.h>
-
-#include "jaclks/cxx-builtin/builtin/comparator.h"
 
 namespace jaclks {
 
