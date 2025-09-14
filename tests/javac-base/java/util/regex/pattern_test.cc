@@ -178,7 +178,8 @@ TEST_F(PatternTest, RegionException) {
   ASSERT_TRUE(matcher.Find());
 
   ASSERT_THROW(matcher.Region(1000, input.Length()), IndexOutOfBoundsException);
-  ASSERT_THROW(matcher.Region(4, input.Length() + 1), IndexOutOfBoundsException);
+  ASSERT_THROW(matcher.Region(4, input.Length() + 1),
+               IndexOutOfBoundsException);
 }
 
 }  // namespace jaclks::javac_base
