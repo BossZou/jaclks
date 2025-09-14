@@ -72,7 +72,8 @@ TEST_F(PatternTest, NamedGroup) {
 }
 
 TEST_F(PatternTest, FindIndexGroup) {
-  auto pattern = Pattern::Compile("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})");
+  auto pattern =
+      Pattern::Compile("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})");
   auto matcher = pattern.Matcher("2023-01-02 AND 2025-09-10");
 
   ASSERT_TRUE(matcher.Find());
