@@ -2,7 +2,9 @@
 
 #include <gtest/gtest.h>
 
+#include "jaclks/javac-base/java/lang/illegal_argument_exception.h"
 #include "jaclks/javac-base/java/lang/illegal_state_exception.h"
+#include "jaclks/javac-base/java/lang/index_out_of_bounds_exception.h"
 
 namespace jaclks::javac_base {
 
@@ -61,6 +63,7 @@ TEST_F(PatternTest, NamedGroup) {
     auto pattern = Pattern::Compile("(?<year>\\d{4})");
     auto matcher = pattern.Matcher("2023");
     ASSERT_TRUE(matcher.Matches());
+    ASSERT_EQ(1UL, matcher.GroupCount());
     ASSERT_EQ(String{"2023"}, matcher.Group("year"));
   }
   {
@@ -68,6 +71,7 @@ TEST_F(PatternTest, NamedGroup) {
         Pattern::Compile("Name: (?<name>[a-zA-Z ]+), Age: (?<age>\\d+)");
     auto matcher = pattern.Matcher("Name: John Doe, Age: 30");
     ASSERT_TRUE(matcher.Matches());
+    ASSERT_EQ(2UL, matcher.GroupCount());
     ASSERT_EQ((String{"John Doe", true}), matcher.Group("name"));
     ASSERT_EQ((String{"30", true}), matcher.Group("age"));
   }
@@ -79,12 +83,14 @@ TEST_F(PatternTest, FindIndexGroup) {
   auto matcher = pattern.Matcher("2023-01-02 AND 2025-09-10");
 
   ASSERT_TRUE(matcher.Find());
+  ASSERT_EQ(3UL, matcher.GroupCount());
   ASSERT_EQ(String{"2023-01-02"}, matcher.Group(0));
   ASSERT_EQ(String{"2023"}, matcher.Group(1));
   ASSERT_EQ(String{"01"}, matcher.Group(2));
   ASSERT_EQ(String{"02"}, matcher.Group(3));
 
   ASSERT_TRUE(matcher.Find());
+  ASSERT_EQ(3UL, matcher.GroupCount());
   ASSERT_EQ(String{"2025-09-10"}, matcher.Group(0));
   ASSERT_EQ(String{"2025"}, matcher.Group(1));
   ASSERT_EQ(String{"09"}, matcher.Group(2));
@@ -93,10 +99,17 @@ TEST_F(PatternTest, FindIndexGroup) {
 
 TEST_F(PatternTest, IndexGroupException) {
   auto pattern = Pattern::Compile("(?<year>\\d{4})");
-  auto matcher = pattern.Matcher("https://www.github.com");
 
-  ASSERT_FALSE(matcher.Matches());
-  ASSERT_THROW(matcher.Group(), IllegalStateException);
+  {
+    auto matcher = pattern.Matcher("https://www.github.com");
+    ASSERT_FALSE(matcher.Matches());
+    ASSERT_THROW(matcher.Group(), IllegalStateException);
+  }
+  {
+    auto matcher = pattern.Matcher("2025");
+    ASSERT_TRUE(matcher.Matches());
+    ASSERT_THROW(matcher.Group(2), IndexOutOfBoundsException);
+  }
 }
 
 TEST_F(PatternTest, FindNamedGroup) {
@@ -109,6 +122,21 @@ TEST_F(PatternTest, FindNamedGroup) {
   ASSERT_EQ(String{"2024"}, matcher.Group("year"));
   ASSERT_TRUE(matcher.Find());
   ASSERT_EQ(String{"2025"}, matcher.Group("year"));
+}
+
+TEST_F(PatternTest, IndexNamedGroupException) {
+  auto pattern = Pattern::Compile("(?<year>\\d{4})");
+
+  {
+    auto matcher = pattern.Matcher("https://www.github.com");
+    ASSERT_FALSE(matcher.Matches());
+    ASSERT_THROW(matcher.Group("year"), IllegalStateException);
+  }
+  {
+    auto matcher = pattern.Matcher("2025");
+    ASSERT_TRUE(matcher.Matches());
+    ASSERT_THROW(matcher.Group("AAA"), IllegalArgumentException);
+  }
 }
 
 }  // namespace jaclks::javac_base
