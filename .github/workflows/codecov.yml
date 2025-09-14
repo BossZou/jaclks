@@ -67,16 +67,21 @@ jobs:
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
         # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: ctest --parallel 2 --verbose --output-on-failure --build-config Debug
-      - name: Install GCovr
-        shell: bash
-        run: |
-          sudo apt-get --assume-yes install gcovr
-      - name: LCov Collection
-        shell: bash
-        run: |
-          gcovr -r ${{ github.workspace }} --xml -o ${{ github.workspace }}/coverage.xml \
-            -e '/usr/.*' -e '.*/tests/.*' -e '.*/thirdparty/.*' --print-summary
+        # Optional arguments: --parallel 2
+        run: ctest --verbose --output-on-failure --build-config Debug
+      - name: Generate GTest Coverage
+        # action addr: https://github.com/threeal/gcovr-action/tree/v1.1.0
+        uses: threeal/gcovr-action@v1.1.0
+        # Optional arguments:
+        ##  - print-summary: true
+        with:
+          root: ${{ github.workspace }}
+          working-directory: ${{ github.workspace }}
+          excludes: |
+            '/usr/.*'
+            '.*/tests/.*'
+            '.*/thirdparty/.*'
+          xml-out: ${{ github.workspace }}/coverage.xml
       # Optional: upload coverage report to codecov.io
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5.4.3
