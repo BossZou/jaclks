@@ -49,7 +49,7 @@ sh-format:
 
 # pip3 install autopep8
 py-format:
-	@echo "Formatting python scrips with autopep8..."
+	@echo "\nFormatting python scrips with autopep8..."
 	find tools/ -name '*.py' -print0 | xargs -0 -I {} sh -c 'echo "format python file {} ..."; autopep8 -i "{}"'
 
 format: cpp-format cmake-format sh-format py-format
