@@ -24,7 +24,7 @@ class Matcher {
 
   String Group(const String &group);
 
-  Matcher& Region(std::size_t start, std::size_t end);
+  Matcher &Region(std::size_t start, std::size_t end);
 
  private:
   String pattern_;

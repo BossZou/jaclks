@@ -32,24 +32,26 @@ rebuild_gtest:	clean_gtest gtest
 cpp-format:
 	@echo "Formatting source files with clang-format..."
 	find src/ include/ tests/ -name '*.cc' -o -name '*.h' | xargs clang-format -verbose -style=file -i
-	@echo "Formatting source files with clang-format done."
+	@echo "Formatting source files with clang-format done.\n"
 
 # pip3 install cmake-format
 cmake-format:
-	@echo "\nFormatting cmake files with cmake-format..."
+	@echo "Formatting cmake files with cmake-format..."
 	find cmake/ src/ tests/ -name '*.cmake' -o -name 'CMakeLists.txt' -print0 | \
 	  xargs -0 -I {} sh -c 'echo "format cmake file {} ..."; cmake-format -l info -i "{}"'
-	@echo "Formatting source files with clang-format done."
+	@echo "Formatting cmake files with cmake-format done.\n"
 
 # ubuntu: snap install shfmt
 # macos: brew install shfmt
 sh-format:
-	@echo "\nFormatting shell scripts with shfmt..."
+	@echo "Formatting shell scripts with shfmt..."
 	find bin/ -name '*.sh' -print0 | xargs -0 -I {} sh -c 'echo "format bash shell file {} ..."; shfmt -w "{}"'
+	@echo "Formatting shell scripts with shfmt done.\n"
 
 # pip3 install autopep8
 py-format:
-	@echo "\nFormatting python scrips with autopep8..."
+	@echo "Formatting python scrips with autopep8..."
 	find tools/ -name '*.py' -print0 | xargs -0 -I {} sh -c 'echo "format python file {} ..."; autopep8 -i "{}"'
+	@echo "Formatting python scrips with autopep8 done.\n"
 
 format: cpp-format cmake-format sh-format py-format

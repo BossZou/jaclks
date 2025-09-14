@@ -18,8 +18,10 @@ struct Matcher::MatcherInner {
                std::size_t len)
       : pattern_(pattern, pattern_len),
         input_(input, len),
-        from_(input_.begin()), to_(input_.end()),
-        first_(input_.end()), last_(input_.end()) {
+        from_(input_.begin()),
+        to_(input_.end()),
+        first_(input_.end()),
+        last_(input_.end()) {
     boost::regex named_group_pattern(kGroupPattern);
     boost::smatch matches;
 
@@ -78,7 +80,8 @@ Matcher::~Matcher() {
 }
 
 bool Matcher::Matches() {
-  if (boost::regex_match(inner_->from_, inner_->to_, inner_->what_, regex_->Regex())) {
+  if (boost::regex_match(
+          inner_->from_, inner_->to_, inner_->what_, regex_->Regex())) {
     inner_->first_ = inner_->what_[0].begin();
     inner_->last_ = inner_->what_[0].end();
     return true;
@@ -104,8 +107,8 @@ bool Matcher::LookingAt() {
 }
 
 bool Matcher::Find() {
-  if (const auto begin = inner_->RegexBegin(); boost::regex_search(
-          begin, inner_->to_, inner_->what_, regex_->Regex())) {
+  if (const auto begin = inner_->RegexBegin();
+      boost::regex_search(begin, inner_->to_, inner_->what_, regex_->Regex())) {
     inner_->first_ = inner_->what_[0].begin();
     inner_->last_ = inner_->what_[0].end();
     return true;
@@ -148,7 +151,7 @@ String Matcher::Group(const String &group) {
   }
 }
 
-Matcher& Matcher::Region(std::size_t start, std::size_t end) {
+Matcher &Matcher::Region(std::size_t start, std::size_t end) {
   if (start > inner_->input_.size()) {
     throw IndexOutOfBoundsException("Start index out of range");
   }
