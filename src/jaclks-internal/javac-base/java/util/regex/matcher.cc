@@ -16,19 +16,15 @@ struct Matcher::MatcherInner {
                std::size_t pattern_len,
                const char *input,
                std::size_t len)
-      : pattern_(pattern),
-        pattern_len_(pattern_len),
-        input_(input),
-        len_(len),
-        what_(),
-        begin_(nullptr),
-        last_(nullptr),
-        end_(input_ + len) {
+      : pattern_(pattern, pattern_len),
+        input_(input, len),
+        from_(input_.begin()), to_(input_.end()),
+        first_(input_.end()), last_(input_.end()) {
     boost::regex named_group_pattern(kGroupPattern);
-    boost::cmatch matches;
+    boost::smatch matches;
 
     int group_count = 1;
-    for (auto begin = pattern_, end = pattern_ + pattern_len_;
+    for (auto begin = pattern_.begin(), end = pattern_.end();
          boost::regex_search(begin, end, matches, named_group_pattern);) {
       String group_name{matches[1].str().c_str()};
       named_groups_.emplace(group_name, group_count);
@@ -39,30 +35,31 @@ struct Matcher::MatcherInner {
   }
 
   void Reset() {
-    begin_ = nullptr;
-    end_ = input_ + len_;
-    named_groups_.clear();
+    from_ = input_.begin();
+    to_ = input_.end();
+    first_ = input_.end();
+    last_ = input_.end();
+    // named_groups_.clear();
   }
 
   bool Found() const {
-    return begin_ != nullptr;
+    return first_ != input_.end();
   }
 
-  [[nodiscard]] const char *RegexBegin() const {
-    return begin_ == nullptr ? input_ : last_;
+  auto RegexBegin() const {
+    return first_ == input_.end() ? input_.begin() : last_;
   }
 
   static constexpr const char *kGroupPattern =
       "\\(\\?<([a-zA-Z][a-zA-Z0-9_]*)>";
 
-  const char *pattern_;
-  std::size_t pattern_len_;
-  const char *input_;
-  const std::size_t len_;
-  boost::cmatch what_;
-  const char *begin_;
-  const char *last_;
-  const char *end_;
+  const std::string pattern_;
+  std::string input_;
+  boost::smatch what_;
+  std::string::const_iterator from_;
+  std::string::const_iterator to_;
+  std::string::const_iterator first_;
+  std::string::const_iterator last_;
   std::map<String, int> named_groups_;
 };
 
@@ -81,40 +78,39 @@ Matcher::~Matcher() {
 }
 
 bool Matcher::Matches() {
-  if (const auto begin = inner_->RegexBegin();
-      boost::regex_match(begin, inner_->end_, inner_->what_, regex_->Regex())) {
-    inner_->begin_ = begin;
+  if (boost::regex_match(inner_->from_, inner_->to_, inner_->what_, regex_->Regex())) {
+    inner_->first_ = inner_->what_[0].begin();
     inner_->last_ = inner_->what_[0].end();
     return true;
   } else {
-    inner_->begin_ = nullptr;
+    inner_->first_ = inner_->input_.end();
     return false;
   }
 }
 
 bool Matcher::LookingAt() {
-  if (const auto begin = inner_->RegexBegin();
-      boost::regex_search(begin,
-                          inner_->end_,
+  if (boost::regex_search(inner_->from_,
+                          inner_->to_,
                           inner_->what_,
                           regex_->Regex(),
                           boost::match_continuous)) {
-    inner_->begin_ = begin;
+    inner_->first_ = inner_->what_[0].begin();
+    inner_->last_ = inner_->what_[0].end();
     return true;
   } else {
-    inner_->begin_ = nullptr;
+    inner_->first_ = inner_->input_.end();
     return false;
   }
 }
 
 bool Matcher::Find() {
   if (const auto begin = inner_->RegexBegin(); boost::regex_search(
-          begin, inner_->end_, inner_->what_, regex_->Regex())) {
-    inner_->begin_ = begin;
+          begin, inner_->to_, inner_->what_, regex_->Regex())) {
+    inner_->first_ = inner_->what_[0].begin();
     inner_->last_ = inner_->what_[0].end();
     return true;
   } else {
-    inner_->begin_ = nullptr;
+    inner_->first_ = inner_->input_.end();
     return false;
   }
 }
@@ -150,6 +146,20 @@ String Matcher::Group(const String &group) {
     auto idx = it->second;
     return {inner_->what_[idx].str().c_str()};
   }
+}
+
+Matcher& Matcher::Region(std::size_t start, std::size_t end) {
+  if (start > inner_->input_.size()) {
+    throw IndexOutOfBoundsException("Start index out of range");
+  }
+  if (end > inner_->input_.size()) {
+    throw IndexOutOfBoundsException("End index out of range");
+  }
+
+  inner_->Reset();
+  inner_->from_ = inner_->input_.begin() + start;
+  inner_->to_ = inner_->input_.begin() + end;
+  return *this;
 }
 
 }  // namespace jaclks::javac_base
