@@ -48,7 +48,7 @@ struct Matcher::MatcherInner {
   }
 
   auto RegexBegin() const {
-    return first_ == input_.end() ? input_.begin() : last_;
+    return first_ == input_.end() ? from_ : last_;
   }
 
   static constexpr const char *kGroupPattern =

@@ -139,4 +139,18 @@ TEST_F(PatternTest, IndexNamedGroupException) {
   }
 }
 
+TEST_F(PatternTest, RegionNamedGroup) {
+  auto pattern = Pattern::Compile("(?<year>\\d{4})");
+  String input{"2023-2024-2025"};
+  auto matcher = pattern.Matcher(input);
+
+  ASSERT_TRUE(matcher.Find());
+
+  matcher.Region(4, input.Length());
+  ASSERT_TRUE(matcher.Find());
+  ASSERT_EQ(String{"2024"}, matcher.Group("year"));
+  ASSERT_TRUE(matcher.Find());
+  ASSERT_EQ(String{"2025"}, matcher.Group("year"));
+}
+
 }  // namespace jaclks::javac_base
