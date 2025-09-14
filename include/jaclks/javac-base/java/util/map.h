@@ -3,8 +3,6 @@
 #include <optional>
 #include <utility>
 
-#include "gmock/internal/gmock-internal-utils.h"
-
 namespace jaclks::javac_base {
 
 template <typename K, typename V>

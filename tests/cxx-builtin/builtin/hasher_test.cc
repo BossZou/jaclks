@@ -1,4 +1,4 @@
-#include "../../../include/jaclks/cxx-builtin/builtin/hasher.h"
+#include "jaclks/cxx-builtin/builtin/hasher.h"
 
 #include <gtest/gtest.h>
 
