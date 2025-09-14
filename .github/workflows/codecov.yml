@@ -70,7 +70,10 @@ jobs:
         # Optional arguments: --parallel 2
         run: ctest --verbose --output-on-failure --build-config Debug
       - name: Generate GTest Coverage
+        # action addr: https://github.com/threeal/gcovr-action/tree/v1.1.0
         uses: threeal/gcovr-action@v1.1.0
+        # Optional arguments:
+        ##  - print-summary: true
         with:
           root: ${{ github.workspace }}
           working-directory: ${{ github.workspace }}
@@ -79,7 +82,6 @@ jobs:
             '.*/tests/.*'
             '.*/thirdparty/.*'
           xml-out: ${{ github.workspace }}/coverage.xml
-          print-summary: true
       # Optional: upload coverage report to codecov.io
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5.4.3
