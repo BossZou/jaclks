@@ -2,6 +2,8 @@
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/java/lang JBASE_TEST_SRC_FILES)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/java/security
                      JBASE_TEST_SRC_FILES)
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/java/util/regex
+                     JBASE_TEST_SRC_FILES)
 
 add_executable(jbase_gtest main.cc ${JBASE_TEST_SRC_FILES})
 

@@ -6,6 +6,7 @@ include(CMakeFindDependencyMacro)
 # Git required to update third-party
 find_package(Git REQUIRED)
 
+# 1. find OpenSSL
 find_package(OpenSSL REQUIRED)
 if(OPENSSL_FOUND)
   message(STATUS "OpenSSL version: ${OPENSSL_VERSION}")
@@ -15,6 +16,13 @@ else()
   message(FATAL_ERROR "OpenSSL not found")
 endif()
 
+# 1. find Boost.Regex
+set(BOOST_REGEX_STANDALONE
+    ON
+    CACHE BOOL "Build regex in standalone mode")
+add_subdirectory(${PROJECT_ROOT_DIR}/thirdparty/regex)
+
+# 1. find GTest
 if(ENABLE_GTEST)
   find_package(GTest REQUIRED)
   if(GTest_FOUND)
@@ -44,9 +52,9 @@ if(NOT TARGET MyThirdParty::All)
   add_library(MyThirdParty::All INTERFACE IMPORTED)
 
   # 添加所有依赖
-  target_link_libraries(MyThirdParty::All INTERFACE OpenSSL::SSL
-                                                    OpenSSL::Crypto)
+  target_link_libraries(MyThirdParty::All
+                        INTERFACE OpenSSL::SSL OpenSSL::Crypto Boost::regex)
 
-  # # 添加编译定义（如果需要） target_compile_definitions(MyThirdParty::All INTERFACE
-  # USE_OPENSSL=1 USE_BOOST=1 )
+  # # 添加编译定义 target_compile_definitions(MyThirdParty::All INTERFACE
+  # BOOST_REGEX_STANDALONE)
 endif()
