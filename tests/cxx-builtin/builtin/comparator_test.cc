@@ -1,4 +1,4 @@
-#include "jaclks/function/compare.h"
+#include "jaclks/cxx-builtin/builtin/comparator.h"
 
 #include <limits>
 
