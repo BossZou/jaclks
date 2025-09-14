@@ -2,6 +2,8 @@
 
 #include <gtest/gtest.h>
 
+#include "jaclks/javac-base/java/lang/illegal_state_exception.h"
+
 namespace jaclks::javac_base {
 
 namespace {
@@ -87,6 +89,14 @@ TEST_F(PatternTest, FindIndexGroup) {
   ASSERT_EQ(String{"2025"}, matcher.Group(1));
   ASSERT_EQ(String{"09"}, matcher.Group(2));
   ASSERT_EQ(String{"10"}, matcher.Group(3));
+}
+
+TEST_F(PatternTest, IndexGroupException) {
+  auto pattern = Pattern::Compile("(?<year>\\d{4})");
+  auto matcher = pattern.Matcher("https://www.github.com");
+
+  ASSERT_FALSE(matcher.Matches());
+  ASSERT_THROW(matcher.Group(), IllegalStateException);
 }
 
 TEST_F(PatternTest, FindNamedGroup) {

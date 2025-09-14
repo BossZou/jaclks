@@ -41,7 +41,6 @@ struct Matcher::MatcherInner {
     to_ = input_.end();
     first_ = input_.end();
     last_ = input_.end();
-    // named_groups_.clear();
   }
 
   bool Found() const {
