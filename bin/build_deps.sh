@@ -16,11 +16,10 @@ if pkg-config --exists gtest; then
 	echo "libs: $(pkg-config --libs gtest)"
 else
 	echo "googletest not installed, build and install now ..."
-	pushd "${PROJECT_ROOT_DIR}" >/dev/null || exit
+	GOOGLETEST_ROOT_DIR="$THIRD_ROOT_DIR/googletest"
+	pushd "${GOOGLETEST_ROOT_DIR}" >/dev/null || exit
 
 	## Build googletest
-	GOOGLETEST_ROOT_DIR="$THIRD_ROOT_DIR/googletest"
-
 	cmake -B "${GOOGLETEST_ROOT_DIR}/build" \
 		-S "${GOOGLETEST_ROOT_DIR}" \
 		-DCMAKE_BUILD_TYPE=Release \
@@ -40,9 +39,10 @@ if pkg-config --exists jemalloc; then
 	echo "libs: $(pkg-config --libs jemalloc)"
 else
 	echo "jemalloc not installed, build and install now ..."
-	pushd "${PROJECT_ROOT_DIR}" >/dev/null || exit
+	GOOGLETEST_ROOT_DIR="$THIRD_ROOT_DIR/jemalloc"
+	pushd "${GOOGLETEST_ROOT_DIR}" >/dev/null || exit
 
-	## Build googletest
+	## Build jemalloc
 	sh autogen.sh --prefix=${THIRD_DIST_DIR}
 	make
 	make install
