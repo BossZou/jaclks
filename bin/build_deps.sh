@@ -39,8 +39,8 @@ if pkg-config --exists jemalloc; then
 	echo "libs: $(pkg-config --libs jemalloc)"
 else
 	echo "jemalloc not installed, build and install now ..."
-	GOOGLETEST_ROOT_DIR="$THIRD_ROOT_DIR/jemalloc"
-	pushd "${GOOGLETEST_ROOT_DIR}" >/dev/null || exit
+	JEMALLOC_ROOT_DIR="$THIRD_ROOT_DIR/jemalloc"
+	pushd "${JEMALLOC_ROOT_DIR}" >/dev/null || exit
 
 	## Build jemalloc
 	sh autogen.sh --prefix=${THIRD_DIST_DIR}
