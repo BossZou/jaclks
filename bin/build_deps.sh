@@ -32,3 +32,20 @@ else
 
 	popd >/dev/null || exit
 fi
+
+if pkg-config --exists jemalloc; then
+	echo "jemalloc installed"
+	echo "version: $(pkg-config --modversion jemalloc)"
+	echo "cflags: $(pkg-config --cflags jemalloc)"
+	echo "libs: $(pkg-config --libs jemalloc)"
+else
+	echo "jemalloc not installed, build and install now ..."
+	pushd "${PROJECT_ROOT_DIR}" >/dev/null || exit
+
+	## Build googletest
+	sh autogen.sh --prefix=${THIRD_DIST_DIR}
+	make
+	make install
+
+	popd >/dev/null || exit
+fi
