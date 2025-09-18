@@ -10,7 +10,7 @@ THIRD_ROOT_DIR="$PROJECT_ROOT_DIR/thirdparty"
 THIRD_DIST_DIR="$PROJECT_ROOT_DIR/dist"
 THIRD_DIST_PKG_CONFIG_DIR="$THIRD_DIST_DIR/lib/pkgconfig"
 
-export PKG_CONFIG_PATH="${THIRD_DIST_PKG_CONFIG_DIR}:${PKG_CONFIG_PATH}"
+export PKG_CONFIG_PATH="${THIRD_DIST_PKG_CONFIG_DIR}:${PKG_CONFIG_PATH:-}"
 
 if pkg-config --exists gtest; then
 	echo "googletest installed"
