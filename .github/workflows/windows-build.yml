@@ -33,11 +33,11 @@ jobs:
         with:
           submodules: true
       - name: Install Essentials
-        shell: bash
         # Install essential tools/libs
         #   - autoconf used to build jemalloc
         run: |
-          choco install autoconf
+          C:\msys64\usr\bin\bash -lc "pacman -Syu --noconfirm"
+          C:\msys64\usr\bin\bash -lc "pacman -S --noconfirm autoconf"
       - name: Create arm64 lib soft link
         # cmake not find libs in */lib/*/arm64/* folders, create soft link to fix it
         if: matrix.os == 'windows-11-arm'
