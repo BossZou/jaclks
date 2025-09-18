@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # exit shell if cmd fail
-set -x
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"

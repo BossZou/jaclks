@@ -32,6 +32,12 @@ jobs:
         # Details see: https://github.com/actions/checkout
         with:
           submodules: true
+      - name: Install Essentials
+        shell: bash
+        # Install essential tools/libs
+        #   - autoconf used to build jemalloc
+        run: |
+          choco install autoconf
       - name: Create arm64 lib soft link
         # cmake not find libs in */lib/*/arm64/* folders, create soft link to fix it
         if: matrix.os == 'windows-11-arm'
