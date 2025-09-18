@@ -30,7 +30,7 @@ else
 		-Dgtest_force_shared_crt=ON \
 		-DCMAKE_INSTALL_PREFIX="${THIRD_DIST_DIR}"
 
-	cmake --build "${GOOGLETEST_ROOT_DIR}/build" --config Release --target install
+	cmake --build "${GOOGLETEST_ROOT_DIR}/build" --config Release --target install -j $(nproc)
 
 	popd >/dev/null || exit
 fi
@@ -47,7 +47,7 @@ else
 
 	## Build jemalloc
 	sh autogen.sh --prefix=${THIRD_DIST_DIR}
-	make
+	make -j $(nproc)
 	make install
 
 	popd >/dev/null || exit

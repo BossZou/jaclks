@@ -39,7 +39,7 @@ jobs:
         # Install essential tools/libs
         #   - autoconf used to build jemalloc
         run: |
-          brew install -y autoconf
+          brew install autoconf
       - name: Build Dependencies
         shell: bash
         run: |
