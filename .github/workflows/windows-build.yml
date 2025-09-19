@@ -55,6 +55,8 @@ jobs:
           cmd /c mklink /D "C:/Program Files/OpenSSL/lib/VC/x64" "C:/Program Files/OpenSSL/lib/VC/arm64"
       - name: Build Dependencies
         run: |
+          echo "Current PATH:"
+          echo $env:PATH
           bash '${{ github.workspace }}/bin/build_deps.sh'
       - name: Set Reusable Strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
