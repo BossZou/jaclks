@@ -32,6 +32,10 @@ jobs:
         # Details see: https://github.com/actions/checkout
         with:
           submodules: true
+      - name: Install msys2
+        if: matrix.os == 'windows-11-arm'
+        run: |
+          choco install msys2 -y --no-progress
       - name: Install Essentials
         # Install essential tools/libs
         #   - autoconf used to build jemalloc
