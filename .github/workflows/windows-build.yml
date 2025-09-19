@@ -54,6 +54,7 @@ jobs:
         run: |
           cmd /c mklink /D "C:/Program Files/OpenSSL/lib/VC/x64" "C:/Program Files/OpenSSL/lib/VC/arm64"
       - name: Build Dependencies
+        shell: C:\tools\cygwin\bin\bash.exe --login {0}
         run: |
           echo "Current PATH:"
           echo $env:PATH
