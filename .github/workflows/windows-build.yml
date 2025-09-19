@@ -38,7 +38,7 @@ jobs:
         run: |
           choco install cygwin -y --no-progress
           $CYGWIN_ROOT = "C:\tools\cygwin"
-          & "$CYGWIN_ROOT\setup-x86_64.exe" `
+          & "$CYGWIN_ROOT\cygwinsetup.exe" `
                 --root "$CYGWIN_ROOT" `
                 --site "http://mirrors.kernel.org/sourceware/cygwin/" `
                 --packages autoconf,autogen,gawk,grep,sed `
