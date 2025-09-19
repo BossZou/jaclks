@@ -54,8 +54,8 @@ jobs:
         run: |
           cmd /c mklink /D "C:/Program Files/OpenSSL/lib/VC/x64" "C:/Program Files/OpenSSL/lib/VC/arm64"
       - name: Build Dependencies
-        shell: C:\tools\cygwin\bin\bash.exe --login {0}
         run: |
+          export PATH="/c/tools/cygwin/bin:$PATH"
           echo "Current PATH:"
           echo $env:PATH
           bash '${{ github.workspace }}/bin/build_deps.sh'
