@@ -38,13 +38,13 @@ jobs:
         run: |
           choco install cygwin -y --no-progress
           $CYGWIN_ROOT = "C:\cygwin64"
-          & "$CYGWIN_ROOT\setup-x86_64.exe" ^
-                --root "$CYGWIN_ROOT" ^
-                --site "http://mirrors.kernel.org/sourceware/cygwin/" ^
-                --packages autoconf,autogen,gawk,grep,sed ^
-                --quiet-mode ^
-                --no-desktop ^
-                --no-startmenu ^
+          & "$CYGWIN_ROOT\setup-x86_64.exe" `
+                --root "$CYGWIN_ROOT" `
+                --site "http://mirrors.kernel.org/sourceware/cygwin/" `
+                --packages autoconf,autogen,gawk,grep,sed `
+                --quiet-mode `
+                --no-desktop `
+                --no-startmenu `
                 --no-shortcuts
           echo "C:\cygwin64\bin" >> $GITHUB_PATH
       - name: Create arm64 lib soft link
