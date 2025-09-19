@@ -38,15 +38,13 @@ jobs:
         run: |
           C:\msys64\usr\bin\bash -lc "pacman -Syu --noconfirm"
           C:\msys64\usr\bin\bash -lc "pacman -S --noconfirm autoconf"
-          
-          echo "C:\msys64\usr\bin" >> $GITHUB_PATH
       - name: Create arm64 lib soft link
         # cmake not find libs in */lib/*/arm64/* folders, create soft link to fix it
         if: matrix.os == 'windows-11-arm'
         run: |
           cmd /c mklink /D "C:/Program Files/OpenSSL/lib/VC/x64" "C:/Program Files/OpenSSL/lib/VC/arm64"
       - name: Build Dependencies
-        shell: bash
+        shell: msys2 {0}  # use MSYS2 as default shell
         run: |
           bash '${{ github.workspace }}/bin/build_deps.sh'
       - name: Set Reusable Strings
