@@ -37,6 +37,7 @@ jobs:
         #   - autoconf used to build jemalloc
         run: |
           choco install cygwin -y --no-progress
+          refreshenv
           $CYGWIN_ROOT = "C:\tools\cygwin"
           & "$CYGWIN_ROOT\cygwinsetup.exe" `
                 --root "$CYGWIN_ROOT" `
@@ -46,7 +47,7 @@ jobs:
                 --no-desktop `
                 --no-startmenu `
                 --no-shortcuts
-          echo "C:\tools\cygwin\bin" >> $GITHUB_PATH
+          echo "$CYGWIN_ROOT\bin" >> $GITHUB_PATH
       - name: Create arm64 lib soft link
         # cmake not find libs in */lib/*/arm64/* folders, create soft link to fix it
         if: matrix.os == 'windows-11-arm'
