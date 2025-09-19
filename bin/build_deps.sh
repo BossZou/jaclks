@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # exit shell if cmd fail
-set -euo pipefail
+set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -30,7 +30,7 @@ else
 		-Dgtest_force_shared_crt=ON \
 		-DCMAKE_INSTALL_PREFIX="${THIRD_DIST_DIR}"
 
-	cmake --build "${GOOGLETEST_ROOT_DIR}/build" --config Release --target install -j $(nproc)
+	cmake --build "${GOOGLETEST_ROOT_DIR}/build" --config Release --target install
 
 	popd >/dev/null || exit
 fi
@@ -47,7 +47,7 @@ else
 
 	## Build jemalloc
 	sh autogen.sh --prefix=${THIRD_DIST_DIR}
-	make -j $(nproc)
+	make
 	make install
 
 	popd >/dev/null || exit

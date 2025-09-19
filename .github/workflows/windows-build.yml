@@ -56,8 +56,13 @@ jobs:
       - name: Build Dependencies
         run: |
           $env:PATH = "C:\tools\cygwin\bin;$env:PATH"
-          echo "Current PATH:"
-          echo $env:PATH
+          $scriptPath = "${{ github.workspace }}/bin/build_deps.sh"
+          if (Test-Path $scriptPath) {
+            $content = Get-Content -Raw $scriptPath
+            $content = $content -replace "`r`n", "`n"
+            Set-Content -Path $scriptPath -Value $content -NoNewline
+            Write-Host "Fixed line endings in build_deps.sh"
+          }
           bash '${{ github.workspace }}/bin/build_deps.sh'
       - name: Set Reusable Strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
