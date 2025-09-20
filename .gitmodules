@@ -4,3 +4,6 @@
 [submodule "thirdparty/regex"]
 	path = thirdparty/regex
 	url = https://github.com/boostorg/regex.git
+[submodule "thirdparty/jemalloc"]
+	path = thirdparty/jemalloc
+	url = https://github.com/jemalloc/jemalloc.git
