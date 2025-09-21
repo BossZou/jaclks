@@ -56,7 +56,7 @@ jobs:
       - name: Build Dependencies
         shell: bash
         run: |
-          export PATH="C:\tools\cygwin\bin:$PATH"
+          export PATH="/c/tools/cygwin/bin:$PATH"
           echo "$PATH"
           bash '${{ github.workspace }}/bin/build_deps.sh'
       - name: Set Reusable Strings
