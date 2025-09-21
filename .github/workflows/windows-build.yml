@@ -32,33 +32,27 @@ jobs:
         # Details see: https://github.com/actions/checkout
         with:
           submodules: true
-      - name: Install Cygwin with required packages
+      - name: Install required packages
+        uses: msys2/setup-msys2@v2
         # Install essential tools/libs
         #   - autoconf used to build jemalloc
-        run: |
-          choco install cygwin -y --no-progress
-          refreshenv
-          $CYGWIN_ROOT = "C:\tools\cygwin"
-          & "$CYGWIN_ROOT\cygwinsetup.exe" `
-                --root "$CYGWIN_ROOT" `
-                --site "http://mirrors.kernel.org/sourceware/cygwin/" `
-                --packages autoconf,autogen,gawk,grep,sed `
-                --quiet-mode `
-                --no-desktop `
-                --no-startmenu `
-                --no-shortcuts
-          echo "$CYGWIN_ROOT\bin" >> $GITHUB_PATH
+        with:
+          update: true
+          install: >-
+            base-devel
+            autoconf
+            automake
+            libtool
+            make
+            gcc
       - name: Create arm64 lib soft link
         # cmake not find libs in */lib/*/arm64/* folders, create soft link to fix it
         if: matrix.os == 'windows-11-arm'
         run: |
           cmd /c mklink /D "C:/Program Files/OpenSSL/lib/VC/x64" "C:/Program Files/OpenSSL/lib/VC/arm64"
       - name: Build Dependencies
-        shell: bash
+        shell: msys2 {0}
         run: |
-          export PATH="/c/tools/cygwin/bin:$PATH"
-          echo "$PATH"
-          sed -i 's/\r$//' '${{ github.workspace }}/bin/build_deps.sh'
           bash '${{ github.workspace }}/bin/build_deps.sh'
       - name: Set Reusable Strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
