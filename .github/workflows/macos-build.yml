@@ -34,6 +34,12 @@ jobs:
         # Details see: https://github.com/actions/checkout
         with:
           submodules: true
+      - name: Install Essentials
+        shell: bash
+        # Install essential tools/libs
+        #   - autoconf used to build jemalloc
+        run: |
+          brew install autoconf
       - name: Build Dependencies
         shell: bash
         run: |

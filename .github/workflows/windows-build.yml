@@ -32,13 +32,25 @@ jobs:
         # Details see: https://github.com/actions/checkout
         with:
           submodules: true
+      - name: Install required packages
+        uses: msys2/setup-msys2@v2
+        # Install essential tools/libs
+        #   - autoconf used to build jemalloc
+        with:
+          update: true
+          install: >-
+            base-devel
+            autoconf
+            automake
+            libtool
+            make
+            gcc
       - name: Create arm64 lib soft link
         # cmake not find libs in */lib/*/arm64/* folders, create soft link to fix it
         if: matrix.os == 'windows-11-arm'
         run: |
           cmd /c mklink /D "C:/Program Files/OpenSSL/lib/VC/x64" "C:/Program Files/OpenSSL/lib/VC/arm64"
       - name: Build Dependencies
-        shell: bash
         run: |
           bash '${{ github.workspace }}/bin/build_deps.sh'
       - name: Set Reusable Strings
