@@ -22,7 +22,8 @@ jobs:
       fail-fast: false
       matrix:
         # The support os can see: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#choosing-github-hosted-runners
-        os: [ windows-2025, windows-11-arm ]
+        ## jemalloc not available windows-11-arm
+        os: [ windows-2025 ]
         build_type: [ Release ]
         c_compiler: [ cl]
         cpp_compiler: [ cl ]
@@ -32,14 +33,46 @@ jobs:
         # Details see: https://github.com/actions/checkout
         with:
           submodules: true
+      - name: Install required packages
+        uses: msys2/setup-msys2@v2
+        # Install essential tools/libs
+        #   - autoconf used to build jemalloc
+        with:
+          update: true
+          install: >-
+            base-devel
+            autoconf
+            automake
+            libtool
+            make
+            gcc
+            perl
+            perl-Pod-Usage
+      - name: Set up MSYS2 environment
+        shell: bash
+        # 确保MSYS2工具在PATH中
+        run: |
+          echo "C:/msys64/usr/bin" >> $GITHUB_PATH
+          echo "C:/msys64/mingw64/bin" >> $GITHUB_PATH
+
+      - name: Verify tools
+        shell: bash
+        # 验证工具是否可用
+        run: |
+          which autoconf
+          autoconf --version
+          which perl
+          perl --version
+          which make
+          make --version
       - name: Create arm64 lib soft link
         # cmake not find libs in */lib/*/arm64/* folders, create soft link to fix it
         if: matrix.os == 'windows-11-arm'
         run: |
           cmd /c mklink /D "C:/Program Files/OpenSSL/lib/VC/x64" "C:/Program Files/OpenSSL/lib/VC/arm64"
       - name: Build Dependencies
-        shell: bash
         run: |
+          export PATH="/c/msys64/usr/bin:/c/msys64/mingw64/bin:$PATH"
           bash '${{ github.workspace }}/bin/build_deps.sh'
       - name: Set Reusable Strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
