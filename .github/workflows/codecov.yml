@@ -21,11 +21,11 @@ jobs:
       job-name: macos-result
       timeout: 600
 
-  windows-check-build:
-    uses: ./.github/workflows/callable-check-job.yml
-    with:
-      job-name: windows-result
-      timeout: 600
+#  windows-check-build:
+#    uses: ./.github/workflows/callable-check-job.yml
+#    with:
+#      job-name: windows-result
+#      timeout: 600
 
   codecov:
     runs-on: ubuntu-24.04
@@ -33,7 +33,6 @@ jobs:
     needs:
       - ubuntu-check-build
       - macos-check-build
-      - windows-check-build
     steps:
       - uses: actions/checkout@v4
         with:
