@@ -20,10 +20,10 @@ This section describes how to add `jaclks` as a dependency to your C++ project.
 |------------------|---------------|------------|-----------|
 | Ubuntu-22.04     | x64, ARM64    | [gcc, g++] | &#10004;  |
 | Ubuntu-24.04     | x64, ARM64    | [gcc, g++] | &#10004;  |
-| Windows 2025     | x64           | [cl, cl]   | &#10004;  |
-| Windows 11       | ARM64         | [cl, cl]   | &#10004;  |
 | MacOS 13         | x64           | [gcc, g++] | &#10004;  |
 | MacOS 15         | ARM64         | [gcc, g++] | &#10004;  |
+| Windows 2025     | Not supported |            | &#10004;  |
+| Windows 11       | Not supported |            | &#10004;  |
 | Linux - Others   | Not supported |            | &#10008;  |
 | Linux            | Not supported |            | &#10008;  |
 | iOS              | Not supported |            | &#10008;  |
