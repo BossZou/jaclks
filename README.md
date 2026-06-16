@@ -7,7 +7,6 @@ jaclks - java-based C++ lib kits
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/5d38d4632b164f1593dfb364cd0252fe)](https://app.codacy.com/gh/BossZou/jaclks/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Ubuntu Build](https://github.com/BossZou/jaclks/actions/workflows/ubuntu-build.yml/badge.svg)](https://github.com/BossZou/jaclks/actions/workflows/ubuntu-build.yml)
 [![Macos Build](https://github.com/BossZou/jaclks/actions/workflows/macos-build.yml/badge.svg)](https://github.com/BossZou/jaclks/actions/workflows/macos-build.yml)
-[![Windows Build](https://github.com/BossZou/jaclks/actions/workflows/windows-build.yml/badge.svg)](https://github.com/BossZou/jaclks/actions/workflows/windows-build.yml)
 [![codecov](https://codecov.io/gh/BossZou/jaclks/graph/badge.svg?token=SGY77PRJI1)](https://codecov.io/gh/BossZou/jaclks)
 
 # To start using jaclks
@@ -20,10 +19,9 @@ This section describes how to add `jaclks` as a dependency to your C++ project.
 |------------------|---------------|------------|-----------|
 | Ubuntu-22.04     | x64, ARM64    | [gcc, g++] | &#10004;  |
 | Ubuntu-24.04     | x64, ARM64    | [gcc, g++] | &#10004;  |
-| Windows 2025     | x64           | [cl, cl]   | &#10004;  |
-| Windows 11       | ARM64         | [cl, cl]   | &#10004;  |
-| MacOS 13         | x64           | [gcc, g++] | &#10004;  |
-| MacOS 15         | ARM64         | [gcc, g++] | &#10004;  |
+| MacOS 15         | x64, ARM64    | [gcc, g++] | &#10004;  |
+| Windows 2025     | Not supported |            | &#10008;  |
+| Windows 11       | Not supported |            | &#10008;  |
 | Linux - Others   | Not supported |            | &#10008;  |
 | Linux            | Not supported |            | &#10008;  |
 | iOS              | Not supported |            | &#10008;  |

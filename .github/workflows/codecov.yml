@@ -21,11 +21,11 @@ jobs:
       job-name: macos-result
       timeout: 600
 
-  windows-check-build:
-    uses: ./.github/workflows/callable-check-job.yml
-    with:
-      job-name: windows-result
-      timeout: 600
+#  windows-check-build:
+#    uses: ./.github/workflows/callable-check-job.yml
+#    with:
+#      job-name: windows-result
+#      timeout: 600
 
   codecov:
     runs-on: ubuntu-24.04
@@ -33,7 +33,6 @@ jobs:
     needs:
       - ubuntu-check-build
       - macos-check-build
-      - windows-check-build
     steps:
       - uses: actions/checkout@v4
         with:
@@ -84,7 +83,7 @@ jobs:
           xml-out: ${{ github.workspace }}/coverage.xml
       # Optional: upload coverage report to codecov.io
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5.4.3
+        uses: codecov/codecov-action@v7
         with:
           files: ${{ github.workspace }}/coverage.xml
           token: ${{ secrets.CODECOV_TOKEN }}

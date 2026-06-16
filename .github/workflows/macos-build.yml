@@ -24,7 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         # The support os can see: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#choosing-github-hosted-runners
-        os: [ macos-13, macos-15 ]
+        os: [ macos-15-intel, macos-15 ]
         build_type: [ Release ]
         c_compiler: [ gcc ]
         cpp_compiler: [ g++ ]
