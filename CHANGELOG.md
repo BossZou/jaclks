@@ -25,6 +25,9 @@ Please mark all change in change log and use the issue from GitHub
 ### Regex implementation
 - [$49](https://github.com/BossZou/jaclks/pull/49) Implement regex logic
 
+### Map implementation
+- [#54](https://github.com/BossZou/jaclks/pull/54) Add Map ctype
+
 ## Improvement
 - [#29](https://github.com/BossZou/jaclks/pull/29) Support on windows 2025 x86 platform
 - [#35](https://github.com/BossZou/jaclks/pull/35) Support on windows 11 arm64 and Macos x86/arm platform

@@ -24,7 +24,7 @@ add_subdirectory(${PROJECT_ROOT_DIR}/thirdparty/regex)
 
 # 1. find GTest
 if(ENABLE_GTEST)
-  find_package(GTest REQUIRED)
+  find_package(GTest CONFIG REQUIRED)
   if(GTest_FOUND)
     message(STATUS "GTest found: ${GTest_FOUND}")
     message(STATUS "GTest version: ${GTest_VERSION}")
