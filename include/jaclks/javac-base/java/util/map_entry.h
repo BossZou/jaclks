@@ -25,8 +25,8 @@ class Entry {
   }
 
  private:
-  K key_;
-  V value_;
+  K key_{};
+  V value_{};
 };
 
 }  // namespace jaclks::javac_base
