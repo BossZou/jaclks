@@ -43,3 +43,6 @@ CMakeSettings.json
 build/
 dist/
 thirdparty/*-build/
+
+# Superpowers docs
+docs/superpowers/
