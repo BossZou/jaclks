@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <functional>
 #include <optional>
+#include <utility>
 
 #include "jaclks/javac-base/java/util/map_entry.h"
 #include "jaclks/javac-base/java/util/no_such_element_exception.h"

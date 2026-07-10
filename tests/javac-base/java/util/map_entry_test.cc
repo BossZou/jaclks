@@ -1,7 +1,8 @@
 #include "jaclks/javac-base/java/util/map_entry.h"
 
-#include <gtest/gtest.h>
 #include <string>
+
+#include <gtest/gtest.h>
 
 namespace jaclks::javac_base {
 
