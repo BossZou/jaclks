@@ -229,7 +229,7 @@ class TreeMap : public NavigableMap<K, V, Compare> {
   TreeMap SubMapImpl(
       typename std::map<K, V, CompareAdaptor>::const_iterator begin,
       typename std::map<K, V, CompareAdaptor>::const_iterator end) const {
-    TreeMap result;
+    TreeMap result(compare_);
     for (auto it = begin; it != end; ++it) {
       result.map_.emplace(it->first, it->second);
     }
