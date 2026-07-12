@@ -19,7 +19,8 @@ class TreeMap : public NavigableMap<K, V, Compare> {
  public:
   using Entry = typename Map<K, V>::Entry;
 
-  TreeMap() = default;
+  explicit TreeMap(Compare comp = Compare{})
+      : compare_adaptor_{comp}, compare_(comp), map_(compare_adaptor_) {}
   ~TreeMap() override = default;
 
   // ==================== Map<K,V> methods ====================
@@ -101,8 +102,7 @@ class TreeMap : public NavigableMap<K, V, Compare> {
 
   std::optional<Entry> FloorEntry(const K& key) const override {
     auto it = map_.lower_bound(key);
-    if (it != map_.end() && !compare_adaptor_(it->first, key) &&
-        !compare_adaptor_(key, it->first)) {
+    if (it != map_.end() && compare_(it->first, key) == 0) {
       return Entry(it->first, it->second);
     }
     if (it == map_.begin()) {
@@ -202,7 +202,8 @@ class TreeMap : public NavigableMap<K, V, Compare> {
 
   TreeMap<K, V, ReversedComparator<Compare>> DescendingMap()
       const override {
-    TreeMap<K, V, ReversedComparator<Compare>> result;
+    TreeMap<K, V, ReversedComparator<Compare>> result(
+        ReversedComparator<Compare>{compare_});
     for (const auto& pair : map_) {
       result.Put(pair.first, pair.second);
     }
