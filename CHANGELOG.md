@@ -45,7 +45,7 @@ Please mark all change in change log and use the issue from GitHub
 - [#53](https://github.com/BossZou/jaclks/pull/53) Use 'threeal/gcovr-action' to collection coverage file
 - [#56](https://github.com/BossZou/jaclks/pull/56) cancel windows platform support
 - [#58](https://github.com/BossZou/jaclks/pull/58) Remove windows support badge and update Supported Platforms
-- [#61](https://github.com/BossZou/jaclks/pull/61) 
+- [#61](https://github.com/BossZou/jaclks/pull/61) Set BossZou as project code onwer
 
 ## Document
 - [#22](https://github.com/BossZou/jaclks/pull/22) Add license Apache 2.0 and code quality badge
