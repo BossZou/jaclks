@@ -576,7 +576,7 @@ TEST(TreeMapTest, ViewCopiesAreIndependent) {
   EXPECT_EQ(m.Size(), 2UL);
 }
 
-// ==================== Default Method Tests (inherited from Map) ====================
+// ============== Default Method Tests (inherited from Map) ==============
 
 TEST(TreeMapTest, PutAll) {
   TreeMap<int, int> src;
