@@ -14,7 +14,8 @@ template <typename Compare>
 struct ReversedComparator {
   Compare original;
 
-  int operator()(const auto& a, const auto& b) const {
+  template <typename T>
+  int operator()(const T& a, const T& b) const {
     return -original(a, b);
   }
 };

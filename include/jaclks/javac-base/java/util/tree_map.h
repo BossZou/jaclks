@@ -4,6 +4,7 @@
 #include <functional>
 #include <map>
 #include <optional>
+#include <type_traits>
 #include <utility>
 
 #include "jaclks/function/compare.h"
@@ -102,7 +103,7 @@ class TreeMap : public NavigableMap<K, V, Compare> {
 
   std::optional<Entry> FloorEntry(const K& key) const override {
     auto it = map_.lower_bound(key);
-    if (it != map_.end() && compare_(it->first, key) == 0) {
+    if (it != map_.end() && KeyEquals(it->first, key)) {
       return Entry(it->first, it->second);
     }
     if (it == map_.begin()) {
@@ -200,8 +201,10 @@ class TreeMap : public NavigableMap<K, V, Compare> {
     return SubMapImpl(begin, end);
   }
 
-  TreeMap<K, V, ReversedComparator<Compare>> DescendingMap()
-      const override {
+  // Non-virtual: removed from NavigableMap interface to avoid infinite
+  // template recursion in vtable generation (DescendingMap returns a
+  // TreeMap with a different comparator, which itself has DescendingMap).
+  TreeMap<K, V, ReversedComparator<Compare>> DescendingMap() const {
     TreeMap<K, V, ReversedComparator<Compare>> result(
         ReversedComparator<Compare>{compare_});
     for (const auto& pair : map_) {
@@ -221,10 +224,23 @@ class TreeMap : public NavigableMap<K, V, Compare> {
  private:
   struct CompareAdaptor {
     bool operator()(const K& a, const K& b) const {
-      return compare(a, b) < 0;
+      if constexpr (std::is_same_v<decltype(compare(a, b)), bool>) {
+        return compare(a, b);
+      } else {
+        return compare(a, b) < 0;
+      }
     }
     Compare compare;
   };
+
+  // Detects key equality for both three-way (int) and boolean comparators.
+  bool KeyEquals(const K& a, const K& b) const {
+    if constexpr (std::is_same_v<decltype(compare_(a, b)), bool>) {
+      return !compare_(a, b) && !compare_(b, a);
+    } else {
+      return compare_(a, b) == 0;
+    }
+  }
 
   TreeMap SubMapImpl(
       typename std::map<K, V, CompareAdaptor>::const_iterator begin,

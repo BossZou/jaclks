@@ -15,6 +15,12 @@ class NavigableMap : public SortedMap<K, V, Compare> {
 
   ~NavigableMap() override = default;
 
+  // Bring SortedMap view-method overloads into scope so the
+  // inclusive-flag overloads below don't hide them.
+  using SortedMap<K, V, Compare>::HeadMap;
+  using SortedMap<K, V, Compare>::TailMap;
+  using SortedMap<K, V, Compare>::SubMap;
+
   virtual std::optional<Entry> LowerEntry(const K& key) const = 0;
 
   virtual std::optional<Entry> FloorEntry(const K& key) const = 0;
@@ -62,9 +68,6 @@ class NavigableMap : public SortedMap<K, V, Compare> {
     }
     return std::nullopt;
   }
-
-  virtual TreeMap<K, V, ReversedComparator<Compare>> DescendingMap()
-      const = 0;
 
   virtual TreeMap<K, V, Compare> HeadMap(const K& toKey,
                                           bool inclusive) const = 0;
