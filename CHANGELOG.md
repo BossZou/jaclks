@@ -25,6 +25,9 @@ Please mark all change in change log and use the issue from GitHub
 ### Map interface implementation
 - [#60](https://github.com/BossZou/jaclks/pull/60) Add Map<K,V> interface and HashMap<K,V> implementation
 
+### TreeMap implementation
+- [#62](https://github.com/BossZou/jaclks/pull/62) Add SortedMap, NavigableMap interfaces and TreeMap<K,V> implementation
+
 ### Regex implementation
 - [$49](https://github.com/BossZou/jaclks/pull/49) Implement regex logic
 
