@@ -1,0 +1,79 @@
+name: 🐛 Bug report
+description: Report a bug or unexpected behavior in jaclks
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug!
+        Before submitting, please search [existing issues](https://github.com/BossZou/jaclks/issues?q=is%3Aissue) to avoid duplicates.
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: e.g. Calling Thread::Sleep with a negative value hangs the process.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Provide a minimal code snippet and the commands used to build and run it.
+      placeholder: |
+        Code:
+        ```cpp
+        // minimal reproduction
+        ```
+
+        Build and run:
+        ```shell
+        cmake .. -DCMAKE_BUILD_TYPE=Debug -DENABLE_GTEST=ON
+        make
+        ctest --verbose --output-on-failure --build-config Debug
+        ```
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      description: What actually happened?
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Ubuntu 22.04
+        - Ubuntu 24.04
+        - macOS 15
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: compiler
+    attributes:
+      label: Compiler version
+      description: Output of `g++ --version`.
+      placeholder: e.g. g++ (Ubuntu 13.2.0-23ubuntu4) 13.2.0
+  - type: input
+    id: cmake-version
+    attributes:
+      label: CMake version
+      description: Output of `cmake --version`.
+      placeholder: e.g. cmake version 3.28.3
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Logs, stack traces, screenshots, or anything else that might help.

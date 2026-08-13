@@ -53,3 +53,4 @@ Please mark all change in change log and use the issue from GitHub
 ## Document
 - [#22](https://github.com/BossZou/jaclks/pull/22) Add license Apache 2.0 and code quality badge
 - [#38](https://github.com/BossZou/jaclks/pull/38) Add CHANGELOG file
+- [#63](https://github.com/BossZou/jaclks/pull/63) Add issue and pull request templates

@@ -1,0 +1,45 @@
+name: ❓ Usage question
+description: Ask a question about using jaclks
+title: "[Question]: "
+labels: [question]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check the [README](https://github.com/BossZou/jaclks#readme) and search [existing issues](https://github.com/BossZou/jaclks/issues?q=is%3Aissue) before asking.
+        For bug reports, please use the [🐛 Bug report](https://github.com/BossZou/jaclks/issues/new?template=bug_report.yml) template instead.
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to do?
+      description: Describe what you want to achieve with jaclks.
+    validations:
+      required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: Code and commands
+      description: Paste the code snippet and build commands you tried.
+      placeholder: |
+        ```cpp
+        // your code
+        ```
+
+        ```shell
+        cmake .. -DCMAKE_BUILD_TYPE=Debug -DENABLE_GTEST=ON
+        make
+        ```
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Ubuntu 22.04
+        - Ubuntu 24.04
+        - macOS 15
+        - Other
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Error messages, links, or anything that helps understand your question.
