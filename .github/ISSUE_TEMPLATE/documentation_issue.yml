@@ -1,0 +1,35 @@
+name: 📚 Documentation issue
+description: Report an error or outdated content in the documentation
+title: "[Docs]: "
+labels: [documentation]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve the documentation!
+        Before submitting, please search [existing issues](https://github.com/BossZou/jaclks/issues?q=is%3Aissue) to avoid duplicates.
+  - type: input
+    id: location
+    attributes:
+      label: Affected page or file
+      description: Where is the documentation problem?
+      placeholder: e.g. README.md - Build from source section
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong?
+      description: Describe the error, outdated content, or missing information.
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested fix
+      description: How should the documentation be corrected? (optional)
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Screenshots, links, or anything else that might help.

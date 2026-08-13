@@ -1,0 +1,28 @@
+name: 📝 Other
+description: Anything that does not fit the other templates
+title: "[Other]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for anything that does not fit 🐛 Bug report, ✨ Feature request, 📚 Documentation issue, or ❓ Usage question.
+  - type: textarea
+    id: topic
+    attributes:
+      label: What is this about?
+      description: Briefly describe the topic of this issue.
+      placeholder: e.g. Build system, packaging, repository maintenance, ...
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Provide the details of the issue.
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Screenshots, links, or anything else that might help.
