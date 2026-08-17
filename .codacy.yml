@@ -1,0 +1,14 @@
+version: "2.0.0"  # Version
+
+exclude_paths:
+  - "**/thirdparty/**"  # exclude third-party libs
+
+engines:
+  cppcheck:
+    enabled: true
+    exclude:
+      - "missingInclude"    # 忽略头文件未找到错误
+      - "missingIncludeSystem"
+    config:
+      std: c++17 #  specify C++ standard
+      suppressions: "cppcheck-suppressions.txt"
